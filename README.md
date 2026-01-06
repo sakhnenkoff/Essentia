@@ -22,6 +22,13 @@ Based on [SwiftfulStarterProject](https://github.com/SwiftfulThinking/SwiftfulSt
 3. Configure your Firebase and RevenueCat credentials
 4. Update `EntitlementOption` product IDs
 
+
+## Scripts
+
+- `rename_project.sh` - Rename the project (optional `--bundle-id` and `--display-name`)
+- `scripts/new-app.sh` - Copy the template to a new folder and rename in one step
+- `scripts/setup-secrets.sh` - Create `Secrets.xcconfig.local` from the example file
+
 ## Navigation
 
 - Tabs and routes are defined in `AppTemplateLite/App/Navigation/`
