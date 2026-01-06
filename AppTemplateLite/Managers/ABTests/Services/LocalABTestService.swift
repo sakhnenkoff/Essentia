@@ -12,7 +12,10 @@ class LocalABTestService: ABTestService {
     @UserDefault(key: ActiveABTests.CodingKeys.boolTest.rawValue, startingValue: .random())
     private var boolTest: Bool
     
-    @UserDefaultEnum(key: ActiveABTests.CodingKeys.enumTest.rawValue, startingValue: EnumTestOption.allCases.randomElement()!)
+    @UserDefaultEnum(
+        key: ActiveABTests.CodingKeys.enumTest.rawValue,
+        startingValue: EnumTestOption.allCases.randomElement() ?? .default
+    )
     private var enumTest: EnumTestOption
 
     var activeTests: ActiveABTests {

@@ -24,7 +24,7 @@ final class OnboardingViewModel {
     }
 
     func onFlowComplete(flowData: OnbFlowData, services: AppServices, session: AppSession) {
-        services.logManager.trackEvent(event: Event.flowComplete(selectedChoices: flowData.selectedOptions))
+        services.logManager.trackEvent(event: Event.flowComplete(flowData: flowData))
 
         Task {
             if session.isSignedIn {
@@ -40,7 +40,7 @@ extension OnboardingViewModel {
         case onAppear
         case onDisappear
         case slideComplete(slideId: String)
-        case flowComplete(selectedChoices: [OnbChoiceOption])
+        case flowComplete(flowData: OnbFlowData)
 
         var eventName: String {
             switch self {
@@ -59,8 +59,8 @@ extension OnboardingViewModel {
             switch self {
             case .slideComplete(let slideId):
                 return ["slide_id": slideId]
-            case .flowComplete(let selectedChoices):
-                return ["selected_choices": selectedChoices.map { $0.id }]
+            case .flowComplete(let flowData):
+                return flowData.eventParameters
             default:
                 return nil
             }

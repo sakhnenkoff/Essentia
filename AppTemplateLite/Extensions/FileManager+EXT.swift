@@ -20,9 +20,9 @@ extension FileManager {
     }
     
     private static func getDocumentURL(for key: String) -> URL {
-        FileManager.default
-            .urls(for: .documentDirectory, in: .userDomainMask)
-            .first!
-            .appendingPathComponent("\(key).txt")
+        guard let baseURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            fatalError("Document directory not available.")
+        }
+        return baseURL.appendingPathComponent("\(key).txt")
     }
 }

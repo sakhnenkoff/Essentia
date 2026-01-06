@@ -53,7 +53,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
-        let userInfo = response.notification.request.content.userInfo["aps"] as? [String: Any]
+        let userInfo = response.notification.request.content.userInfo
         NotificationCenter.default.post(name: .pushNotification, object: nil, userInfo: userInfo)
         completionHandler()
     }
@@ -81,7 +81,10 @@ enum BuildConfiguration {
         config = .prod
         #endif
 
-        if Utilities.isUITesting {
+        let isUITesting = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+            || ProcessInfo.processInfo.arguments.contains("UI-TESTING")
+
+        if isUITesting {
             let isSignedIn = ProcessInfo.processInfo.arguments.contains("SIGNED_IN")
             config = .mock(isSignedIn: isSignedIn)
         }
@@ -94,12 +97,22 @@ enum BuildConfiguration {
         case .mock:
             break
         case .dev:
-            let plist = Bundle.main.path(forResource: "GoogleService-Info-Dev", ofType: "plist")!
-            let options = FirebaseOptions(contentsOfFile: plist)!
+            guard
+                let plist = Bundle.main.path(forResource: "GoogleService-Info-Dev", ofType: "plist"),
+                let options = FirebaseOptions(contentsOfFile: plist)
+            else {
+                assertionFailure("Missing GoogleService-Info-Dev.plist")
+                return
+            }
             FirebaseApp.configure(options: options)
         case .prod:
-            let plist = Bundle.main.path(forResource: "GoogleService-Info-Prod", ofType: "plist")!
-            let options = FirebaseOptions(contentsOfFile: plist)!
+            guard
+                let plist = Bundle.main.path(forResource: "GoogleService-Info-Prod", ofType: "plist"),
+                let options = FirebaseOptions(contentsOfFile: plist)
+            else {
+                assertionFailure("Missing GoogleService-Info-Prod.plist")
+                return
+            }
             FirebaseApp.configure(options: options)
         }
     }

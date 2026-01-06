@@ -12,6 +12,8 @@ Based on [SwiftfulStarterProject](https://github.com/SwiftfulThinking/SwiftfulSt
 - Firebase integration (Auth, Firestore, Analytics, Crashlytics)
 - RevenueCat for in-app purchases
 - Mixpanel analytics
+- Consent + ATT settings
+- Push notification routing hooks
 - Gamification system (Streaks, XP, Progress)
 - SwiftfulThinking package ecosystem
 

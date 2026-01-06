@@ -10,10 +10,35 @@ import LocalPersistance
 import LocalPersistanceMock
 import Networking
 
+private struct ServiceBundle {
+    let logManager: LogManager
+    let authManager: AuthManager
+    let userManager: UserManager
+    let keychainService: KeychainCacheServiceProtocol
+    let userDefaultsService: UserDefaultsCacheServiceProtocol
+    let networkingService: NetworkingServiceProtocol
+    let abTestManager: ABTestManager?
+    let purchaseManager: PurchaseManager?
+    let hapticManager: HapticManager?
+    let streakManager: StreakManager?
+    let xpManager: ExperiencePointsManager?
+    let progressManager: ProgressManager?
+}
+
+private struct OptionalManagers {
+    let abTestManager: ABTestManager?
+    let purchaseManager: PurchaseManager?
+    let hapticManager: HapticManager?
+    let streakManager: StreakManager?
+    let xpManager: ExperiencePointsManager?
+    let progressManager: ProgressManager?
+}
+
 @MainActor
 @Observable
 final class AppServices {
     let configuration: BuildConfiguration
+    let consentManager: ConsentManager
 
     let logManager: LogManager
     let authManager: AuthManager
@@ -34,207 +59,249 @@ final class AppServices {
     init(configuration: BuildConfiguration = .current) {
         self.configuration = configuration
 
-        let logManager: LogManager
-        let authManager: AuthManager
-        let userManager: UserManager
-        let keychainService: KeychainCacheServiceProtocol
-        let userDefaultsService: UserDefaultsCacheServiceProtocol
-        let networkingService: NetworkingServiceProtocol
+        let isMock: Bool
+        if case .mock = configuration {
+            isMock = true
+        } else {
+            isMock = false
+        }
 
-        var abTestManager: ABTestManager?
-        var purchaseManager: PurchaseManager?
-        var pushManager: PushManager?
-        var hapticManager: HapticManager?
-        var soundEffectManager: SoundEffectManager?
-        var streakManager: StreakManager?
-        var xpManager: ExperiencePointsManager?
-        var progressManager: ProgressManager?
+        let consentManager = ConsentManager(isMock: isMock)
+        let analyticsEnabled = consentManager.shouldEnableAnalytics
 
+        let bundle: ServiceBundle
         switch configuration {
         case .mock(isSignedIn: let isSignedIn):
-            logManager = LogManager(services: [
-                ConsoleService(printParameters: true, system: .stdout)
-            ])
-            authManager = AuthManager(
-                service: MockAuthService(user: isSignedIn ? .mock() : nil),
-                logger: logManager
-            )
-            userManager = UserManager(
-                services: MockUserServices(document: isSignedIn ? .mock : nil),
-                configuration: Self.userManagerConfiguration,
-                logger: logManager
-            )
-            keychainService = MockKeychainCacheService()
-            userDefaultsService = MockUserDefaultsCacheService()
-            networkingService = NetworkingService()
-
-            if FeatureFlags.enableABTesting {
-                abTestManager = ABTestManager(service: MockABTestService(), logManager: logManager)
-            }
-            if FeatureFlags.enablePurchases {
-                purchaseManager = PurchaseManager(service: MockPurchaseService(), logger: logManager)
-            }
-            if FeatureFlags.enableHaptics {
-                hapticManager = HapticManager(logger: logManager)
-            }
-            if FeatureFlags.enableStreaks {
-                streakManager = StreakManager(
-                    services: MockStreakServices(),
-                    configuration: Self.streakConfiguration,
-                    logger: logManager
-                )
-            }
-            if FeatureFlags.enableExperiencePoints {
-                xpManager = ExperiencePointsManager(
-                    services: MockExperiencePointsServices(),
-                    configuration: Self.xpConfiguration,
-                    logger: logManager
-                )
-            }
-            if FeatureFlags.enableProgress {
-                progressManager = ProgressManager(
-                    services: MockProgressServices(),
-                    configuration: Self.progressConfiguration,
-                    logger: logManager
-                )
-            }
-
+            bundle = Self.makeMockServices(isSignedIn: isSignedIn)
         case .dev:
-            var loggingServices: [any LogService] = [
-                ConsoleService(printParameters: true)
-            ]
-            if FeatureFlags.enableFirebaseAnalytics {
-                loggingServices.append(FirebaseAnalyticsService())
-            }
-            if FeatureFlags.enableMixpanel {
-                loggingServices.append(MixpanelService(token: Keys.mixpanelToken))
-            }
-            if FeatureFlags.enableCrashlytics {
-                loggingServices.append(FirebaseCrashlyticsService())
-            }
-            logManager = LogManager(services: loggingServices)
-            authManager = AuthManager(service: FirebaseAuthService(), logger: logManager)
-            userManager = UserManager(
-                services: ProductionUserServices(),
-                configuration: Self.userManagerConfiguration,
-                logger: logManager
-            )
-            keychainService = KeychainCacheService()
-            userDefaultsService = UserDefaultsCacheService()
-            networkingService = NetworkingService()
-
-            if FeatureFlags.enableABTesting {
-                abTestManager = ABTestManager(service: LocalABTestService(), logManager: logManager)
-            }
-            if FeatureFlags.enablePurchases {
-                purchaseManager = PurchaseManager(
-                    service: RevenueCatPurchaseService(apiKey: Keys.revenueCatAPIKey),
-                    logger: logManager
-                )
-            }
-            if FeatureFlags.enableHaptics {
-                hapticManager = HapticManager(logger: logManager)
-            }
-            if FeatureFlags.enableStreaks {
-                streakManager = StreakManager(
-                    services: ProdStreakServices(),
-                    configuration: Self.streakConfiguration,
-                    logger: logManager
-                )
-            }
-            if FeatureFlags.enableExperiencePoints {
-                xpManager = ExperiencePointsManager(
-                    services: ProdExperiencePointsServices(),
-                    configuration: Self.xpConfiguration,
-                    logger: logManager
-                )
-            }
-            if FeatureFlags.enableProgress {
-                progressManager = ProgressManager(
-                    services: ProdProgressServices(),
-                    configuration: Self.progressConfiguration,
-                    logger: logManager
-                )
-            }
-
+            bundle = Self.makeDevServices(analyticsEnabled: analyticsEnabled)
         case .prod:
-            var loggingServices: [any LogService] = []
-            if FeatureFlags.enableFirebaseAnalytics {
-                loggingServices.append(FirebaseAnalyticsService())
-            }
-            if FeatureFlags.enableMixpanel {
-                loggingServices.append(MixpanelService(token: Keys.mixpanelToken))
-            }
-            if FeatureFlags.enableCrashlytics {
-                loggingServices.append(FirebaseCrashlyticsService())
-            }
-            logManager = LogManager(services: loggingServices)
-            authManager = AuthManager(service: FirebaseAuthService(), logger: logManager)
-            userManager = UserManager(
-                services: ProductionUserServices(),
-                configuration: Self.userManagerConfiguration,
+            bundle = Self.makeProdServices(analyticsEnabled: analyticsEnabled)
+        }
+
+        let pushManager = FeatureFlags.enablePushNotifications
+            ? PushManager(logManager: bundle.logManager)
+            : nil
+        let soundEffectManager = FeatureFlags.enableSoundEffects
+            ? SoundEffectManager(logger: bundle.logManager)
+            : nil
+
+        self.consentManager = consentManager
+        self.logManager = bundle.logManager
+        self.authManager = bundle.authManager
+        self.userManager = bundle.userManager
+        self.keychainService = bundle.keychainService
+        self.userDefaultsService = bundle.userDefaultsService
+        self.networkingService = bundle.networkingService
+        self.abTestManager = bundle.abTestManager
+        self.purchaseManager = bundle.purchaseManager
+        self.pushManager = pushManager
+        self.hapticManager = bundle.hapticManager
+        self.soundEffectManager = soundEffectManager
+        self.streakManager = bundle.streakManager
+        self.xpManager = bundle.xpManager
+        self.progressManager = bundle.progressManager
+        bundle.logManager.addUserProperties(dict: consentManager.eventParameters, isHighPriority: false)
+    }
+
+    private static func makeMockServices(isSignedIn: Bool) -> ServiceBundle {
+        let logManager = LogManager(services: [
+            ConsoleService(printParameters: true, system: .stdout)
+        ])
+        let authManager = AuthManager(
+            service: MockAuthService(user: isSignedIn ? .mock() : nil),
+            logger: logManager
+        )
+        let userManager = UserManager(
+            services: MockUserServices(document: isSignedIn ? .mock : nil),
+            configuration: Self.userManagerConfiguration,
+            logger: logManager
+        )
+        let managers = Self.makeMockOptionalManagers(logManager: logManager)
+
+        return ServiceBundle(
+            logManager: logManager,
+            authManager: authManager,
+            userManager: userManager,
+            keychainService: MockKeychainCacheService(),
+            userDefaultsService: MockUserDefaultsCacheService(),
+            networkingService: NetworkingService(),
+            abTestManager: managers.abTestManager,
+            purchaseManager: managers.purchaseManager,
+            hapticManager: managers.hapticManager,
+            streakManager: managers.streakManager,
+            xpManager: managers.xpManager,
+            progressManager: managers.progressManager
+        )
+    }
+
+    private static func makeDevServices(analyticsEnabled: Bool) -> ServiceBundle {
+        let logManager = Self.makeDevLogManager(analyticsEnabled: analyticsEnabled)
+        let managers = Self.makeLiveOptionalManagers(
+            logManager: logManager,
+            abTestService: LocalABTestService()
+        )
+
+        return Self.makeLiveServices(logManager: logManager, managers: managers)
+    }
+
+    private static func makeProdServices(analyticsEnabled: Bool) -> ServiceBundle {
+        let logManager = Self.makeProdLogManager(analyticsEnabled: analyticsEnabled)
+        let managers = Self.makeLiveOptionalManagers(
+            logManager: logManager,
+            abTestService: FirebaseABTestService()
+        )
+
+        return Self.makeLiveServices(logManager: logManager, managers: managers)
+    }
+
+    private static func makeDevLogManager(analyticsEnabled: Bool) -> LogManager {
+        var loggingServices: [any LogService] = [
+            ConsoleService(printParameters: true)
+        ]
+        if analyticsEnabled && FeatureFlags.enableFirebaseAnalytics {
+            loggingServices.append(FirebaseAnalyticsService())
+        }
+        if analyticsEnabled && FeatureFlags.enableMixpanel {
+            loggingServices.append(MixpanelService(token: Keys.mixpanelToken))
+        }
+        if FeatureFlags.enableCrashlytics {
+            loggingServices.append(FirebaseCrashlyticsService())
+        }
+
+        return LogManager(services: loggingServices)
+    }
+
+    private static func makeProdLogManager(analyticsEnabled: Bool) -> LogManager {
+        var loggingServices: [any LogService] = []
+        if analyticsEnabled && FeatureFlags.enableFirebaseAnalytics {
+            loggingServices.append(FirebaseAnalyticsService())
+        }
+        if analyticsEnabled && FeatureFlags.enableMixpanel {
+            loggingServices.append(MixpanelService(token: Keys.mixpanelToken))
+        }
+        if FeatureFlags.enableCrashlytics {
+            loggingServices.append(FirebaseCrashlyticsService())
+        }
+
+        return LogManager(services: loggingServices)
+    }
+
+    private static func makeLiveServices(
+        logManager: LogManager,
+        managers: OptionalManagers
+    ) -> ServiceBundle {
+        let authManager = AuthManager(service: FirebaseAuthService(), logger: logManager)
+        let userManager = UserManager(
+            services: ProductionUserServices(),
+            configuration: Self.userManagerConfiguration,
+            logger: logManager
+        )
+
+        return ServiceBundle(
+            logManager: logManager,
+            authManager: authManager,
+            userManager: userManager,
+            keychainService: KeychainCacheService(),
+            userDefaultsService: UserDefaultsCacheService(),
+            networkingService: NetworkingService(),
+            abTestManager: managers.abTestManager,
+            purchaseManager: managers.purchaseManager,
+            hapticManager: managers.hapticManager,
+            streakManager: managers.streakManager,
+            xpManager: managers.xpManager,
+            progressManager: managers.progressManager
+        )
+    }
+
+    private static func makeMockOptionalManagers(logManager: LogManager) -> OptionalManagers {
+        let abTestManager = FeatureFlags.enableABTesting
+            ? ABTestManager(service: MockABTestService(), logManager: logManager)
+            : nil
+        let purchaseManager = FeatureFlags.enablePurchases
+            ? PurchaseManager(service: MockPurchaseService(), logger: logManager)
+            : nil
+        let hapticManager = FeatureFlags.enableHaptics
+            ? HapticManager(logger: logManager)
+            : nil
+        let streakManager = FeatureFlags.enableStreaks
+            ? StreakManager(
+                services: MockStreakServices(),
+                configuration: Self.streakConfiguration,
                 logger: logManager
             )
-            keychainService = KeychainCacheService()
-            userDefaultsService = UserDefaultsCacheService()
-            networkingService = NetworkingService()
+            : nil
+        let xpManager = FeatureFlags.enableExperiencePoints
+            ? ExperiencePointsManager(
+                services: MockExperiencePointsServices(),
+                configuration: Self.xpConfiguration,
+                logger: logManager
+            )
+            : nil
+        let progressManager = FeatureFlags.enableProgress
+            ? ProgressManager(
+                services: MockProgressServices(),
+                configuration: Self.progressConfiguration,
+                logger: logManager
+            )
+            : nil
 
-            if FeatureFlags.enableABTesting {
-                abTestManager = ABTestManager(service: FirebaseABTestService(), logManager: logManager)
-            }
-            if FeatureFlags.enablePurchases {
-                purchaseManager = PurchaseManager(
-                    service: RevenueCatPurchaseService(apiKey: Keys.revenueCatAPIKey),
-                    logger: logManager
-                )
-            }
-            if FeatureFlags.enableHaptics {
-                hapticManager = HapticManager(logger: logManager)
-            }
-            if FeatureFlags.enableStreaks {
-                streakManager = StreakManager(
-                    services: ProdStreakServices(),
-                    configuration: Self.streakConfiguration,
-                    logger: logManager
-                )
-            }
-            if FeatureFlags.enableExperiencePoints {
-                xpManager = ExperiencePointsManager(
-                    services: ProdExperiencePointsServices(),
-                    configuration: Self.xpConfiguration,
-                    logger: logManager
-                )
-            }
-            if FeatureFlags.enableProgress {
-                progressManager = ProgressManager(
-                    services: ProdProgressServices(),
-                    configuration: Self.progressConfiguration,
-                    logger: logManager
-                )
-            }
-        }
+        return OptionalManagers(
+            abTestManager: abTestManager,
+            purchaseManager: purchaseManager,
+            hapticManager: hapticManager,
+            streakManager: streakManager,
+            xpManager: xpManager,
+            progressManager: progressManager
+        )
+    }
 
-        if FeatureFlags.enablePushNotifications {
-            pushManager = PushManager(logManager: logManager)
-        }
-        if FeatureFlags.enableSoundEffects {
-            soundEffectManager = SoundEffectManager(logger: logManager)
-        }
+    private static func makeLiveOptionalManagers(
+        logManager: LogManager,
+        abTestService: ABTestService
+    ) -> OptionalManagers {
+        let abTestManager = FeatureFlags.enableABTesting
+            ? ABTestManager(service: abTestService, logManager: logManager)
+            : nil
+        let purchaseManager = FeatureFlags.enablePurchases
+            ? PurchaseManager(
+                service: RevenueCatPurchaseService(apiKey: Keys.revenueCatAPIKey),
+                logger: logManager
+            )
+            : nil
+        let hapticManager = FeatureFlags.enableHaptics
+            ? HapticManager(logger: logManager)
+            : nil
+        let streakManager = FeatureFlags.enableStreaks
+            ? StreakManager(
+                services: ProdStreakServices(),
+                configuration: Self.streakConfiguration,
+                logger: logManager
+            )
+            : nil
+        let xpManager = FeatureFlags.enableExperiencePoints
+            ? ExperiencePointsManager(
+                services: ProdExperiencePointsServices(),
+                configuration: Self.xpConfiguration,
+                logger: logManager
+            )
+            : nil
+        let progressManager = FeatureFlags.enableProgress
+            ? ProgressManager(
+                services: ProdProgressServices(),
+                configuration: Self.progressConfiguration,
+                logger: logManager
+            )
+            : nil
 
-        self.logManager = logManager
-        self.authManager = authManager
-        self.userManager = userManager
-        self.keychainService = keychainService
-        self.userDefaultsService = userDefaultsService
-        self.networkingService = networkingService
-        self.abTestManager = abTestManager
-        self.purchaseManager = purchaseManager
-        self.pushManager = pushManager
-        self.hapticManager = hapticManager
-        self.soundEffectManager = soundEffectManager
-        self.streakManager = streakManager
-        self.xpManager = xpManager
-        self.progressManager = progressManager
+        return OptionalManagers(
+            abTestManager: abTestManager,
+            purchaseManager: purchaseManager,
+            hapticManager: hapticManager,
+            streakManager: streakManager,
+            xpManager: xpManager,
+            progressManager: progressManager
+        )
     }
 
     func restoreSession(for user: UserAuthInfo) async {

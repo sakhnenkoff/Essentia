@@ -34,6 +34,7 @@ enum AppTab: String, TabType, CaseIterable, Identifiable {
         }
     }
 
+    @MainActor
     @ViewBuilder
     func makeContentView() -> some View {
         switch self {

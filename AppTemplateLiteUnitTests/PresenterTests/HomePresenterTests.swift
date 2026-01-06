@@ -106,7 +106,7 @@ struct HomePresenterTests {
         let mockInteractor = MockHomeInteractor()
         let mockRouter = MockHomeRouter()
         let presenter = HomePresenter(interactor: mockInteractor, router: mockRouter)
-        let url = URL(string: "myapp://test?param=value")!
+        let url = try #require(URL(string: "myapp://test?param=value"))
 
         // Act
         presenter.handleDeepLink(url: url)
@@ -124,7 +124,7 @@ struct HomePresenterTests {
         let mockInteractor = MockHomeInteractor()
         let mockRouter = MockHomeRouter()
         let presenter = HomePresenter(interactor: mockInteractor, router: mockRouter)
-        let url = URL(string: "myapp://test")!
+        let url = try #require(URL(string: "myapp://test"))
 
         // Act
         presenter.handleDeepLink(url: url)

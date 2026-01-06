@@ -171,20 +171,24 @@ extension PaywallViewModel {
         var parameters: [String: Any]? {
             switch self {
             case .purchaseStart(let productId),
-                 .purchaseSuccess(let productId),
-                 .purchaseFail(let productId, _):
-                return ["product_id": productId]
+                 .purchaseSuccess(let productId):
+                return ["product_id": productId as Any]
+            case .purchaseFail(let productId, let error):
+                var params: [String: Any] = ["product_id": productId]
+                params.merge(error.eventParameters) { _, new in new }
+                return params
             case .storeKitStart(let product),
                  .storeKitSuccess(let product),
                  .storeKitPending(let product),
                  .storeKitCancelled(let product),
-                 .storeKitUnknown(let product),
-                 .storeKitFail(let product, _):
+                 .storeKitUnknown(let product):
                 return product.eventParameters
+            case .storeKitFail(let product, let error):
+                var params = product.eventParameters
+                params.merge(error.eventParameters) { _, new in new }
+                return params
             case .loadProductsFail(let error),
-                 .restoreFail(let error),
-                 .purchaseFail(_, let error),
-                 .storeKitFail(_, let error):
+                 .restoreFail(let error):
                 return error.eventParameters
             default:
                 return nil
