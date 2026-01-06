@@ -1,0 +1,10 @@
+// Base.xcconfig
+// Base configuration shared by all environments
+
+PRODUCT_NAME = AppTemplateLite
+SWIFT_VERSION = 6.0
+IPHONEOS_DEPLOYMENT_TARGET = 26.0
+
+// Default empty values for secrets (overridden by Secrets.xcconfig.local)
+MIXPANEL_TOKEN =
+REVENUECAT_API_KEY =
