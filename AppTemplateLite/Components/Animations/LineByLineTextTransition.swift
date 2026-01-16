@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import DesignSystem
 
 // MARK: - Text Renderer
 
@@ -110,12 +111,12 @@ private struct LineByLinePreview: View {
                     .transition(LineByLineTransition())
             }
         }
-        .font(.system(size: 32, weight: .heavy))
+        .font(.titleLarge())
         .padding(.horizontal, 42)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .toolbar {
             ToolbarItem(placement: .bottomBar) {
-                Button("Next") {
+                DSButton(title: "Next", style: .secondary) {
                     withAnimation(.smooth(duration: 0.5)) {
                         currentIndex = currentIndex.map { ($0 + 1) % steps.count }
                     }

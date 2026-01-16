@@ -55,5 +55,5 @@ struct FeatureNameView: View {
 ## Notes
 
 - Views stay UI-only; logic goes in ViewModels.
-- Use `.anyButton()` for interactive elements.
+- Use `DSButton`/`DSIconButton` for interactive elements.
 - Keep analytics in ViewModels for major actions.

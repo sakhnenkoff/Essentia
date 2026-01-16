@@ -26,13 +26,8 @@ struct OnboardingHeader: View {
     var body: some View {
         HStack(spacing: DSSpacing.md) {
             if showBackButton {
-                Button(action: onBack) {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 18, weight: .semibold))
-                        .foregroundStyle(Color.themePrimary)
-                        .frame(width: 44, height: 44)
-                }
-                .buttonStyle(.plain)
+                DSIconButton(icon: "chevron.left", style: .tertiary, size: .small, action: onBack)
+                    .frame(width: 44, height: 44)
             } else {
                 Spacer()
                     .frame(width: 44)

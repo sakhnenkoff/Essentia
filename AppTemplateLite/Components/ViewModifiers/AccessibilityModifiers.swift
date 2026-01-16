@@ -86,7 +86,7 @@ extension View {
     ///
     /// Usage:
     /// ```swift
-    /// Button("Submit") { ... }
+    /// DSButton(title: "Submit") { ... }
     ///     .testID("Home", "SubmitButton")
     /// ```
     func testID(_ screen: String, _ element: String) -> some View {
@@ -101,7 +101,7 @@ extension View {
     ///
     /// Usage:
     /// ```swift
-    /// Button("Submit") { ... }
+    /// DSButton(title: "Submit") { ... }
     ///     .buttonTestID("Home", "Submit")
     /// // Results in: "Home_Button_Submit"
     /// ```
@@ -147,7 +147,7 @@ extension View {
              Text("Welcome")
                  .testID("Home", "WelcomeText")
 
-             Button("Get Started") {
+             DSButton(title: "Get Started") {
                  // action
              }
              .buttonTestID("Home", "GetStarted")

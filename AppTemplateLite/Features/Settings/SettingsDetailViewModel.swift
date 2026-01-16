@@ -66,6 +66,10 @@ final class SettingsDetailViewModel {
         }
     }
 
+    func clearError() {
+        errorMessage = nil
+    }
+
     var trackingStatusLabel: String {
         switch trackingStatus {
         case .notDetermined:

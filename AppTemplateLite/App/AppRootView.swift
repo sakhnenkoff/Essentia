@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import DesignSystem
 
 struct AppRootView: View {
     @Environment(AppServices.self) private var services
@@ -15,7 +16,10 @@ struct AppRootView: View {
         Group {
             switch session.rootState {
             case .loading:
-                ProgressView("Loading...")
+                ZStack {
+                    Color.backgroundPrimary.ignoresSafeArea()
+                    LoadingView(message: "Preparing your demo...", style: .default)
+                }
             case .onboarding:
                 OnboardingView()
             case .auth:

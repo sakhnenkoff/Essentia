@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import DesignSystem
 
 struct NavigationSheet<Content: View>: View {
     @Environment(\.dismiss) private var dismiss
@@ -16,7 +17,7 @@ struct NavigationSheet<Content: View>: View {
             content()
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
-                        Button("Close") {
+                        DSIconButton(icon: "xmark", style: .tertiary, size: .small) {
                             dismiss()
                         }
                     }

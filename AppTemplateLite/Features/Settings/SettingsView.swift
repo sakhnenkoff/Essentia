@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AppRouter
+import DesignSystem
 
 struct SettingsView: View {
     @Environment(AppServices.self) private var services
@@ -15,80 +16,158 @@ struct SettingsView: View {
     @State private var viewModel = SettingsViewModel()
 
     var body: some View {
-        Form {
-            Section("Account") {
-                if session.isSignedIn {
-                    LabeledContent("User ID", value: session.auth?.uid ?? "unknown")
-                    if let email = session.currentUser?.emailCalculated ?? session.auth?.email {
-                        LabeledContent("Email", value: email)
-                    }
-                } else {
-                    Text("Not signed in")
-                        .foregroundStyle(.secondary)
-                }
+        ScrollView {
+            VStack(alignment: .leading, spacing: DSSpacing.xl) {
+                header
+                accountSection
+                subscriptionSection
+                notificationsSection
+                navigationSection
+                debugSection
 
-                Button("Sign out", role: .destructive) {
-                    viewModel.signOut(services: services, session: session)
+                if let errorMessage = viewModel.errorMessage {
+                    ErrorStateView(
+                        title: "Settings update failed",
+                        message: errorMessage,
+                        retryTitle: "Dismiss",
+                        onRetry: { viewModel.clearError() }
+                    )
                 }
-                .disabled(!session.isSignedIn || viewModel.isProcessing)
-
-                Button("Delete account", role: .destructive) {
-                    viewModel.deleteAccount(services: services, session: session)
-                }
-                .disabled(!session.isSignedIn || viewModel.isProcessing)
             }
+            .padding(DSSpacing.md)
+        }
+        .navigationTitle("Settings")
+        .background(Color.backgroundPrimary)
+        .loading(viewModel.isProcessing, message: "Updating settings...")
+        .toast($viewModel.toast)
+    }
 
-            Section("Monetization") {
-                LabeledContent("Premium", value: session.isPremium ? "Active" : "Free")
+    private var header: some View {
+        VStack(alignment: .leading, spacing: DSSpacing.sm) {
+            Text("Personalize your experience")
+                .font(.titleLarge())
+                .foregroundStyle(Color.textPrimary)
+            Text("Manage account details, privacy preferences, and demo features.")
+                .font(.bodyMedium())
+                .foregroundStyle(Color.textSecondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
 
-                Button("View paywall") {
+    private var accountSection: some View {
+        sectionCard(title: "Account") {
+            if session.isSignedIn {
+                VStack(alignment: .leading, spacing: DSSpacing.sm) {
+                    keyValueRow(title: "User ID", value: session.auth?.uid ?? "unknown")
+                    if let email = session.currentUser?.emailCalculated ?? session.auth?.email {
+                        keyValueRow(title: "Email", value: email)
+                    }
+
+                    DSButton(title: "Sign out", style: .secondary, isFullWidth: true) {
+                        viewModel.signOut(services: services, session: session)
+                    }
+                    .disabled(viewModel.isProcessing)
+
+                    DSButton(title: "Delete account", style: .destructive, isFullWidth: true) {
+                        viewModel.deleteAccount(services: services, session: session)
+                    }
+                    .disabled(viewModel.isProcessing)
+                }
+            } else {
+                EmptyStateView(
+                    icon: "person.crop.circle.badge.exclamationmark",
+                    title: "Not signed in",
+                    message: "Sign in to sync your account and access premium features.",
+                    actionTitle: "Go to sign in",
+                    action: { session.resetForSignOut() }
+                )
+            }
+        }
+    }
+
+    private var subscriptionSection: some View {
+        sectionCard(title: "Monetization") {
+            VStack(alignment: .leading, spacing: DSSpacing.sm) {
+                keyValueRow(title: "Plan", value: session.isPremium ? "Premium active" : "Free plan")
+
+                DSButton(title: "View paywall", icon: "sparkles", isFullWidth: true) {
                     router.presentSheet(.paywall)
                 }
                 .disabled(!FeatureFlags.enablePurchases)
             }
+        }
+    }
 
-            Section("Notifications") {
-                Button("Enable push notifications") {
+    private var notificationsSection: some View {
+        sectionCard(title: "Notifications") {
+            VStack(alignment: .leading, spacing: DSSpacing.sm) {
+                Text("Enable push notifications to preview engagement flows.")
+                    .font(.bodySmall())
+                    .foregroundStyle(Color.textSecondary)
+
+                DSButton(title: "Enable push notifications", icon: "bell.fill", style: .secondary, isFullWidth: true) {
                     viewModel.requestPushAuthorization(services: services)
                 }
                 .disabled(!FeatureFlags.enablePushNotifications)
             }
+        }
+    }
 
-            Section("Navigation") {
-                Button("Open settings detail") {
+    private var navigationSection: some View {
+        sectionCard(title: "Navigation") {
+            VStack(spacing: DSSpacing.sm) {
+                DSButton(title: "Open settings detail", icon: "slider.horizontal.3", style: .secondary, isFullWidth: true) {
                     router.navigateTo(.settingsDetail, for: .settings)
                 }
-                Button("Open profile") {
+
+                DSButton(title: "Open profile", icon: "person.crop.circle", style: .secondary, isFullWidth: true) {
                     router.navigateTo(.profile(userId: session.auth?.uid ?? "guest"), for: .settings)
                 }
             }
+        }
+    }
 
-            Section("Debug") {
-                Button("Reset onboarding") {
-                    session.resetOnboarding()
+    private var debugSection: some View {
+        sectionCard(title: "Debug tools") {
+            VStack(spacing: DSSpacing.sm) {
+                DSButton(title: "Reset onboarding", icon: "arrow.counterclockwise", style: .tertiary, isFullWidth: true) {
+                    viewModel.resetOnboarding(services: services, session: session)
                 }
-                Button("Reset paywall prompt") {
-                    session.resetPaywallDismissal()
+
+                DSButton(title: "Reset paywall prompt", icon: "sparkles", style: .tertiary, isFullWidth: true) {
+                    viewModel.resetPaywall(services: services, session: session)
                 }
-                Button("Open debug menu") {
+
+                DSButton(title: "Open debug menu", icon: "ladybug.fill", style: .tertiary, isFullWidth: true) {
                     router.presentSheet(.debug)
                 }
             }
-
-            if let errorMessage = viewModel.errorMessage {
-                Section {
-                    Text(errorMessage)
-                        .foregroundStyle(.red)
-                }
-            }
-
-            if viewModel.isProcessing {
-                Section {
-                    ProgressView("Working...")
-                }
-            }
         }
-        .navigationTitle("Settings")
+    }
+
+    private func sectionCard(title: String, @ViewBuilder content: () -> some View) -> some View {
+        VStack(alignment: .leading, spacing: DSSpacing.sm) {
+            Text(title)
+                .font(.headlineMedium())
+                .foregroundStyle(Color.textPrimary)
+
+            content()
+        }
+        .padding(DSSpacing.md)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.backgroundSecondary)
+        .cornerRadius(DSSpacing.md)
+    }
+
+    private func keyValueRow(title: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: DSSpacing.xs) {
+            Text(title)
+                .font(.captionLarge())
+                .foregroundStyle(Color.textTertiary)
+            Text(value)
+                .font(.bodySmall())
+                .foregroundStyle(Color.textPrimary)
+        }
     }
 }
 

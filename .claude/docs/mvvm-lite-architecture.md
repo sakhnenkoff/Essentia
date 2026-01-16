@@ -1,4 +1,4 @@
-# MVVM-lite Rules & UI Guidelines
+# MVVM-lite Architecture & UI Guidance
 
 These rules define how to build SwiftUI features in AppTemplateLite.
 
@@ -10,7 +10,7 @@ These rules define how to build SwiftUI features in AppTemplateLite.
 - ✅ Use `@State` for local UI state (alerts, sheets, animations)
 - ✅ Use `@Environment(AppServices.self)` and `@Environment(AppSession.self)` for app-wide state
 - ✅ Use `@Environment(Router<AppTab, AppRoute, AppSheet>.self)` for navigation
-- ✅ Use `.anyButton()` or `.asButton()` for interactive elements
+- ✅ Use `DSButton`/`DSIconButton` for interactive elements
 - ❌ No business logic inside views
 
 **ViewModels**
@@ -35,6 +35,15 @@ View → ViewModel → AppServices → Managers
 
 ---
 
+## Design System Usage
+
+- Use DesignSystem components for consistent UI (`DSButton`, `EmptyStateView`, `ErrorStateView`, `LoadingView`, `SkeletonView`, `ToastView`).
+- Use typography extensions (`.titleLarge()`, `.headlineMedium()`, `.bodySmall()`) instead of hardcoded sizes.
+- Use semantic colors (`.textPrimary`, `.backgroundSecondary`, `.success`, `.error`) instead of custom hex values.
+- Keep layout clean with `.frame(maxWidth: .infinity, alignment: .leading)` and avoid layout-only `Spacer()` when alignment is the goal.
+
+---
+
 ## Reusable Components
 
 Components are **dumb UI** and stay stateless:
@@ -43,19 +52,26 @@ Components are **dumb UI** and stay stateless:
 - ✅ No data fetching
 - ✅ Data injected via init
 - ✅ Actions are closures
-- ✅ Use `.anyButton()` instead of `Button` for custom tap areas
+- ✅ Use `DSButton`/`DSIconButton` for interactions
 - ✅ Use `ImageLoaderView` for remote images
+
+---
+
+## View Composition
+
+- Avoid `AnyView` unless a framework API or heterogeneous view collection requires type erasure.
+- Prefer `ViewModifier`, `@ViewBuilder`, or dedicated view types for conditional UI and availability branches.
+- If type erasure is unavoidable, use the local helper in `AppTemplateLite/Extensions/View+EXT.swift`.
 
 ---
 
 ## Button Usage
 
-Never use `onTapGesture` for interactive elements. Use `Button` or `.anyButton()`:
+Never use `onTapGesture` for interactive elements. Use `DSButton`/`DSIconButton`:
 
 ```swift
-Text("Save")
-  .callToActionButton()
-  .anyButton(.press) {
-    viewModel.save(...)
-  }
+DSButton(
+  title: "Save",
+  action: { viewModel.save(...) }
+)
 ```

@@ -17,81 +17,170 @@ struct HomeView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: DSSpacing.lg) {
-                header
-                statusCards
-                primaryActions
-                quickNavigation
+            VStack(alignment: .leading, spacing: DSSpacing.xl) {
+                hero
+                statusGrid
+                navigationActions
+                activitySection
             }
             .padding(DSSpacing.md)
         }
         .navigationTitle("Home")
+        .background(Color.backgroundPrimary)
+        .toast($viewModel.toast)
         .onAppear {
             viewModel.onAppear(services: services, session: session)
         }
     }
 
-    private var header: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.xs) {
-            Text("AppTemplateLite")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-            Text("Launch-ready scaffolding for onboarding, analytics, and monetization.")
-                .font(.body)
-                .foregroundStyle(.secondary)
+    private var hero: some View {
+        let name = session.currentUser?.commonNameCalculated ?? "there"
+
+        return VStack(alignment: .leading, spacing: DSSpacing.sm) {
+            HStack(alignment: .top, spacing: DSSpacing.sm) {
+                VStack(alignment: .leading, spacing: DSSpacing.xs) {
+                    Text("Welcome back, \(name)")
+                        .font(.titleLarge())
+                        .foregroundStyle(Color.textPrimary)
+                    Text("Your demo workspace is ready for onboarding, analytics, and monetization.")
+                        .font(.bodyMedium())
+                        .foregroundStyle(Color.textSecondary)
+                }
+
+                Spacer()
+
+                statusBadge
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private var statusCards: some View {
-        VStack(spacing: DSSpacing.sm) {
+    private var statusBadge: some View {
+        let isPremium = session.isPremium
+        let text = isPremium ? "Premium" : "Free plan"
+        let tint = isPremium ? Color.success : Color.info
+
+        return Text(text)
+            .font(.captionLarge())
+            .foregroundStyle(tint)
+            .padding(.horizontal, DSSpacing.sm)
+            .padding(.vertical, DSSpacing.xs)
+            .background(tint.opacity(0.15))
+            .clipShape(Capsule())
+    }
+
+    private var statusGrid: some View {
+        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: DSSpacing.md) {
             statusCard(
                 title: "Onboarding",
-                value: session.isOnboardingComplete ? "Complete" : "Not started",
-                detail: session.isOnboardingComplete ? "All set for returning users." : "Show the onboarding flow.",
+                status: session.isOnboardingComplete ? "Complete" : "Not started",
+                detail: session.isOnboardingComplete ? "Flow is ready for returning users." : "Guide new users through setup.",
+                icon: "sparkles",
+                tint: Color.info,
                 actionTitle: "Restart",
-                action: { session.resetOnboarding() }
+                action: { viewModel.resetOnboarding(services: services, session: session) }
             )
+
             statusCard(
                 title: "Subscription",
-                value: session.isPremium ? "Premium" : "Free",
-                detail: session.isPremium ? "Entitlement active." : "Prompt upgrade when ready.",
-                actionTitle: "Show paywall",
+                status: session.isPremium ? "Premium" : "Free",
+                detail: session.isPremium ? "Entitlement is active." : "Preview the upgrade flow.",
+                icon: "creditcard.fill",
+                tint: session.isPremium ? Color.success : Color.warning,
+                actionTitle: "View paywall",
                 action: { router.presentSheet(.paywall) }
+            )
+
+            statusCard(
+                title: "Profile",
+                status: session.isSignedIn ? "Synced" : "Guest",
+                detail: "View account details and user info.",
+                icon: "person.fill",
+                tint: Color.warning,
+                actionTitle: "Open profile",
+                action: {
+                    let userId = session.auth?.uid ?? "guest"
+                    router.navigateTo(.profile(userId: userId), for: .home)
+                }
+            )
+
+            statusCard(
+                title: "Notifications",
+                status: FeatureFlags.enablePushNotifications ? "Ready" : "Disabled",
+                detail: FeatureFlags.enablePushNotifications
+                    ? "Preview opt-in prompts and engagement flows."
+                    : "Enable in FeatureFlags to test notifications.",
+                icon: "bell.fill",
+                tint: Color.info,
+                actionTitle: "Open settings",
+                action: { router.presentSheet(.settings) }
             )
         }
     }
 
-    private var primaryActions: some View {
-        VStack(spacing: DSSpacing.sm) {
-            Text("Go deeper")
-                .font(.headline)
-            Text("Preview AppRouter destinations and sheets.")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
+    private var navigationActions: some View {
+        VStack(alignment: .leading, spacing: DSSpacing.sm) {
+            Text("Explore the template")
+                .font(.headlineMedium())
+                .foregroundStyle(Color.textPrimary)
+            Text("Jump into routed screens and sheets to see the demo flow.")
+                .font(.bodySmall())
+                .foregroundStyle(Color.textSecondary)
 
-            DSButton(title: "View detail screen") {
+            DSButton(title: "View detail screen", icon: "square.stack.3d.up.fill", isFullWidth: true) {
                 router.navigateTo(.detail(title: "Starter detail"), for: .home)
             }
 
-            DSButton(title: "Open profile", style: .secondary) {
-                let userId = session.auth?.uid ?? "guest"
-                router.navigateTo(.profile(userId: userId), for: .home)
+            DSButton(title: "Open settings", icon: "gearshape.fill", style: .secondary, isFullWidth: true) {
+                router.presentSheet(.settings)
+            }
+
+            DSButton(title: "Open debug menu", icon: "ladybug.fill", style: .tertiary, isFullWidth: true) {
+                router.presentSheet(.debug)
             }
         }
-        .frame(maxWidth: .infinity)
     }
 
-    private var quickNavigation: some View {
+    private var activitySection: some View {
         VStack(alignment: .leading, spacing: DSSpacing.sm) {
-            Text("Quick navigation")
-                .font(.headline)
-            HStack(spacing: DSSpacing.sm) {
-                quickButton(title: "Settings sheet", systemImage: "gearshape") {
-                    router.presentSheet(.settings)
+            Text("Highlights")
+                .font(.headlineMedium())
+                .foregroundStyle(Color.textPrimary)
+            Text("A quick snapshot of what the demo app is ready to do.")
+                .font(.bodySmall())
+                .foregroundStyle(Color.textSecondary)
+
+            if viewModel.isLoading {
+                VStack(spacing: DSSpacing.sm) {
+                    SkeletonView(style: .listRow)
+                    SkeletonView(style: .listRow)
+                    SkeletonView(style: .listRow)
                 }
-                quickButton(title: "Debug menu", systemImage: "ladybug") {
-                    router.presentSheet(.debug)
+                .padding(.vertical, DSSpacing.sm)
+            } else if let errorMessage = viewModel.errorMessage {
+                ErrorStateView(
+                    title: "Unable to refresh highlights",
+                    message: errorMessage,
+                    retryTitle: "Try again",
+                    onRetry: {
+                        Task {
+                            await viewModel.loadHighlights(services: services, session: session)
+                        }
+                    }
+                )
+            } else if viewModel.highlights.isEmpty {
+                EmptyStateView(
+                    icon: "tray",
+                    title: "No highlights yet",
+                    message: "Add a sample highlight to preview this section.",
+                actionTitle: "Add sample highlight",
+                action: { viewModel.seedHighlights(services: services) }
+            )
+            } else {
+                VStack(spacing: DSSpacing.sm) {
+                    ForEach(viewModel.highlights) { highlight in
+                        highlightRow(highlight)
+                    }
                 }
             }
         }
@@ -99,42 +188,87 @@ struct HomeView: View {
 
     private func statusCard(
         title: String,
-        value: String,
+        status: String,
         detail: String,
+        icon: String,
+        tint: Color,
         actionTitle: String,
         action: @escaping () -> Void
     ) -> some View {
         VStack(alignment: .leading, spacing: DSSpacing.xs) {
-            Text(title)
-                .font(.headline)
-            Text(value)
-                .font(.title2)
-                .fontWeight(.semibold)
+            HStack(spacing: DSSpacing.sm) {
+                Image(systemName: icon)
+                    .font(.headlineSmall())
+                    .foregroundStyle(tint)
+                Text(title)
+                    .font(.headlineSmall())
+                    .foregroundStyle(Color.textPrimary)
+            }
+
+            Text(status)
+                .font(.titleSmall())
+                .foregroundStyle(Color.textPrimary)
+
             Text(detail)
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-            DSButton(title: actionTitle, style: .secondary, size: .small, action: action)
+                .font(.bodySmall())
+                .foregroundStyle(Color.textSecondary)
+
+            DSButton(title: actionTitle, style: .secondary, size: .small, isFullWidth: true, action: action)
         }
         .padding(DSSpacing.md)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.backgroundPrimary)
+        .background(Color.backgroundSecondary)
         .cornerRadius(DSSpacing.md)
-        .shadow(color: Color.black.opacity(0.05), radius: DSSpacing.sm, x: 0, y: 2)
     }
 
-    private func quickButton(title: String, systemImage: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            HStack(spacing: DSSpacing.xs) {
-                Image(systemName: systemImage)
-                Text(title)
+    private func highlightRow(_ highlight: HomeViewModel.Highlight) -> some View {
+        HStack(alignment: .top, spacing: DSSpacing.sm) {
+            Image(systemName: highlightIcon(for: highlight.kind))
+                .font(.headlineMedium())
+                .foregroundStyle(highlightTint(for: highlight.kind))
+                .frame(width: 36, height: 36)
+                .background(highlightTint(for: highlight.kind).opacity(0.15))
+                .clipShape(Circle())
+
+            VStack(alignment: .leading, spacing: DSSpacing.xs) {
+                Text(highlight.title)
+                    .font(.headlineSmall())
+                    .foregroundStyle(Color.textPrimary)
+                Text(highlight.message)
+                    .font(.bodySmall())
+                    .foregroundStyle(Color.textSecondary)
             }
-            .font(.footnote)
-            .padding(.vertical, DSSpacing.xs)
-            .padding(.horizontal, DSSpacing.sm)
-            .background(Color.backgroundSecondary)
-            .cornerRadius(DSSpacing.sm)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .buttonStyle(.plain)
+        .padding(DSSpacing.md)
+        .background(Color.backgroundSecondary)
+        .cornerRadius(DSSpacing.md)
+    }
+
+    private func highlightIcon(for kind: HomeViewModel.Highlight.Kind) -> String {
+        switch kind {
+        case .onboarding:
+            return "sparkles"
+        case .analytics:
+            return "chart.line.uptrend.xyaxis"
+        case .monetization:
+            return "creditcard.fill"
+        case .community:
+            return "person.2.fill"
+        }
+    }
+
+    private func highlightTint(for kind: HomeViewModel.Highlight.Kind) -> Color {
+        switch kind {
+        case .onboarding:
+            return Color.info
+        case .analytics:
+            return Color.success
+        case .monetization:
+            return Color.warning
+        case .community:
+            return Color.info
+        }
     }
 }
 

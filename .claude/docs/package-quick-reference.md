@@ -26,7 +26,7 @@
 - **LocalPersistance**: Keychain + UserDefaults helpers
 - **Networking**: Async API client helpers
 - **SwiftfulUtilities**: App version, event params
-- **SwiftfulUI**: `.anyButton()`, `.callToActionButton()`, `.tappableBackground()`
+- **SwiftfulUI**: `.callToActionButton()`, `.tappableBackground()` (use `DSButton`/`DSIconButton` for interactions)
 
 ## Common Patterns
 

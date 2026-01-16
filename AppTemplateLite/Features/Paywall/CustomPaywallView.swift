@@ -10,93 +10,117 @@ import DesignSystem
 
 struct CustomPaywallView: View {
     var products: [AnyProduct] = []
-    var title: String = "Try Premium Today!"
-    var subtitle: String = "Unlock unlimited access and exclusive features for premium members."
-    var onBackButtonPressed: () -> Void = { }
+    var title: String = "Premium Studio"
+    var subtitle: String = "Unlock premium flows, refined templates, and advanced analytics."
+    var isProcessing: Bool = false
     var onRestorePurchasePressed: () -> Void = { }
     var onPurchaseProductPressed: (AnyProduct) -> Void = { _ in }
 
     var body: some View {
-        ZStack {
-            Color.themeAccent.ignoresSafeArea()
+        VStack(alignment: .leading, spacing: DSSpacing.lg) {
+            heroCard
 
-            VStack(spacing: 0) {
-                Spacer(minLength: 0)
+            VStack(alignment: .leading, spacing: DSSpacing.sm) {
+                Text("Choose your plan")
+                    .font(.headlineMedium())
+                    .foregroundStyle(Color.textPrimary)
+                Text("Cancel anytime. Plans renew automatically unless cancelled in Settings.")
+                    .font(.bodySmall())
+                    .foregroundStyle(Color.textSecondary)
+            }
 
-                VStack(spacing: DSSpacing.lg) {
-                    Text(title)
-                        .font(.largeTitle)
-                        .fontWeight(.semibold)
-                    Text(subtitle)
-                        .font(.subheadline)
+            VStack(spacing: DSSpacing.sm) {
+                let featuredId = products.first?.id
+                ForEach(products) { product in
+                    productCard(product: product, isFeatured: product.id == featuredId)
                 }
-                .foregroundStyle(Color.textOnPrimary)
-                .padding(DSSpacing.xxlg)
+            }
 
-                VStack(spacing: DSSpacing.sm) {
-                    ForEach(products) { product in
-                        productRow(product: product)
-                    }
+            DSButton.link(title: "Restore Purchase", action: onRestorePurchasePressed)
+                .disabled(isProcessing)
+                .frame(maxWidth: .infinity, alignment: .center)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
 
-                    Button {
-                        onRestorePurchasePressed()
-                    } label: {
-                        Text("Already have a subscription?\nRestore Purchase")
-                            .font(.callout)
-                            .fontWeight(.medium)
-                            .underline()
-                            .foregroundStyle(Color.textOnPrimary)
-                    }
-                    .buttonStyle(.plain)
-                    .padding(DSSpacing.md)
-                }
+    private var heroCard: some View {
+        VStack(alignment: .leading, spacing: DSSpacing.sm) {
+            Text(title)
+                .font(.titleLarge())
+                .foregroundStyle(Color.textPrimary)
+            Text(subtitle)
+                .font(.bodyMedium())
+                .foregroundStyle(Color.textSecondary)
 
-                Spacer(minLength: 0)
-                Spacer(minLength: 0)
+            HStack(spacing: DSSpacing.sm) {
+                featureChip(text: "Premium templates", icon: "sparkles")
+                featureChip(text: "Analytics", icon: "chart.line.uptrend.xyaxis")
             }
         }
-        .multilineTextAlignment(.center)
-        .overlay(
-            Button {
-                onBackButtonPressed()
-            } label: {
-                Image(systemName: "xmark.circle.fill")
-                    .foregroundStyle(Color.textOnPrimary)
-                    .font(.title)
-                    .padding(DSSpacing.sm)
+        .padding(DSSpacing.lg)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            LinearGradient(
+                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
+        .cornerRadius(DSSpacing.lg)
+        .glassBackground(cornerRadius: DSSpacing.lg)
+    }
+
+    private func productCard(product: AnyProduct, isFeatured: Bool) -> some View {
+        VStack(alignment: .leading, spacing: DSSpacing.sm) {
+            if isFeatured {
+                Text("Best value")
+                    .font(.captionLarge())
+                    .foregroundStyle(Color.success)
+                    .padding(.horizontal, DSSpacing.sm)
+                    .padding(.vertical, DSSpacing.xs)
+                    .background(Color.success.opacity(0.15))
+                    .clipShape(Capsule())
             }
-            .buttonStyle(.plain)
-            .padding(DSSpacing.md),
-            alignment: .topLeading
+
+            Text(product.title)
+                .font(.headlineMedium())
+                .foregroundStyle(Color.textPrimary)
+
+            Text(product.subtitle)
+                .font(.bodySmall())
+                .foregroundStyle(Color.textSecondary)
+
+            Text(product.priceStringWithDuration)
+                .font(.headlineSmall())
+                .foregroundStyle(Color.textPrimary)
+
+            DSButton(title: "Select plan", isLoading: isProcessing, isFullWidth: true) {
+                onPurchaseProductPressed(product)
+            }
+            .disabled(isProcessing)
+        }
+        .padding(DSSpacing.md)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.backgroundSecondary)
+        .cornerRadius(DSSpacing.md)
+        .overlay(
+            RoundedRectangle(cornerRadius: DSSpacing.md)
+                .stroke(isFeatured ? Color.success.opacity(0.4) : Color.clear, lineWidth: 1)
         )
     }
 
-    private func productRow(product: AnyProduct) -> some View {
-        Button {
-            onPurchaseProductPressed(product)
-        } label: {
-            VStack(alignment: .leading) {
-                HStack(spacing: 0) {
-                    VStack(alignment: .leading, spacing: DSSpacing.xs) {
-                        Text(product.title)
-                            .font(.headline)
-                        Text(product.priceStringWithDuration)
-                            .font(.subheadline)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                Divider()
-                Text(product.subtitle)
-                    .font(.body)
-                    .foregroundStyle(.secondary)
-            }
-            .padding(DSSpacing.md)
-            .background(Color.backgroundPrimary)
-            .cornerRadius(DSSpacing.md)
-            .shadow(color: Color.black.opacity(0.3), radius: DSSpacing.sm, x: 0, y: 2)
+    private func featureChip(text: String, icon: String) -> some View {
+        HStack(spacing: DSSpacing.xs) {
+            Image(systemName: icon)
+                .font(.captionLarge())
+            Text(text)
+                .font(.captionLarge())
         }
-        .buttonStyle(.plain)
-        .padding(DSSpacing.md)
+        .foregroundStyle(Color.textSecondary)
+        .padding(.horizontal, DSSpacing.sm)
+        .padding(.vertical, DSSpacing.xs)
+        .background(Color.backgroundPrimary)
+        .clipShape(Capsule())
     }
 }
 

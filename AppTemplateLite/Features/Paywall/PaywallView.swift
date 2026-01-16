@@ -24,52 +24,52 @@ struct PaywallView: View {
     }
 
     var body: some View {
-        VStack(spacing: DSSpacing.md) {
-            if showCloseButton {
-                HStack {
-                    Spacer()
-                    Button("Close") {
-                        dismiss()
+        ScrollView {
+            VStack(alignment: .leading, spacing: DSSpacing.xl) {
+                header
+
+                if FeatureFlags.enablePurchases {
+                    paywallContent
+
+                    #if DEBUG
+                    Picker("Paywall style", selection: $paywallMode) {
+                        Text("StoreKit").tag(PaywallMode.storeKit)
+                        Text("Custom").tag(PaywallMode.custom)
+                    }
+                    .pickerStyle(.segmented)
+                    #endif
+                } else {
+                    EmptyStateView(
+                        icon: "lock.slash",
+                        title: "Purchases disabled",
+                        message: "Enable purchases in FeatureFlags to preview the paywall.",
+                        actionTitle: "Close",
+                        action: { dismiss() }
+                    )
+                }
+
+                if allowSkip {
+                    DSButton(title: "Not now", style: .secondary, isFullWidth: true) {
+                        session.markPaywallDismissed()
                     }
                 }
-                .padding(.horizontal, DSSpacing.md)
+
+                Text("Cancel anytime. Subscriptions renew automatically unless cancelled in Settings.")
+                    .font(.captionLarge())
+                    .foregroundStyle(Color.textTertiary)
             }
-
-            if FeatureFlags.enablePurchases {
-                paywallContent
-
-                #if DEBUG
-                Picker("Paywall style", selection: $paywallMode) {
-                    Text("StoreKit").tag(PaywallMode.storeKit)
-                    Text("Custom").tag(PaywallMode.custom)
+            .padding(DSSpacing.md)
+        }
+        .background(Color.backgroundPrimary)
+        .overlay(alignment: .topTrailing) {
+            if showCloseButton {
+                DSIconButton(icon: "xmark", style: .tertiary, size: .small) {
+                    dismiss()
                 }
-                .pickerStyle(.segmented)
-                .padding(.horizontal, DSSpacing.md)
-                #endif
-            } else {
-                Text("Purchases are disabled in FeatureFlags.")
-                    .foregroundStyle(.secondary)
-                    .padding()
-            }
-
-            if let errorMessage = viewModel.errorMessage {
-                Text(errorMessage)
-                    .font(.footnote)
-                    .foregroundStyle(.red)
-            }
-
-            if viewModel.isLoading {
-                ProgressView("Processing...")
-            }
-
-            if allowSkip {
-                DSButton(title: "Not now", style: .secondary) {
-                    session.markPaywallDismissed()
-                }
-                .padding(.horizontal, DSSpacing.md)
+                .padding(DSSpacing.md)
             }
         }
-        .padding(.vertical, DSSpacing.md)
+        .toast($viewModel.toast)
         .task {
             await viewModel.loadProducts(services: services)
         }
@@ -82,48 +82,69 @@ struct PaywallView: View {
 
     @ViewBuilder
     private var paywallContent: some View {
-        switch paywallMode {
-        case .storeKit:
-            StoreKitPaywallView(
-                productIds: viewModel.productIds,
-                onInAppPurchaseStart: { product in
-                    viewModel.onStoreKitPurchaseStart(product: product, services: services)
-                },
-                onInAppPurchaseCompletion: { product, result in
-                    viewModel.onStoreKitPurchaseComplete(
-                        product: product,
-                        result: result,
-                        services: services,
-                        session: session
-                    )
+        if let errorMessage = viewModel.errorMessage {
+            ErrorStateView(
+                title: "Unable to load offers",
+                message: errorMessage,
+                retryTitle: "Try again",
+                onRetry: {
+                    Task {
+                        await viewModel.loadProducts(services: services)
+                    }
                 }
             )
-        case .custom:
-            if viewModel.products.isEmpty {
-                ProgressView("Loading offers...")
-            } else {
-                CustomPaywallView(
-                    products: viewModel.products,
-                    onBackButtonPressed: {
-                        if showCloseButton {
-                            dismiss()
-                        }
+        } else {
+            switch paywallMode {
+            case .storeKit:
+                StoreKitPaywallView(
+                    productIds: viewModel.productIds,
+                    onInAppPurchaseStart: { product in
+                        viewModel.onStoreKitPurchaseStart(product: product, services: services)
                     },
-                    onRestorePurchasePressed: {
-                        Task {
-                            await viewModel.restorePurchases(services: services, session: session)
-                        }
-                    },
-                    onPurchaseProductPressed: { product in
-                        Task {
-                            await viewModel.purchase(
-                                productId: product.id,
-                                services: services,
-                                session: session
-                            )
-                        }
+                    onInAppPurchaseCompletion: { product, result in
+                        viewModel.onStoreKitPurchaseComplete(
+                            product: product,
+                            result: result,
+                            services: services,
+                            session: session
+                        )
                     }
                 )
+            case .custom:
+                if viewModel.isLoadingProducts {
+                    paywallSkeleton
+                } else if viewModel.products.isEmpty {
+                    EmptyStateView(
+                        icon: "cart",
+                        title: "No offers available",
+                        message: "We couldn't load subscription options right now.",
+                        actionTitle: "Refresh",
+                        action: {
+                            Task {
+                                await viewModel.loadProducts(services: services)
+                            }
+                        }
+                    )
+                } else {
+                    CustomPaywallView(
+                        products: viewModel.products,
+                        isProcessing: viewModel.isProcessingPurchase,
+                        onRestorePurchasePressed: {
+                            Task {
+                                await viewModel.restorePurchases(services: services, session: session)
+                            }
+                        },
+                        onPurchaseProductPressed: { product in
+                            Task {
+                                await viewModel.purchase(
+                                    productId: product.id,
+                                    services: services,
+                                    session: session
+                                )
+                            }
+                        }
+                    )
+                }
             }
         }
     }
@@ -131,6 +152,57 @@ struct PaywallView: View {
     enum PaywallMode: String {
         case storeKit
         case custom
+    }
+
+    private var header: some View {
+        VStack(alignment: .leading, spacing: DSSpacing.sm) {
+            Text("Upgrade to Premium")
+                .font(.titleLarge())
+                .foregroundStyle(Color.textPrimary)
+            Text("Unlock the full template experience with premium flows, advanced analytics, and beautiful paywall presets.")
+                .font(.bodyMedium())
+                .foregroundStyle(Color.textSecondary)
+
+            VStack(alignment: .leading, spacing: DSSpacing.sm) {
+                benefitRow(icon: "star.fill", title: "Premium templates", message: "Get additional layouts and onboarding polish.")
+                benefitRow(icon: "bolt.fill", title: "Faster launches", message: "Prewired services and routing shortcuts.")
+                benefitRow(icon: "shield.fill", title: "Priority support", message: "Launch confidently with guided updates.")
+            }
+            .padding(DSSpacing.md)
+            .background(Color.backgroundSecondary)
+            .cornerRadius(DSSpacing.md)
+            .glassBackground(cornerRadius: DSSpacing.md)
+        }
+    }
+
+    private func benefitRow(icon: String, title: String, message: String) -> some View {
+        HStack(alignment: .top, spacing: DSSpacing.sm) {
+            Image(systemName: icon)
+                .font(.headlineSmall())
+                .foregroundStyle(Color.success)
+                .frame(width: 28, height: 28)
+                .background(Color.success.opacity(0.15))
+                .clipShape(Circle())
+
+            VStack(alignment: .leading, spacing: DSSpacing.xs) {
+                Text(title)
+                    .font(.headlineSmall())
+                    .foregroundStyle(Color.textPrimary)
+                Text(message)
+                    .font(.bodySmall())
+                    .foregroundStyle(Color.textSecondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    private var paywallSkeleton: some View {
+        VStack(spacing: DSSpacing.sm) {
+            SkeletonView(style: .card)
+            SkeletonView(style: .card)
+            SkeletonView(style: .card)
+        }
+        .shimmer(true)
     }
 }
 

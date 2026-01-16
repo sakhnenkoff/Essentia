@@ -66,7 +66,7 @@ struct AppTabsView: View {
         switch sheet {
         case .paywall:
             NavigationSheet {
-                PaywallView(showCloseButton: true)
+                PaywallView(showCloseButton: false)
             }
         case .settings:
             NavigationSheet {

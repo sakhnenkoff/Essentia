@@ -17,16 +17,16 @@ struct StoreKitPaywallView: View {
     var body: some View {
         SubscriptionStoreView(productIDs: productIds) {
             VStack(spacing: DSSpacing.sm) {
-                Text("AppTemplateLite")
-                    .font(.largeTitle)
-                    .fontWeight(.semibold)
+                Text("Premium Studio")
+                    .font(.titleLarge())
+                    .foregroundStyle(Color.textPrimary)
 
-                Text("Unlock premium tools for faster launches.")
-                    .font(.subheadline)
+                Text("Unlock premium tools, templates, and analytics upgrades.")
+                    .font(.bodyMedium())
+                    .foregroundStyle(Color.textSecondary)
             }
-            .foregroundStyle(Color.textOnPrimary)
             .multilineTextAlignment(.center)
-            .containerBackground(Color.themeAccent.gradient, for: .subscriptionStore)
+            .containerBackground(Color.backgroundSecondary.gradient, for: .subscriptionStore)
         }
         .storeButton(.visible, for: .restorePurchases)
         .subscriptionStoreControlStyle(.prominentPicker)

@@ -10,13 +10,23 @@ import SwiftUI
 @MainActor
 @Observable
 final class AuthViewModel {
+    enum Provider: CaseIterable {
+        case apple
+        case google
+        case guest
+    }
+
     var isLoading = false
     var errorMessage: String?
+    var availableProviders: [Provider] = Provider.allCases
+
+    private var lastProvider: Provider?
 
     func signInApple(services: AppServices, session: AppSession) {
         guard !isLoading else { return }
         isLoading = true
         errorMessage = nil
+        lastProvider = .apple
         services.logManager.trackEvent(event: Event.appleStart)
 
         Task { [weak self] in
@@ -37,6 +47,7 @@ final class AuthViewModel {
         guard !isLoading else { return }
         isLoading = true
         errorMessage = nil
+        lastProvider = .google
         services.logManager.trackEvent(event: Event.googleStart)
 
         Task { [weak self] in
@@ -60,6 +71,7 @@ final class AuthViewModel {
         guard !isLoading else { return }
         isLoading = true
         errorMessage = nil
+        lastProvider = .guest
         services.logManager.trackEvent(event: Event.anonStart)
 
         Task { [weak self] in
@@ -87,6 +99,30 @@ final class AuthViewModel {
         if let purchaseManager = services.purchaseManager {
             session.updatePremiumStatus(entitlements: purchaseManager.entitlements)
         }
+    }
+
+    func retryLastSignIn(services: AppServices, session: AppSession) {
+        guard let lastProvider else {
+            errorMessage = nil
+            return
+        }
+
+        switch lastProvider {
+        case .apple:
+            signInApple(services: services, session: session)
+        case .google:
+            signInGoogle(services: services, session: session)
+        case .guest:
+            signInAnonymously(services: services, session: session)
+        }
+    }
+
+    func clearError() {
+        errorMessage = nil
+    }
+
+    func refreshProviders() {
+        availableProviders = Provider.allCases
     }
 }
 

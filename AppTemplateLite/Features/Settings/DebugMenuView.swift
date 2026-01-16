@@ -7,65 +7,114 @@
 
 import SwiftUI
 import UIKit
+import DesignSystem
 
 struct DebugMenuView: View {
     @Environment(AppServices.self) private var services
     @Environment(AppSession.self) private var session
-    @State private var copyStatus: String?
+    @State private var toast: Toast?
 
     var body: some View {
-        Form {
-            Section("Environment") {
-                LabeledContent("Build", value: AppConfiguration.environment)
-                LabeledContent("Premium", value: session.isPremium ? "true" : "false")
-                LabeledContent("Onboarding", value: session.isOnboardingComplete ? "complete" : "incomplete")
+        ScrollView {
+            VStack(alignment: .leading, spacing: DSSpacing.xl) {
+                header
+                environmentSection
+                userSection
+                actionSection
             }
-
-            Section("User") {
-                LabeledContent("User ID", value: session.auth?.uid ?? "none")
-                if let email = session.currentUser?.emailCalculated ?? session.auth?.email {
-                    LabeledContent("Email", value: email)
-                }
-            }
-
-            Section("Actions") {
-                Button("Reset onboarding") {
-                    session.resetOnboarding()
-                }
-                Button("Reset paywall") {
-                    session.resetPaywallDismissal()
-                }
-                Button("Copy Mixpanel Distinct ID") {
-                    copyToPasteboard(Constants.mixpanelDistinctId)
-                }
-                Button("Copy Firebase Instance ID") {
-                    copyToPasteboard(Constants.firebaseAnalyticsAppInstanceID)
-                }
-            }
-
-            if let copyStatus {
-                Section {
-                    Text(copyStatus)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
-            }
+            .padding(DSSpacing.md)
         }
         .navigationTitle("Debug Menu")
+        .background(Color.backgroundPrimary)
+        .toast($toast)
     }
 
     private func copyToPasteboard(_ value: String?) {
         guard let value, !value.isEmpty else {
-            copyStatus = "Value not available."
+            toast = .warning("Value not available.")
             return
         }
         UIPasteboard.general.string = value
-        copyStatus = "Copied!"
+        toast = .success("Copied to clipboard.")
         services.logManager.trackEvent(
             eventName: "Debug_Copy",
             parameters: ["value_length": value.count],
             type: .analytic
         )
+    }
+
+    private var header: some View {
+        VStack(alignment: .leading, spacing: DSSpacing.sm) {
+            Text("Developer utilities")
+                .font(.titleLarge())
+                .foregroundStyle(Color.textPrimary)
+            Text("Quick access to environment info and demo reset actions.")
+                .font(.bodyMedium())
+                .foregroundStyle(Color.textSecondary)
+        }
+    }
+
+    private var environmentSection: some View {
+        sectionCard(title: "Environment") {
+            keyValueRow(title: "Build", value: AppConfiguration.environment)
+            keyValueRow(title: "Premium", value: session.isPremium ? "true" : "false")
+            keyValueRow(title: "Onboarding", value: session.isOnboardingComplete ? "complete" : "incomplete")
+        }
+    }
+
+    private var userSection: some View {
+        sectionCard(title: "User") {
+            keyValueRow(title: "User ID", value: session.auth?.uid ?? "none")
+            if let email = session.currentUser?.emailCalculated ?? session.auth?.email {
+                keyValueRow(title: "Email", value: email)
+            }
+        }
+    }
+
+    private var actionSection: some View {
+        sectionCard(title: "Actions") {
+            VStack(spacing: DSSpacing.sm) {
+                DSButton(title: "Reset onboarding", style: .secondary, isFullWidth: true) {
+                    session.resetOnboarding()
+                    toast = .info("Onboarding reset.")
+                }
+                DSButton(title: "Reset paywall", style: .secondary, isFullWidth: true) {
+                    session.resetPaywallDismissal()
+                    toast = .info("Paywall reset.")
+                }
+                DSButton(title: "Copy Mixpanel Distinct ID", style: .tertiary, isFullWidth: true) {
+                    copyToPasteboard(Constants.mixpanelDistinctId)
+                }
+                DSButton(title: "Copy Firebase Instance ID", style: .tertiary, isFullWidth: true) {
+                    copyToPasteboard(Constants.firebaseAnalyticsAppInstanceID)
+                }
+            }
+        }
+    }
+
+    private func sectionCard(title: String, @ViewBuilder content: () -> some View) -> some View {
+        VStack(alignment: .leading, spacing: DSSpacing.sm) {
+            Text(title)
+                .font(.headlineMedium())
+                .foregroundStyle(Color.textPrimary)
+
+            content()
+        }
+        .padding(DSSpacing.md)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.backgroundSecondary)
+        .cornerRadius(DSSpacing.md)
+    }
+
+    private func keyValueRow(title: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: DSSpacing.xs) {
+            Text(title)
+                .font(.captionLarge())
+                .foregroundStyle(Color.textTertiary)
+            Text(value)
+                .font(.bodySmall())
+                .foregroundStyle(Color.textPrimary)
+        }
     }
 }
 

@@ -21,28 +21,20 @@ struct CustomModalView: View {
         VStack(spacing: DSSpacing.lg) {
             VStack(spacing: DSSpacing.smd) {
                 Text(title)
-                    .font(.title3)
-                    .fontWeight(.semibold)
+                    .font(.titleSmall())
+                    .foregroundStyle(Color.textPrimary)
 
                 if let subtitle {
                     Text(subtitle)
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
+                        .font(.bodySmall())
+                        .foregroundStyle(Color.textSecondary)
                 }
             }
             .padding(DSSpacing.smd)
 
             VStack(spacing: DSSpacing.sm) {
-                DSButton(title: primaryButtonTitle, action: primaryButtonAction)
-
-                Button(action: secondaryButtonAction) {
-                    Text(secondaryButtonTitle)
-                        .font(.headline)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, DSSpacing.smd)
-                }
-                .buttonStyle(.plain)
+                DSButton(title: primaryButtonTitle, isFullWidth: true, action: primaryButtonAction)
+                DSButton(title: secondaryButtonTitle, style: .tertiary, isFullWidth: true, action: secondaryButtonAction)
             }
         }
         .multilineTextAlignment(.center)

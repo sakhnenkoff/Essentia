@@ -7,6 +7,7 @@
 
 import SwiftUI
 import StoreKit
+import DesignSystem
 
 @MainActor
 @Observable
@@ -14,9 +15,11 @@ final class PaywallViewModel {
     let productIds = EntitlementOption.allProductIds
 
     var products: [AnyProduct] = []
-    var isLoading = false
+    var isLoadingProducts = false
+    var isProcessingPurchase = false
     var errorMessage: String?
     var didUnlockPremium = false
+    var toast: Toast?
 
     func loadProducts(services: AppServices) async {
         guard FeatureFlags.enablePurchases else { return }
@@ -25,7 +28,8 @@ final class PaywallViewModel {
             return
         }
 
-        isLoading = true
+        guard !isLoadingProducts else { return }
+        isLoadingProducts = true
         errorMessage = nil
         services.logManager.trackEvent(event: Event.loadProductsStart)
         do {
@@ -34,7 +38,7 @@ final class PaywallViewModel {
             errorMessage = error.localizedDescription
             services.logManager.trackEvent(event: Event.loadProductsFail(error: error))
         }
-        isLoading = false
+        isLoadingProducts = false
     }
 
     func restorePurchases(services: AppServices, session: AppSession) async {
@@ -42,19 +46,21 @@ final class PaywallViewModel {
             errorMessage = "Purchases are disabled."
             return
         }
+        guard !isProcessingPurchase else { return }
 
-        isLoading = true
+        isProcessingPurchase = true
         errorMessage = nil
         services.logManager.trackEvent(event: Event.restoreStart)
         do {
             let entitlements = try await purchaseManager.restorePurchase()
             applyEntitlements(entitlements, session: session)
             services.logManager.trackEvent(event: Event.restoreSuccess)
+            toast = .success("Restored your subscription.")
         } catch {
             errorMessage = error.localizedDescription
             services.logManager.trackEvent(event: Event.restoreFail(error: error))
         }
-        isLoading = false
+        isProcessingPurchase = false
     }
 
     func purchase(productId: String, services: AppServices, session: AppSession) async {
@@ -62,22 +68,25 @@ final class PaywallViewModel {
             errorMessage = "Purchases are disabled."
             return
         }
+        guard !isProcessingPurchase else { return }
 
-        isLoading = true
+        isProcessingPurchase = true
         errorMessage = nil
         services.logManager.trackEvent(event: Event.purchaseStart(productId: productId))
         do {
             let entitlements = try await purchaseManager.purchaseProduct(productId: productId)
             applyEntitlements(entitlements, session: session)
             services.logManager.trackEvent(event: Event.purchaseSuccess(productId: productId))
+            toast = .success("Premium unlocked.")
         } catch {
             errorMessage = error.localizedDescription
             services.logManager.trackEvent(event: Event.purchaseFail(productId: productId, error: error))
         }
-        isLoading = false
+        isProcessingPurchase = false
     }
 
     func onStoreKitPurchaseStart(product: StoreKit.Product, services: AppServices) {
+        isProcessingPurchase = true
         let anyProduct = AnyProduct(storeKitProduct: product)
         services.logManager.trackEvent(event: Event.storeKitStart(product: anyProduct))
     }
@@ -97,10 +106,13 @@ final class PaywallViewModel {
                 didUnlockPremium = true
                 session.updatePremiumStatus(entitlements: services.purchaseManager?.entitlements ?? [])
                 services.logManager.trackEvent(event: Event.storeKitSuccess(product: anyProduct))
+                toast = .success("Premium unlocked.")
             case .pending:
                 services.logManager.trackEvent(event: Event.storeKitPending(product: anyProduct))
+                toast = .info("Purchase pending approval.")
             case .userCancelled:
                 services.logManager.trackEvent(event: Event.storeKitCancelled(product: anyProduct))
+                toast = .info("Purchase cancelled.")
             default:
                 services.logManager.trackEvent(event: Event.storeKitUnknown(product: anyProduct))
             }
@@ -108,6 +120,7 @@ final class PaywallViewModel {
             errorMessage = error.localizedDescription
             services.logManager.trackEvent(event: Event.storeKitFail(product: anyProduct, error: error))
         }
+        isProcessingPurchase = false
     }
 
     private func applyEntitlements(_ entitlements: [PurchasedEntitlement], session: AppSession) {

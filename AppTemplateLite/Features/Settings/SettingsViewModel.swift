@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import DesignSystem
 
 @MainActor
 @Observable
 final class SettingsViewModel {
     var isProcessing = false
     var errorMessage: String?
+    var toast: Toast?
 
     func signOut(services: AppServices, session: AppSession) {
         guard !isProcessing else { return }
@@ -71,15 +73,38 @@ final class SettingsViewModel {
             errorMessage = "Push notifications are disabled."
             return
         }
+        guard !isProcessing else { return }
+        isProcessing = true
 
         Task { [weak self] in
             guard let self else { return }
+            defer { self.isProcessing = false }
             do {
-                _ = try await pushManager.requestAuthorization()
+                services.logManager.trackEvent(event: Event.pushRequestStart)
+                let granted = try await pushManager.requestAuthorization()
+                toast = granted ? .success("Notifications enabled.") : .info("Notifications not enabled.")
+                services.logManager.trackEvent(event: Event.pushRequestFinish(granted: granted))
             } catch {
                 self.errorMessage = error.localizedDescription
+                services.logManager.trackEvent(event: Event.pushRequestFail(error: error))
             }
         }
+    }
+
+    func resetOnboarding(services: AppServices, session: AppSession) {
+        session.resetOnboarding()
+        toast = .success("Onboarding reset.")
+        services.logManager.trackEvent(event: Event.resetOnboarding)
+    }
+
+    func resetPaywall(services: AppServices, session: AppSession) {
+        session.resetPaywallDismissal()
+        toast = .info("Paywall will show on next launch.")
+        services.logManager.trackEvent(event: Event.resetPaywall)
+    }
+
+    func clearError() {
+        errorMessage = nil
     }
 
     private func authReauthOption(auth: UserAuthInfo) -> SignInOption {
@@ -101,6 +126,11 @@ extension SettingsViewModel {
         case deleteAccountStart
         case deleteAccountSuccess
         case deleteAccountFail(error: Error)
+        case resetOnboarding
+        case resetPaywall
+        case pushRequestStart
+        case pushRequestFinish(granted: Bool)
+        case pushRequestFail(error: Error)
 
         var eventName: String {
             switch self {
@@ -116,12 +146,26 @@ extension SettingsViewModel {
                 return "Settings_Delete_Success"
             case .deleteAccountFail:
                 return "Settings_Delete_Fail"
+            case .resetOnboarding:
+                return "Settings_Reset_Onboarding"
+            case .resetPaywall:
+                return "Settings_Reset_Paywall"
+            case .pushRequestStart:
+                return "Settings_Push_Request_Start"
+            case .pushRequestFinish:
+                return "Settings_Push_Request_Finish"
+            case .pushRequestFail:
+                return "Settings_Push_Request_Fail"
             }
         }
 
         var parameters: [String: Any]? {
             switch self {
             case .signOutFail(let error), .deleteAccountFail(let error):
+                return error.eventParameters
+            case .pushRequestFinish(let granted):
+                return ["granted": granted]
+            case .pushRequestFail(let error):
                 return error.eventParameters
             default:
                 return nil
@@ -131,6 +175,8 @@ extension SettingsViewModel {
         var type: LogType {
             switch self {
             case .signOutFail, .deleteAccountFail:
+                return .severe
+            case .pushRequestFail:
                 return .severe
             default:
                 return .analytic

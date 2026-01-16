@@ -6,65 +6,149 @@
 //
 
 import SwiftUI
+import DesignSystem
 
 struct SettingsDetailView: View {
     @Environment(AppServices.self) private var services
     @State private var viewModel = SettingsDetailViewModel()
 
     var body: some View {
-        Form {
-            Section("Privacy") {
-                Toggle(
-                    "Share analytics",
-                    isOn: Binding(
-                        get: { viewModel.analyticsOptIn },
-                        set: { viewModel.setAnalyticsOptIn($0, services: services) }
+        ScrollView {
+            VStack(alignment: .leading, spacing: DSSpacing.xl) {
+                header
+                privacySection
+                trackingSection
+
+                if viewModel.needsRestart {
+                    infoCard(
+                        title: "Restart recommended",
+                        message: "Restart the app to apply analytics changes.",
+                        icon: "arrow.clockwise"
                     )
-                )
+                }
 
-                Toggle(
-                    "Allow tracking (ATT)",
-                    isOn: Binding(
-                        get: { viewModel.trackingOptIn },
-                        set: { viewModel.setTrackingOptIn($0, services: services) }
+                if AppConfiguration.isMock {
+                    infoCard(
+                        title: "Mock build",
+                        message: "Analytics and tracking SDKs are disabled in Mock builds.",
+                        icon: "flask"
                     )
-                )
-
-                Button("Request tracking authorization") {
-                    viewModel.requestTrackingAuthorization(services: services)
                 }
-                .disabled(!viewModel.trackingOptIn || viewModel.isProcessing || AppConfiguration.isMock)
 
-                LabeledContent("Tracking status", value: viewModel.trackingStatusLabel)
-            }
-
-            if viewModel.needsRestart {
-                Section {
-                    Text("Restart the app to apply analytics changes.")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
+                if let errorMessage = viewModel.errorMessage {
+                    ErrorStateView(
+                        title: "Privacy update failed",
+                        message: errorMessage,
+                        retryTitle: "Dismiss",
+                        onRetry: { viewModel.clearError() }
+                    )
                 }
             }
-
-            if AppConfiguration.isMock {
-                Section {
-                    Text("Mock builds skip analytics and tracking SDKs.")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
-            }
-
-            if let errorMessage = viewModel.errorMessage {
-                Section {
-                    Text(errorMessage)
-                        .foregroundStyle(.red)
-                }
-            }
+            .padding(DSSpacing.md)
         }
         .navigationTitle("Settings Detail")
+        .background(Color.backgroundPrimary)
+        .loading(viewModel.isProcessing, message: "Requesting permission...")
         .onAppear {
             viewModel.onAppear(services: services)
         }
+    }
+
+    private var header: some View {
+        VStack(alignment: .leading, spacing: DSSpacing.sm) {
+            Text("Privacy & data")
+                .font(.titleLarge())
+                .foregroundStyle(Color.textPrimary)
+            Text("Control analytics and tracking preferences for the demo experience.")
+                .font(.bodyMedium())
+                .foregroundStyle(Color.textSecondary)
+        }
+    }
+
+    private var privacySection: some View {
+        sectionCard(title: "Analytics") {
+            Toggle(
+                "Share analytics",
+                isOn: Binding(
+                    get: { viewModel.analyticsOptIn },
+                    set: { viewModel.setAnalyticsOptIn($0, services: services) }
+                )
+            )
+            .tint(Color.info)
+
+            Text("Analytics help us understand onboarding and paywall performance.")
+                .font(.bodySmall())
+                .foregroundStyle(Color.textSecondary)
+        }
+    }
+
+    private var trackingSection: some View {
+        sectionCard(title: "Tracking") {
+            Toggle(
+                "Allow tracking (ATT)",
+                isOn: Binding(
+                    get: { viewModel.trackingOptIn },
+                    set: { viewModel.setTrackingOptIn($0, services: services) }
+                )
+            )
+            .tint(Color.info)
+
+            keyValueRow(title: "Tracking status", value: viewModel.trackingStatusLabel)
+
+            DSButton(title: "Request tracking authorization", style: .secondary, isFullWidth: true) {
+                viewModel.requestTrackingAuthorization(services: services)
+            }
+            .disabled(!viewModel.trackingOptIn || viewModel.isProcessing || AppConfiguration.isMock)
+        }
+    }
+
+    private func sectionCard(title: String, @ViewBuilder content: () -> some View) -> some View {
+        VStack(alignment: .leading, spacing: DSSpacing.sm) {
+            Text(title)
+                .font(.headlineMedium())
+                .foregroundStyle(Color.textPrimary)
+
+            content()
+        }
+        .padding(DSSpacing.md)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.backgroundSecondary)
+        .cornerRadius(DSSpacing.md)
+    }
+
+    private func keyValueRow(title: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: DSSpacing.xs) {
+            Text(title)
+                .font(.captionLarge())
+                .foregroundStyle(Color.textTertiary)
+            Text(value)
+                .font(.bodySmall())
+                .foregroundStyle(Color.textPrimary)
+        }
+    }
+
+    private func infoCard(title: String, message: String, icon: String) -> some View {
+        HStack(alignment: .top, spacing: DSSpacing.sm) {
+            Image(systemName: icon)
+                .font(.headlineSmall())
+                .foregroundStyle(Color.warning)
+                .frame(width: 28, height: 28)
+                .background(Color.warning.opacity(0.15))
+                .clipShape(Circle())
+
+            VStack(alignment: .leading, spacing: DSSpacing.xs) {
+                Text(title)
+                    .font(.headlineSmall())
+                    .foregroundStyle(Color.textPrimary)
+                Text(message)
+                    .font(.bodySmall())
+                    .foregroundStyle(Color.textSecondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(DSSpacing.md)
+        .background(Color.backgroundSecondary)
+        .cornerRadius(DSSpacing.md)
     }
 }
 
