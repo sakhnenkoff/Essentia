@@ -16,41 +16,38 @@ struct SettingsView: View {
     @State private var viewModel = SettingsViewModel()
 
     var body: some View {
-        ZStack {
-            PremiumBackground()
+        ScrollView {
+            VStack(alignment: .leading, spacing: DSSpacing.xl) {
+                header
 
-            ScrollView {
-                VStack(alignment: .leading, spacing: DSSpacing.xl) {
-                    header
-
-                    if viewModel.isProcessing {
-                        ProgressView("Updating settings...")
-                            .font(.bodySmall())
-                            .foregroundStyle(Color.textSecondary)
-                            .multilineTextAlignment(.center)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                    }
-
-                    accountSection
-                    subscriptionSection
-                    notificationsSection
-                    navigationSection
-                    debugSection
-
-                    if let errorMessage = viewModel.errorMessage {
-                        ErrorStateView(
-                            title: "Settings update failed",
-                            message: errorMessage,
-                            retryTitle: "Dismiss",
-                            onRetry: { viewModel.clearError() }
-                        )
-                    }
+                if viewModel.isProcessing {
+                    ProgressView("Updating settings...")
+                        .font(.bodySmall())
+                        .foregroundStyle(Color.textSecondary)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity, alignment: .center)
                 }
-                .padding(DSSpacing.md)
+
+                accountSection
+                subscriptionSection
+                notificationsSection
+                navigationSection
+                debugSection
+
+                if let errorMessage = viewModel.errorMessage {
+                    ErrorStateView(
+                        title: "Settings update failed",
+                        message: errorMessage,
+                        retryTitle: "Dismiss",
+                        onRetry: { viewModel.clearError() }
+                    )
+                }
             }
-            .scrollIndicators(.hidden)
-            .scrollBounceBehavior(.basedOnSize)
+            .padding(DSSpacing.md)
         }
+        .scrollIndicators(.hidden)
+        .scrollBounceBehavior(.basedOnSize)
+        .background(AmbientBackground())
         .navigationTitle("Settings")
         .toast($viewModel.toast)
     }

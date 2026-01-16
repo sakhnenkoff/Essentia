@@ -14,41 +14,38 @@ struct AuthView: View {
     @State private var viewModel = AuthViewModel()
 
     var body: some View {
-        ZStack {
-            PremiumBackground()
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: DSSpacing.xl) {
-                    hero
-                    valueProps
-                    signInOptions
-                    if viewModel.isLoading {
-                        ProgressView("Signing you in...")
-                            .font(.bodySmall())
-                            .foregroundStyle(Color.textSecondary)
-                            .multilineTextAlignment(.center)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                    }
-
-                    if let errorMessage = viewModel.errorMessage {
-                        ErrorStateView(
-                            title: "Couldn't sign you in",
-                            message: errorMessage,
-                            retryTitle: "Try again",
-                            onRetry: { viewModel.retryLastSignIn(services: services, session: session) },
-                            dismissTitle: "Dismiss",
-                            onDismiss: { viewModel.clearError() }
-                        )
-                    }
-
-                    footerNote
+        ScrollView {
+            VStack(alignment: .leading, spacing: DSSpacing.xl) {
+                hero
+                valueProps
+                signInOptions
+                if viewModel.isLoading {
+                    ProgressView("Signing you in...")
+                        .font(.bodySmall())
+                        .foregroundStyle(Color.textSecondary)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity, alignment: .center)
                 }
-                .padding(DSSpacing.md)
-                .padding(.top, DSSpacing.xxlg)
+
+                if let errorMessage = viewModel.errorMessage {
+                    ErrorStateView(
+                        title: "Couldn't sign you in",
+                        message: errorMessage,
+                        retryTitle: "Try again",
+                        onRetry: { viewModel.retryLastSignIn(services: services, session: session) },
+                        dismissTitle: "Dismiss",
+                        onDismiss: { viewModel.clearError() }
+                    )
+                }
+
+                footerNote
             }
-            .scrollIndicators(.hidden)
-            .scrollBounceBehavior(.basedOnSize)
+            .padding(DSSpacing.md)
+            .padding(.top, DSSpacing.xxlg)
         }
+        .scrollIndicators(.hidden)
+        .scrollBounceBehavior(.basedOnSize)
+        .background(AmbientBackground())
     }
 
     private var hero: some View {

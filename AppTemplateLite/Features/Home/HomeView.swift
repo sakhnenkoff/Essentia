@@ -16,21 +16,18 @@ struct HomeView: View {
     @State private var viewModel = HomeViewModel()
 
     var body: some View {
-        ZStack {
-            PremiumBackground()
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: DSSpacing.xl) {
-                    hero
-                    statusGrid
-                    navigationActions
-                    activitySection
-                }
-                .padding(DSSpacing.md)
+        ScrollView {
+            VStack(alignment: .leading, spacing: DSSpacing.xl) {
+                hero
+                statusGrid
+                navigationActions
+                activitySection
             }
-            .scrollIndicators(.hidden)
-            .scrollBounceBehavior(.basedOnSize)
+            .padding(DSSpacing.md)
         }
+        .scrollIndicators(.hidden)
+        .scrollBounceBehavior(.basedOnSize)
+        .background(AmbientBackground())
         .navigationTitle("Home")
         .toast($viewModel.toast)
         .onAppear {

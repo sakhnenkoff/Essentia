@@ -15,67 +15,64 @@ struct OnboardingView: View {
     @State private var errorMessage: String?
 
     var body: some View {
-        ZStack {
-            PremiumBackground()
+        VStack(spacing: 0) {
+            OnboardingHeader(
+                progress: controller.progress,
+                showBackButton: controller.canGoBack,
+                onBack: {
+                    withAnimation(.smooth(duration: 0.5)) {
+                        controller.goBack()
+                    }
+                }
+            )
 
-            VStack(spacing: 0) {
-                OnboardingHeader(
-                    progress: controller.progress,
-                    showBackButton: controller.canGoBack,
-                    onBack: {
-                        withAnimation(.smooth(duration: 0.5)) {
-                            controller.goBack()
-                        }
+            VStack(alignment: .leading, spacing: DSSpacing.lg) {
+                // Animated headline area
+                headlineArea
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, DSSpacing.lg)
+
+                // Step-specific content
+                stepContent
+            }
+            .padding(.horizontal, DSSpacing.lg)
+
+            Spacer(minLength: DSSpacing.sm)
+
+            if let errorMessage = errorMessage {
+                ErrorStateView(
+                    title: "Couldn't finish setup",
+                    message: errorMessage,
+                    retryTitle: "Try again",
+                    onRetry: { completeOnboarding() },
+                    dismissTitle: "Continue anyway",
+                    onDismiss: {
+                        self.errorMessage = nil
+                        session.setOnboardingComplete()
                     }
                 )
-
-                VStack(alignment: .leading, spacing: DSSpacing.lg) {
-                    // Animated headline area
-                    headlineArea
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.top, DSSpacing.lg)
-
-                    // Step-specific content
-                    stepContent
-                }
                 .padding(.horizontal, DSSpacing.lg)
-
-                Spacer(minLength: DSSpacing.sm)
-
-                if let errorMessage = errorMessage {
-                    ErrorStateView(
-                        title: "Couldn't finish setup",
-                        message: errorMessage,
-                        retryTitle: "Try again",
-                        onRetry: { completeOnboarding() },
-                        dismissTitle: "Continue anyway",
-                        onDismiss: {
-                            self.errorMessage = nil
-                            session.setOnboardingComplete()
-                        }
-                    )
-                    .padding(.horizontal, DSSpacing.lg)
-                }
-
-                if isSaving {
-                    ProgressView("Setting up your workspace...")
-                        .font(.bodySmall())
-                        .foregroundStyle(Color.textSecondary)
-                        .multilineTextAlignment(.center)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .padding(.horizontal, DSSpacing.lg)
-                }
-
-                DSButton.cta(
-                    title: controller.isLastStep ? "Get Started" : "Continue",
-                    isEnabled: controller.canContinue
-                ) {
-                    onContinue()
-                }
-                .padding(.horizontal, DSSpacing.lg)
-                .padding(.bottom, DSSpacing.lg)
             }
+
+            if isSaving {
+                ProgressView("Setting up your workspace...")
+                    .font(.bodySmall())
+                    .foregroundStyle(Color.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.horizontal, DSSpacing.lg)
+            }
+
+            DSButton.cta(
+                title: controller.isLastStep ? "Get Started" : "Continue",
+                isEnabled: controller.canContinue
+            ) {
+                onContinue()
+            }
+            .padding(.horizontal, DSSpacing.lg)
+            .padding(.bottom, DSSpacing.lg)
         }
+        .background(AmbientBackground())
         .toolbar(.hidden, for: .navigationBar)
         .onAppear {
             trackEvent(.onAppear)

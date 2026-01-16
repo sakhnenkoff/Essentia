@@ -17,21 +17,18 @@ struct ProfileView: View {
     let userId: String
 
     var body: some View {
-        ZStack {
-            PremiumBackground()
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: DSSpacing.xl) {
-                    headerCard
-                    accountDetails
-                    activitySection
-                    actionSection
-                }
-                .padding(DSSpacing.md)
+        ScrollView {
+            VStack(alignment: .leading, spacing: DSSpacing.xl) {
+                headerCard
+                accountDetails
+                activitySection
+                actionSection
             }
-            .scrollIndicators(.hidden)
-            .scrollBounceBehavior(.basedOnSize)
+            .padding(DSSpacing.md)
         }
+        .scrollIndicators(.hidden)
+        .scrollBounceBehavior(.basedOnSize)
+        .background(AmbientBackground())
         .navigationTitle("Profile")
         .toast($toast)
     }

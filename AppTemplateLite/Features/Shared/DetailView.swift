@@ -17,41 +17,38 @@ struct DetailView: View {
     let title: String
 
     var body: some View {
-        ZStack {
-            PremiumBackground()
+        ScrollView {
+            VStack(alignment: .leading, spacing: DSSpacing.xl) {
+                header
+                overviewCard
 
-            ScrollView {
-                VStack(alignment: .leading, spacing: DSSpacing.xl) {
-                    header
-                    overviewCard
-
-                    if isLoading {
-                        ProgressView("Loading detail...")
-                            .font(.bodySmall())
-                            .foregroundStyle(Color.textSecondary)
-                            .multilineTextAlignment(.center)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                    }
-
-                    if showError {
-                        ErrorStateView(
-                            title: "Detail failed to load",
-                            message: "We couldn't refresh this content. Try again or return later.",
-                            retryTitle: "Retry",
-                            onRetry: { showError = false },
-                            dismissTitle: "Dismiss",
-                            onDismiss: { showError = false }
-                        )
-                    }
-
-                    relatedSection
-                    actionSection
+                if isLoading {
+                    ProgressView("Loading detail...")
+                        .font(.bodySmall())
+                        .foregroundStyle(Color.textSecondary)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity, alignment: .center)
                 }
-                .padding(DSSpacing.md)
+
+                if showError {
+                    ErrorStateView(
+                        title: "Detail failed to load",
+                        message: "We couldn't refresh this content. Try again or return later.",
+                        retryTitle: "Retry",
+                        onRetry: { showError = false },
+                        dismissTitle: "Dismiss",
+                        onDismiss: { showError = false }
+                    )
+                }
+
+                relatedSection
+                actionSection
             }
-            .scrollIndicators(.hidden)
-            .scrollBounceBehavior(.basedOnSize)
+            .padding(DSSpacing.md)
         }
+        .scrollIndicators(.hidden)
+        .scrollBounceBehavior(.basedOnSize)
+        .background(AmbientBackground())
         .navigationTitle("Detail")
         .toast($toast)
     }

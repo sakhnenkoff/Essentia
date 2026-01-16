@@ -13,54 +13,51 @@ struct SettingsDetailView: View {
     @State private var viewModel = SettingsDetailViewModel()
 
     var body: some View {
-        ZStack {
-            PremiumBackground()
+        ScrollView {
+            VStack(alignment: .leading, spacing: DSSpacing.xl) {
+                header
 
-            ScrollView {
-                VStack(alignment: .leading, spacing: DSSpacing.xl) {
-                    header
-
-                    if viewModel.isProcessing {
-                        ProgressView("Requesting permission...")
-                            .font(.bodySmall())
-                            .foregroundStyle(Color.textSecondary)
-                            .multilineTextAlignment(.center)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                    }
-
-                    privacySection
-                    trackingSection
-
-                    if viewModel.needsRestart {
-                        infoCard(
-                            title: "Restart recommended",
-                            message: "Restart the app to apply analytics changes.",
-                            icon: "arrow.clockwise"
-                        )
-                    }
-
-                    if AppConfiguration.isMock {
-                        infoCard(
-                            title: "Mock build",
-                            message: "Analytics and tracking SDKs are disabled in Mock builds.",
-                            icon: "flask"
-                        )
-                    }
-
-                    if let errorMessage = viewModel.errorMessage {
-                        ErrorStateView(
-                            title: "Privacy update failed",
-                            message: errorMessage,
-                            retryTitle: "Dismiss",
-                            onRetry: { viewModel.clearError() }
-                        )
-                    }
+                if viewModel.isProcessing {
+                    ProgressView("Requesting permission...")
+                        .font(.bodySmall())
+                        .foregroundStyle(Color.textSecondary)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity, alignment: .center)
                 }
-                .padding(DSSpacing.md)
+
+                privacySection
+                trackingSection
+
+                if viewModel.needsRestart {
+                    infoCard(
+                        title: "Restart recommended",
+                        message: "Restart the app to apply analytics changes.",
+                        icon: "arrow.clockwise"
+                    )
+                }
+
+                if AppConfiguration.isMock {
+                    infoCard(
+                        title: "Mock build",
+                        message: "Analytics and tracking SDKs are disabled in Mock builds.",
+                        icon: "flask"
+                    )
+                }
+
+                if let errorMessage = viewModel.errorMessage {
+                    ErrorStateView(
+                        title: "Privacy update failed",
+                        message: errorMessage,
+                        retryTitle: "Dismiss",
+                        onRetry: { viewModel.clearError() }
+                    )
+                }
             }
-            .scrollIndicators(.hidden)
-            .scrollBounceBehavior(.basedOnSize)
+            .padding(DSSpacing.md)
         }
+        .scrollIndicators(.hidden)
+        .scrollBounceBehavior(.basedOnSize)
+        .background(AmbientBackground())
         .navigationTitle("Settings Detail")
         .onAppear {
             viewModel.onAppear(services: services)

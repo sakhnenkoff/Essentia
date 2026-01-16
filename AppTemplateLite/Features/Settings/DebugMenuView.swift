@@ -15,21 +15,18 @@ struct DebugMenuView: View {
     @State private var toast: Toast?
 
     var body: some View {
-        ZStack {
-            PremiumBackground()
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: DSSpacing.xl) {
-                    header
-                    environmentSection
-                    userSection
-                    actionSection
-                }
-                .padding(DSSpacing.md)
+        ScrollView {
+            VStack(alignment: .leading, spacing: DSSpacing.xl) {
+                header
+                environmentSection
+                userSection
+                actionSection
             }
-            .scrollIndicators(.hidden)
-            .scrollBounceBehavior(.basedOnSize)
+            .padding(DSSpacing.md)
         }
+        .scrollIndicators(.hidden)
+        .scrollBounceBehavior(.basedOnSize)
+        .background(AmbientBackground())
         .navigationTitle("Debug Menu")
         .toast($toast)
     }

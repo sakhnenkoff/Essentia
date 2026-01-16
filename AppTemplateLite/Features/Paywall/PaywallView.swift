@@ -24,56 +24,53 @@ struct PaywallView: View {
     }
 
     var body: some View {
-        ZStack {
-            PremiumBackground()
+        ScrollView {
+            VStack(alignment: .leading, spacing: DSSpacing.lg) {
+                header
 
-            ScrollView {
-                VStack(alignment: .leading, spacing: DSSpacing.lg) {
-                    header
+                if FeatureFlags.enablePurchases {
+                    paywallContent
 
-                    if FeatureFlags.enablePurchases {
-                        paywallContent
-
-                        #if DEBUG
-                        Picker("Paywall style", selection: $paywallMode) {
-                            Text("StoreKit").tag(PaywallMode.storeKit)
-                            Text("Custom").tag(PaywallMode.custom)
-                        }
-                        .pickerStyle(.segmented)
-                        #endif
-
-                        if viewModel.isProcessingPurchase {
-                            ProgressView("Updating your access...")
-                                .font(.bodySmall())
-                                .foregroundStyle(Color.textSecondary)
-                                .multilineTextAlignment(.center)
-                                .frame(maxWidth: .infinity, alignment: .center)
-                        }
-                    } else {
-                        EmptyStateView(
-                            icon: "lock.slash",
-                            title: "Purchases disabled",
-                            message: "Enable purchases in FeatureFlags to preview the paywall.",
-                            actionTitle: "Close",
-                            action: { dismiss() }
-                        )
+                    #if DEBUG
+                    Picker("Paywall style", selection: $paywallMode) {
+                        Text("StoreKit").tag(PaywallMode.storeKit)
+                        Text("Custom").tag(PaywallMode.custom)
                     }
+                    .pickerStyle(.segmented)
+                    #endif
 
-                    if allowSkip {
-                        DSButton(title: "Not now", style: .secondary, isFullWidth: true) {
-                            session.markPaywallDismissed()
-                        }
+                    if viewModel.isProcessingPurchase {
+                        ProgressView("Updating your access...")
+                            .font(.bodySmall())
+                            .foregroundStyle(Color.textSecondary)
+                            .multilineTextAlignment(.center)
+                            .frame(maxWidth: .infinity, alignment: .center)
                     }
-
-                    Text("Cancel anytime. Subscriptions renew automatically unless cancelled in Settings.")
-                        .font(.captionLarge())
-                        .foregroundStyle(Color.textTertiary)
+                } else {
+                    EmptyStateView(
+                        icon: "lock.slash",
+                        title: "Purchases disabled",
+                        message: "Enable purchases in FeatureFlags to preview the paywall.",
+                        actionTitle: "Close",
+                        action: { dismiss() }
+                    )
                 }
-                .padding(DSSpacing.md)
+
+                if allowSkip {
+                    DSButton(title: "Not now", style: .secondary, isFullWidth: true) {
+                        session.markPaywallDismissed()
+                    }
+                }
+
+                Text("Cancel anytime. Subscriptions renew automatically unless cancelled in Settings.")
+                    .font(.captionLarge())
+                    .foregroundStyle(Color.textTertiary)
             }
-            .scrollIndicators(.hidden)
-            .scrollBounceBehavior(.basedOnSize)
+            .padding(DSSpacing.md)
         }
+        .scrollIndicators(.hidden)
+        .scrollBounceBehavior(.basedOnSize)
+        .background(AmbientBackground())
         .toolbar(.hidden, for: .navigationBar)
         .overlay(alignment: .topTrailing) {
             if showCloseButton {

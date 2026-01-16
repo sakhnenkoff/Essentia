@@ -16,13 +16,12 @@ struct AppRootView: View {
         Group {
             switch session.rootState {
             case .loading:
-                ZStack {
-                    PremiumBackground()
-                    ProgressView("Preparing your demo...")
-                        .font(.bodySmall())
-                        .foregroundStyle(Color.textSecondary)
-                        .multilineTextAlignment(.center)
-                }
+                ProgressView("Preparing your demo...")
+                    .font(.bodySmall())
+                    .foregroundStyle(Color.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(AmbientBackground())
             case .onboarding:
                 OnboardingView()
             case .auth:

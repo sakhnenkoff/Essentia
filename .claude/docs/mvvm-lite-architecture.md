@@ -62,6 +62,7 @@ Components are **dumb UI** and stay stateless:
 - Avoid `AnyView` unless a framework API or heterogeneous view collection requires type erasure.
 - Prefer `ViewModifier`, `@ViewBuilder`, or dedicated view types for conditional UI and availability branches.
 - If type erasure is unavoidable, keep the wrapper scoped to the view file that needs it.
+- Prefer `.background(...)` or `.overlay(...)` for static decorative layers instead of wrapping content in a `ZStack`.
 
 ---
 
