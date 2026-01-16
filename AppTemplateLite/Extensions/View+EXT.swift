@@ -8,10 +8,6 @@ import SwiftUI
 import DesignSystem
 
 extension View {
-    func any() -> AnyView {
-        AnyView(self)
-    }
-    
     func tappableBackground() -> some View {
         background(Color.black.opacity(0.001))
     }

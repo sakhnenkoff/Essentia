@@ -39,8 +39,20 @@ struct CustomModalView: View {
         }
         .multilineTextAlignment(.center)
         .padding(DSSpacing.md)
-        .background(Color.backgroundPrimary)
+        .background(
+            LinearGradient(
+                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
         .cornerRadius(DSSpacing.md)
+        .glassBackground(cornerRadius: DSSpacing.md)
+        .overlay(
+            RoundedRectangle(cornerRadius: DSSpacing.md)
+                .stroke(Color.themePrimary.opacity(0.06), lineWidth: 1)
+        )
+        .shadow(color: Color.themePrimary.opacity(0.08), radius: 16, x: 0, y: 10)
         .padding(DSSpacing.xxlg)
     }
 }

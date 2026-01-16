@@ -15,58 +15,68 @@ struct OnboardingView: View {
     @State private var errorMessage: String?
 
     var body: some View {
-        VStack(spacing: 0) {
-            OnboardingHeader(
-                progress: controller.progress,
-                showBackButton: controller.canGoBack,
-                onBack: {
-                    withAnimation(.smooth(duration: 0.5)) {
-                        controller.goBack()
-                    }
-                }
-            )
+        ZStack {
+            PremiumBackground()
 
-            ScrollView {
-                VStack(alignment: .leading, spacing: DSSpacing.xl) {
+            VStack(spacing: 0) {
+                OnboardingHeader(
+                    progress: controller.progress,
+                    showBackButton: controller.canGoBack,
+                    onBack: {
+                        withAnimation(.smooth(duration: 0.5)) {
+                            controller.goBack()
+                        }
+                    }
+                )
+
+                VStack(alignment: .leading, spacing: DSSpacing.lg) {
                     // Animated headline area
                     headlineArea
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.top, DSSpacing.xl)
+                        .padding(.top, DSSpacing.lg)
 
                     // Step-specific content
                     stepContent
                 }
                 .padding(.horizontal, DSSpacing.lg)
+
+                Spacer(minLength: DSSpacing.sm)
+
+                if let errorMessage = errorMessage {
+                    ErrorStateView(
+                        title: "Couldn't finish setup",
+                        message: errorMessage,
+                        retryTitle: "Try again",
+                        onRetry: { completeOnboarding() },
+                        dismissTitle: "Continue anyway",
+                        onDismiss: {
+                            self.errorMessage = nil
+                            session.setOnboardingComplete()
+                        }
+                    )
+                    .padding(.horizontal, DSSpacing.lg)
+                }
+
+                if isSaving {
+                    ProgressView("Setting up your workspace...")
+                        .font(.bodySmall())
+                        .foregroundStyle(Color.textSecondary)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.horizontal, DSSpacing.lg)
+                }
+
+                DSButton.cta(
+                    title: controller.isLastStep ? "Get Started" : "Continue",
+                    isEnabled: controller.canContinue
+                ) {
+                    onContinue()
+                }
+                .padding(.horizontal, DSSpacing.lg)
                 .padding(.bottom, DSSpacing.lg)
             }
-
-            if let errorMessage = errorMessage {
-                ErrorStateView(
-                    title: "Couldn't finish setup",
-                    message: errorMessage,
-                    retryTitle: "Try again",
-                    onRetry: { completeOnboarding() },
-                    dismissTitle: "Continue anyway",
-                    onDismiss: {
-                        self.errorMessage = nil
-                        session.setOnboardingComplete()
-                    }
-                )
-                .padding(.horizontal, DSSpacing.lg)
-            }
-
-            DSButton.cta(
-                title: controller.isLastStep ? "Get Started" : "Continue",
-                isEnabled: controller.canContinue
-            ) {
-                onContinue()
-            }
-            .padding(.horizontal, DSSpacing.lg)
-            .padding(.bottom, DSSpacing.lg)
         }
-        .background(Color.backgroundPrimary)
         .toolbar(.hidden, for: .navigationBar)
-        .loading(isSaving, message: "Setting up your workspace...")
         .onAppear {
             trackEvent(.onAppear)
         }
@@ -103,7 +113,7 @@ struct OnboardingView: View {
                 }
             }
         }
-        .frame(minHeight: 160, alignment: .topLeading)
+        .frame(minHeight: 132, alignment: .topLeading)
     }
 
     // MARK: - Step Content
@@ -123,7 +133,7 @@ struct OnboardingView: View {
     // MARK: - Welcome Step
 
     private var welcomeContent: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.lg) {
+        VStack(alignment: .leading, spacing: DSSpacing.md) {
             welcomeHeroCard
 
             VStack(alignment: .leading, spacing: DSSpacing.sm) {
@@ -144,7 +154,6 @@ struct OnboardingView: View {
                 )
             }
         }
-        .padding(.horizontal, DSSpacing.lg)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
@@ -197,8 +206,6 @@ struct OnboardingView: View {
                 )
             }
         }
-        .padding(.horizontal, DSSpacing.lg)
-        .padding(.top, DSSpacing.md)
     }
 
     // MARK: - Name Step
@@ -218,8 +225,6 @@ struct OnboardingView: View {
                 .font(.captionLarge())
                 .foregroundStyle(Color.textTertiary)
         }
-        .padding(.horizontal, DSSpacing.lg)
-        .padding(.top, DSSpacing.md)
     }
 
     // MARK: - Actions
@@ -263,9 +268,9 @@ struct OnboardingView: View {
             HStack(spacing: DSSpacing.md) {
                 Image(systemName: "wand.and.stars")
                     .font(.headlineLarge())
-                    .foregroundStyle(Color.info)
+                    .foregroundStyle(Color.themePrimary)
                     .frame(width: 52, height: 52)
-                    .background(Color.info.opacity(0.15))
+                    .background(Color.themePrimary.opacity(0.15))
                     .clipShape(Circle())
 
                 VStack(alignment: .leading, spacing: DSSpacing.xs) {
@@ -284,18 +289,29 @@ struct OnboardingView: View {
         }
         .padding(DSSpacing.md)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.backgroundSecondary)
+        .background(
+            LinearGradient(
+                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
         .cornerRadius(DSSpacing.md)
         .glassBackground(cornerRadius: DSSpacing.md)
+        .overlay(
+            RoundedRectangle(cornerRadius: DSSpacing.md)
+                .stroke(Color.themePrimary.opacity(0.08), lineWidth: 1)
+        )
+        .shadow(color: Color.themePrimary.opacity(0.08), radius: 14, x: 0, y: 8)
     }
 
     private func featureRow(icon: String, title: String, message: String) -> some View {
         HStack(alignment: .top, spacing: DSSpacing.sm) {
             Image(systemName: icon)
                 .font(.headlineSmall())
-                .foregroundStyle(Color.info)
+                .foregroundStyle(Color.themePrimary)
                 .frame(width: 28, height: 28)
-                .background(Color.info.opacity(0.15))
+                .background(Color.themePrimary.opacity(0.15))
                 .clipShape(Circle())
 
             VStack(alignment: .leading, spacing: DSSpacing.xs) {

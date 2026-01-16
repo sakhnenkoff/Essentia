@@ -68,6 +68,11 @@ struct CustomPaywallView: View {
         )
         .cornerRadius(DSSpacing.lg)
         .glassBackground(cornerRadius: DSSpacing.lg)
+        .overlay(
+            RoundedRectangle(cornerRadius: DSSpacing.lg)
+                .stroke(Color.themePrimary.opacity(0.08), lineWidth: 1)
+        )
+        .shadow(color: Color.themePrimary.opacity(0.08), radius: 16, x: 0, y: 10)
     }
 
     private func productCard(product: AnyProduct, isFeatured: Bool) -> some View {
@@ -107,6 +112,7 @@ struct CustomPaywallView: View {
             RoundedRectangle(cornerRadius: DSSpacing.md)
                 .stroke(isFeatured ? Color.success.opacity(0.4) : Color.clear, lineWidth: 1)
         )
+        .shadow(color: Color.themePrimary.opacity(0.05), radius: 8, x: 0, y: 6)
     }
 
     private func featureChip(text: String, icon: String) -> some View {
@@ -119,7 +125,7 @@ struct CustomPaywallView: View {
         .foregroundStyle(Color.textSecondary)
         .padding(.horizontal, DSSpacing.sm)
         .padding(.vertical, DSSpacing.xs)
-        .background(Color.backgroundPrimary)
+        .background(Color.backgroundSecondary)
         .clipShape(Capsule())
     }
 }

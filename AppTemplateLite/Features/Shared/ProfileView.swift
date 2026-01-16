@@ -17,17 +17,22 @@ struct ProfileView: View {
     let userId: String
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: DSSpacing.xl) {
-                headerCard
-                accountDetails
-                activitySection
-                actionSection
+        ZStack {
+            PremiumBackground()
+
+            ScrollView {
+                VStack(alignment: .leading, spacing: DSSpacing.xl) {
+                    headerCard
+                    accountDetails
+                    activitySection
+                    actionSection
+                }
+                .padding(DSSpacing.md)
             }
-            .padding(DSSpacing.md)
+            .scrollIndicators(.hidden)
+            .scrollBounceBehavior(.basedOnSize)
         }
         .navigationTitle("Profile")
-        .background(Color.backgroundPrimary)
         .toast($toast)
     }
 
@@ -54,8 +59,19 @@ struct ProfileView: View {
             statusChip
         }
         .padding(DSSpacing.md)
-        .background(Color.backgroundSecondary)
+        .background(
+            LinearGradient(
+                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
         .cornerRadius(DSSpacing.md)
+        .overlay(
+            RoundedRectangle(cornerRadius: DSSpacing.md)
+                .stroke(Color.themePrimary.opacity(0.06), lineWidth: 1)
+        )
+        .shadow(color: Color.themePrimary.opacity(0.05), radius: 10, x: 0, y: 6)
     }
 
     private var profileAvatar: some View {
@@ -152,8 +168,19 @@ struct ProfileView: View {
         }
         .padding(DSSpacing.md)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.backgroundSecondary)
+        .background(
+            LinearGradient(
+                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
         .cornerRadius(DSSpacing.md)
+        .overlay(
+            RoundedRectangle(cornerRadius: DSSpacing.md)
+                .stroke(Color.themePrimary.opacity(0.06), lineWidth: 1)
+        )
+        .shadow(color: Color.themePrimary.opacity(0.05), radius: 10, x: 0, y: 6)
     }
 
     private func keyValueRow(title: String, value: String) -> some View {

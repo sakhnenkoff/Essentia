@@ -17,30 +17,42 @@ struct DetailView: View {
     let title: String
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: DSSpacing.xl) {
-                header
-                overviewCard
+        ZStack {
+            PremiumBackground()
 
-                if showError {
-                    ErrorStateView(
-                        title: "Detail failed to load",
-                        message: "We couldn't refresh this content. Try again or return later.",
-                        retryTitle: "Retry",
-                        onRetry: { showError = false },
-                        dismissTitle: "Dismiss",
-                        onDismiss: { showError = false }
-                    )
+            ScrollView {
+                VStack(alignment: .leading, spacing: DSSpacing.xl) {
+                    header
+                    overviewCard
+
+                    if isLoading {
+                        ProgressView("Loading detail...")
+                            .font(.bodySmall())
+                            .foregroundStyle(Color.textSecondary)
+                            .multilineTextAlignment(.center)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    }
+
+                    if showError {
+                        ErrorStateView(
+                            title: "Detail failed to load",
+                            message: "We couldn't refresh this content. Try again or return later.",
+                            retryTitle: "Retry",
+                            onRetry: { showError = false },
+                            dismissTitle: "Dismiss",
+                            onDismiss: { showError = false }
+                        )
+                    }
+
+                    relatedSection
+                    actionSection
                 }
-
-                relatedSection
-                actionSection
+                .padding(DSSpacing.md)
             }
-            .padding(DSSpacing.md)
+            .scrollIndicators(.hidden)
+            .scrollBounceBehavior(.basedOnSize)
         }
         .navigationTitle("Detail")
-        .background(Color.backgroundPrimary)
-        .loading(isLoading, message: "Loading detail...")
         .toast($toast)
     }
 
@@ -69,8 +81,19 @@ struct DetailView: View {
             }
         }
         .padding(DSSpacing.md)
-        .background(Color.backgroundSecondary)
+        .background(
+            LinearGradient(
+                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
         .cornerRadius(DSSpacing.md)
+        .overlay(
+            RoundedRectangle(cornerRadius: DSSpacing.md)
+                .stroke(Color.themePrimary.opacity(0.06), lineWidth: 1)
+        )
+        .shadow(color: Color.themePrimary.opacity(0.05), radius: 10, x: 0, y: 6)
     }
 
     private var relatedSection: some View {
@@ -120,8 +143,19 @@ struct DetailView: View {
         }
         .padding(DSSpacing.md)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.backgroundSecondary)
+        .background(
+            LinearGradient(
+                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
         .cornerRadius(DSSpacing.md)
+        .overlay(
+            RoundedRectangle(cornerRadius: DSSpacing.md)
+                .stroke(Color.themePrimary.opacity(0.06), lineWidth: 1)
+        )
+        .shadow(color: Color.themePrimary.opacity(0.05), radius: 10, x: 0, y: 6)
     }
 }
 

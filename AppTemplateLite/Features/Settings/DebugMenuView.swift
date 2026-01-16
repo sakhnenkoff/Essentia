@@ -15,17 +15,22 @@ struct DebugMenuView: View {
     @State private var toast: Toast?
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: DSSpacing.xl) {
-                header
-                environmentSection
-                userSection
-                actionSection
+        ZStack {
+            PremiumBackground()
+
+            ScrollView {
+                VStack(alignment: .leading, spacing: DSSpacing.xl) {
+                    header
+                    environmentSection
+                    userSection
+                    actionSection
+                }
+                .padding(DSSpacing.md)
             }
-            .padding(DSSpacing.md)
+            .scrollIndicators(.hidden)
+            .scrollBounceBehavior(.basedOnSize)
         }
         .navigationTitle("Debug Menu")
-        .background(Color.backgroundPrimary)
         .toast($toast)
     }
 
@@ -102,8 +107,19 @@ struct DebugMenuView: View {
         }
         .padding(DSSpacing.md)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.backgroundSecondary)
+        .background(
+            LinearGradient(
+                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
         .cornerRadius(DSSpacing.md)
+        .overlay(
+            RoundedRectangle(cornerRadius: DSSpacing.md)
+                .stroke(Color.themePrimary.opacity(0.06), lineWidth: 1)
+        )
+        .shadow(color: Color.themePrimary.opacity(0.05), radius: 10, x: 0, y: 6)
     }
 
     private func keyValueRow(title: String, value: String) -> some View {

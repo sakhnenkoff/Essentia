@@ -14,30 +14,41 @@ struct AuthView: View {
     @State private var viewModel = AuthViewModel()
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: DSSpacing.xl) {
-                hero
-                valueProps
-                signInOptions
+        ZStack {
+            PremiumBackground()
 
-                if let errorMessage = viewModel.errorMessage {
-                    ErrorStateView(
-                        title: "Couldn't sign you in",
-                        message: errorMessage,
-                        retryTitle: "Try again",
-                        onRetry: { viewModel.retryLastSignIn(services: services, session: session) },
-                        dismissTitle: "Dismiss",
-                        onDismiss: { viewModel.clearError() }
-                    )
+            ScrollView {
+                VStack(alignment: .leading, spacing: DSSpacing.xl) {
+                    hero
+                    valueProps
+                    signInOptions
+                    if viewModel.isLoading {
+                        ProgressView("Signing you in...")
+                            .font(.bodySmall())
+                            .foregroundStyle(Color.textSecondary)
+                            .multilineTextAlignment(.center)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    }
+
+                    if let errorMessage = viewModel.errorMessage {
+                        ErrorStateView(
+                            title: "Couldn't sign you in",
+                            message: errorMessage,
+                            retryTitle: "Try again",
+                            onRetry: { viewModel.retryLastSignIn(services: services, session: session) },
+                            dismissTitle: "Dismiss",
+                            onDismiss: { viewModel.clearError() }
+                        )
+                    }
+
+                    footerNote
                 }
-
-                footerNote
+                .padding(DSSpacing.md)
+                .padding(.top, DSSpacing.xxlg)
             }
-            .padding(DSSpacing.md)
-            .padding(.top, DSSpacing.xxlg)
+            .scrollIndicators(.hidden)
+            .scrollBounceBehavior(.basedOnSize)
         }
-        .background(Color.backgroundPrimary)
-        .loading(viewModel.isLoading, message: "Signing you in...")
     }
 
     private var hero: some View {
@@ -71,8 +82,19 @@ struct AuthView: View {
             )
         }
         .padding(DSSpacing.md)
-        .background(Color.backgroundSecondary)
+        .background(
+            LinearGradient(
+                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
         .cornerRadius(DSSpacing.md)
+        .overlay(
+            RoundedRectangle(cornerRadius: DSSpacing.md)
+                .stroke(Color.themePrimary.opacity(0.06), lineWidth: 1)
+        )
+        .shadow(color: Color.themePrimary.opacity(0.06), radius: 12, x: 0, y: 8)
     }
 
     @ViewBuilder
@@ -120,9 +142,9 @@ struct AuthView: View {
         HStack(alignment: .top, spacing: DSSpacing.sm) {
             Image(systemName: icon)
                 .font(.headlineSmall())
-                .foregroundStyle(Color.info)
+                .foregroundStyle(Color.themePrimary)
                 .frame(width: 28, height: 28)
-                .background(Color.info.opacity(0.15))
+                .background(Color.themePrimary.opacity(0.15))
                 .clipShape(Circle())
 
             VStack(alignment: .leading, spacing: DSSpacing.xs) {

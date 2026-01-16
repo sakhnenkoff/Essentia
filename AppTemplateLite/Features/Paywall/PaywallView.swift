@@ -24,43 +24,57 @@ struct PaywallView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: DSSpacing.xl) {
-                header
+        ZStack {
+            PremiumBackground()
 
-                if FeatureFlags.enablePurchases {
-                    paywallContent
+            ScrollView {
+                VStack(alignment: .leading, spacing: DSSpacing.lg) {
+                    header
 
-                    #if DEBUG
-                    Picker("Paywall style", selection: $paywallMode) {
-                        Text("StoreKit").tag(PaywallMode.storeKit)
-                        Text("Custom").tag(PaywallMode.custom)
+                    if FeatureFlags.enablePurchases {
+                        paywallContent
+
+                        #if DEBUG
+                        Picker("Paywall style", selection: $paywallMode) {
+                            Text("StoreKit").tag(PaywallMode.storeKit)
+                            Text("Custom").tag(PaywallMode.custom)
+                        }
+                        .pickerStyle(.segmented)
+                        #endif
+
+                        if viewModel.isProcessingPurchase {
+                            ProgressView("Updating your access...")
+                                .font(.bodySmall())
+                                .foregroundStyle(Color.textSecondary)
+                                .multilineTextAlignment(.center)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                        }
+                    } else {
+                        EmptyStateView(
+                            icon: "lock.slash",
+                            title: "Purchases disabled",
+                            message: "Enable purchases in FeatureFlags to preview the paywall.",
+                            actionTitle: "Close",
+                            action: { dismiss() }
+                        )
                     }
-                    .pickerStyle(.segmented)
-                    #endif
-                } else {
-                    EmptyStateView(
-                        icon: "lock.slash",
-                        title: "Purchases disabled",
-                        message: "Enable purchases in FeatureFlags to preview the paywall.",
-                        actionTitle: "Close",
-                        action: { dismiss() }
-                    )
-                }
 
-                if allowSkip {
-                    DSButton(title: "Not now", style: .secondary, isFullWidth: true) {
-                        session.markPaywallDismissed()
+                    if allowSkip {
+                        DSButton(title: "Not now", style: .secondary, isFullWidth: true) {
+                            session.markPaywallDismissed()
+                        }
                     }
-                }
 
-                Text("Cancel anytime. Subscriptions renew automatically unless cancelled in Settings.")
-                    .font(.captionLarge())
-                    .foregroundStyle(Color.textTertiary)
+                    Text("Cancel anytime. Subscriptions renew automatically unless cancelled in Settings.")
+                        .font(.captionLarge())
+                        .foregroundStyle(Color.textTertiary)
+                }
+                .padding(DSSpacing.md)
             }
-            .padding(DSSpacing.md)
+            .scrollIndicators(.hidden)
+            .scrollBounceBehavior(.basedOnSize)
         }
-        .background(Color.backgroundPrimary)
+        .toolbar(.hidden, for: .navigationBar)
         .overlay(alignment: .topTrailing) {
             if showCloseButton {
                 DSIconButton(icon: "xmark", style: .tertiary, size: .small) {
@@ -169,19 +183,33 @@ struct PaywallView: View {
                 benefitRow(icon: "shield.fill", title: "Priority support", message: "Launch confidently with guided updates.")
             }
             .padding(DSSpacing.md)
-            .background(Color.backgroundSecondary)
-            .cornerRadius(DSSpacing.md)
+            .background(Color.backgroundPrimary.opacity(0.6))
+            .clipShape(RoundedRectangle(cornerRadius: DSSpacing.md))
             .glassBackground(cornerRadius: DSSpacing.md)
         }
+        .padding(DSSpacing.lg)
+        .background(
+            LinearGradient(
+                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
+        .cornerRadius(DSSpacing.lg)
+        .overlay(
+            RoundedRectangle(cornerRadius: DSSpacing.lg)
+                .stroke(Color.themePrimary.opacity(0.08), lineWidth: 1)
+        )
+        .shadow(color: Color.themePrimary.opacity(0.08), radius: 16, x: 0, y: 10)
     }
 
     private func benefitRow(icon: String, title: String, message: String) -> some View {
         HStack(alignment: .top, spacing: DSSpacing.sm) {
             Image(systemName: icon)
                 .font(.headlineSmall())
-                .foregroundStyle(Color.success)
+                .foregroundStyle(Color.themePrimary)
                 .frame(width: 28, height: 28)
-                .background(Color.success.opacity(0.15))
+                .background(Color.themePrimary.opacity(0.15))
                 .clipShape(Circle())
 
             VStack(alignment: .leading, spacing: DSSpacing.xs) {

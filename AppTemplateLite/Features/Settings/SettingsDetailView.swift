@@ -13,42 +13,55 @@ struct SettingsDetailView: View {
     @State private var viewModel = SettingsDetailViewModel()
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: DSSpacing.xl) {
-                header
-                privacySection
-                trackingSection
+        ZStack {
+            PremiumBackground()
 
-                if viewModel.needsRestart {
-                    infoCard(
-                        title: "Restart recommended",
-                        message: "Restart the app to apply analytics changes.",
-                        icon: "arrow.clockwise"
-                    )
-                }
+            ScrollView {
+                VStack(alignment: .leading, spacing: DSSpacing.xl) {
+                    header
 
-                if AppConfiguration.isMock {
-                    infoCard(
-                        title: "Mock build",
-                        message: "Analytics and tracking SDKs are disabled in Mock builds.",
-                        icon: "flask"
-                    )
-                }
+                    if viewModel.isProcessing {
+                        ProgressView("Requesting permission...")
+                            .font(.bodySmall())
+                            .foregroundStyle(Color.textSecondary)
+                            .multilineTextAlignment(.center)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    }
 
-                if let errorMessage = viewModel.errorMessage {
-                    ErrorStateView(
-                        title: "Privacy update failed",
-                        message: errorMessage,
-                        retryTitle: "Dismiss",
-                        onRetry: { viewModel.clearError() }
-                    )
+                    privacySection
+                    trackingSection
+
+                    if viewModel.needsRestart {
+                        infoCard(
+                            title: "Restart recommended",
+                            message: "Restart the app to apply analytics changes.",
+                            icon: "arrow.clockwise"
+                        )
+                    }
+
+                    if AppConfiguration.isMock {
+                        infoCard(
+                            title: "Mock build",
+                            message: "Analytics and tracking SDKs are disabled in Mock builds.",
+                            icon: "flask"
+                        )
+                    }
+
+                    if let errorMessage = viewModel.errorMessage {
+                        ErrorStateView(
+                            title: "Privacy update failed",
+                            message: errorMessage,
+                            retryTitle: "Dismiss",
+                            onRetry: { viewModel.clearError() }
+                        )
+                    }
                 }
+                .padding(DSSpacing.md)
             }
-            .padding(DSSpacing.md)
+            .scrollIndicators(.hidden)
+            .scrollBounceBehavior(.basedOnSize)
         }
         .navigationTitle("Settings Detail")
-        .background(Color.backgroundPrimary)
-        .loading(viewModel.isProcessing, message: "Requesting permission...")
         .onAppear {
             viewModel.onAppear(services: services)
         }
@@ -74,7 +87,7 @@ struct SettingsDetailView: View {
                     set: { viewModel.setAnalyticsOptIn($0, services: services) }
                 )
             )
-            .tint(Color.info)
+            .tint(Color.themePrimary)
 
             Text("Analytics help us understand onboarding and paywall performance.")
                 .font(.bodySmall())
@@ -91,7 +104,7 @@ struct SettingsDetailView: View {
                     set: { viewModel.setTrackingOptIn($0, services: services) }
                 )
             )
-            .tint(Color.info)
+            .tint(Color.themePrimary)
 
             keyValueRow(title: "Tracking status", value: viewModel.trackingStatusLabel)
 
@@ -112,8 +125,19 @@ struct SettingsDetailView: View {
         }
         .padding(DSSpacing.md)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.backgroundSecondary)
+        .background(
+            LinearGradient(
+                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
         .cornerRadius(DSSpacing.md)
+        .overlay(
+            RoundedRectangle(cornerRadius: DSSpacing.md)
+                .stroke(Color.themePrimary.opacity(0.06), lineWidth: 1)
+        )
+        .shadow(color: Color.themePrimary.opacity(0.05), radius: 10, x: 0, y: 6)
     }
 
     private func keyValueRow(title: String, value: String) -> some View {
@@ -147,8 +171,19 @@ struct SettingsDetailView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(DSSpacing.md)
-        .background(Color.backgroundSecondary)
+        .background(
+            LinearGradient(
+                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
         .cornerRadius(DSSpacing.md)
+        .overlay(
+            RoundedRectangle(cornerRadius: DSSpacing.md)
+                .stroke(Color.themePrimary.opacity(0.05), lineWidth: 1)
+        )
+        .shadow(color: Color.themePrimary.opacity(0.05), radius: 8, x: 0, y: 6)
     }
 }
 

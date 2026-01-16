@@ -107,7 +107,7 @@ View → ViewModel → Services/Managers
 ### Layout Best Practices
 - PREFER `.frame(maxWidth: .infinity, alignment: .leading)` over `Spacer()`
 - ALWAYS use `ImageLoaderView` for URL images (never AsyncImage)
-- ALWAYS use `.anyButton()` or `.asButton()` modifier instead of `Button()` wrapper
+- ALWAYS use `DSButton` or `DSIconButton` for interactive elements in feature screens
 
 ### Analytics
 - Key ViewModel actions MUST track events

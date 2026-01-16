@@ -16,17 +16,22 @@ struct HomeView: View {
     @State private var viewModel = HomeViewModel()
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: DSSpacing.xl) {
-                hero
-                statusGrid
-                navigationActions
-                activitySection
+        ZStack {
+            PremiumBackground()
+
+            ScrollView {
+                VStack(alignment: .leading, spacing: DSSpacing.xl) {
+                    hero
+                    statusGrid
+                    navigationActions
+                    activitySection
+                }
+                .padding(DSSpacing.md)
             }
-            .padding(DSSpacing.md)
+            .scrollIndicators(.hidden)
+            .scrollBounceBehavior(.basedOnSize)
         }
         .navigationTitle("Home")
-        .background(Color.backgroundPrimary)
         .toast($viewModel.toast)
         .onAppear {
             viewModel.onAppear(services: services, session: session)
@@ -52,7 +57,21 @@ struct HomeView: View {
                 statusBadge
             }
         }
+        .padding(DSSpacing.lg)
         .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            LinearGradient(
+                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
+        .cornerRadius(DSSpacing.lg)
+        .overlay(
+            RoundedRectangle(cornerRadius: DSSpacing.lg)
+                .stroke(Color.themePrimary.opacity(0.08), lineWidth: 1)
+        )
+        .shadow(color: Color.themePrimary.opacity(0.08), radius: 16, x: 0, y: 10)
     }
 
     private var statusBadge: some View {
@@ -157,6 +176,7 @@ struct HomeView: View {
                     SkeletonView(style: .listRow)
                 }
                 .padding(.vertical, DSSpacing.sm)
+                .shimmer(true)
             } else if let errorMessage = viewModel.errorMessage {
                 ErrorStateView(
                     title: "Unable to refresh highlights",
@@ -173,9 +193,9 @@ struct HomeView: View {
                     icon: "tray",
                     title: "No highlights yet",
                     message: "Add a sample highlight to preview this section.",
-                actionTitle: "Add sample highlight",
-                action: { viewModel.seedHighlights(services: services) }
-            )
+                    actionTitle: "Add sample highlight",
+                    action: { viewModel.seedHighlights(services: services) }
+                )
             } else {
                 VStack(spacing: DSSpacing.sm) {
                     ForEach(viewModel.highlights) { highlight in
@@ -219,6 +239,11 @@ struct HomeView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.backgroundSecondary)
         .cornerRadius(DSSpacing.md)
+        .overlay(
+            RoundedRectangle(cornerRadius: DSSpacing.md)
+                .stroke(Color.themePrimary.opacity(0.06), lineWidth: 1)
+        )
+        .shadow(color: Color.themePrimary.opacity(0.05), radius: 10, x: 0, y: 6)
     }
 
     private func highlightRow(_ highlight: HomeViewModel.Highlight) -> some View {
@@ -243,6 +268,10 @@ struct HomeView: View {
         .padding(DSSpacing.md)
         .background(Color.backgroundSecondary)
         .cornerRadius(DSSpacing.md)
+        .overlay(
+            RoundedRectangle(cornerRadius: DSSpacing.md)
+                .stroke(Color.themePrimary.opacity(0.05), lineWidth: 1)
+        )
     }
 
     private func highlightIcon(for kind: HomeViewModel.Highlight.Kind) -> String {

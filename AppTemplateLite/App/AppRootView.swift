@@ -17,8 +17,11 @@ struct AppRootView: View {
             switch session.rootState {
             case .loading:
                 ZStack {
-                    Color.backgroundPrimary.ignoresSafeArea()
-                    LoadingView(message: "Preparing your demo...", style: .default)
+                    PremiumBackground()
+                    ProgressView("Preparing your demo...")
+                        .font(.bodySmall())
+                        .foregroundStyle(Color.textSecondary)
+                        .multilineTextAlignment(.center)
                 }
             case .onboarding:
                 OnboardingView()
