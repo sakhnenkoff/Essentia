@@ -72,11 +72,6 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		022958302CEE7FEF00765488 /* AppTemplateLiteUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = AppTemplateLiteUITests;
-			sourceTree = "<group>";
-		};
 		022958402CEE7FF900765488 /* AppTemplateLiteUnitTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = AppTemplateLiteUnitTests;
@@ -150,9 +145,7 @@
 			isa = PBXGroup;
 			children = (
 				028F9B552CECF2C2009B9F48 /* AppTemplateLite */,
-				022958302CEE7FEF00765488 /* AppTemplateLiteUITests */,
 				022958402CEE7FF900765488 /* AppTemplateLiteUnitTests */,
-				028F9C2B2CED2D0D009B9F48 /* Frameworks */,
 				028F9B542CECF2C2009B9F48 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -165,13 +158,6 @@
 				0229583F2CEE7FF900765488 /* AppTemplateLiteUnitTests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		028F9C2B2CED2D0D009B9F48 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -189,9 +175,6 @@
 			);
 			dependencies = (
 				022958362CEE7FEF00765488 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				022958302CEE7FEF00765488 /* AppTemplateLiteUITests */,
 			);
 			name = AppTemplateLiteUITests;
 			packageProductDependencies = (
