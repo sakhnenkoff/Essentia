@@ -19,16 +19,17 @@ final class SettingsViewModel {
         errorMessage = nil
         services.logManager.trackEvent(event: Event.signOutStart)
 
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
             do {
                 try await services.signOut()
                 session.resetForSignOut()
                 services.logManager.trackEvent(event: Event.signOutSuccess)
             } catch {
-                errorMessage = error.localizedDescription
+                self.errorMessage = error.localizedDescription
                 services.logManager.trackEvent(event: Event.signOutFail(error: error))
             }
-            isProcessing = false
+            self.isProcessing = false
         }
     }
 
@@ -42,9 +43,10 @@ final class SettingsViewModel {
         errorMessage = nil
         services.logManager.trackEvent(event: Event.deleteAccountStart)
 
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
             do {
-                let option = authReauthOption(auth: auth)
+                let option = self.authReauthOption(auth: auth)
                 try await services.authManager.deleteAccountWithReauthentication(option: option, revokeToken: false) {
                     try await services.userManager.deleteCurrentUser()
                 }
@@ -57,10 +59,10 @@ final class SettingsViewModel {
                 session.resetForSignOut(clearOnboarding: true)
                 services.logManager.trackEvent(event: Event.deleteAccountSuccess)
             } catch {
-                errorMessage = error.localizedDescription
+                self.errorMessage = error.localizedDescription
                 services.logManager.trackEvent(event: Event.deleteAccountFail(error: error))
             }
-            isProcessing = false
+            self.isProcessing = false
         }
     }
 
@@ -70,11 +72,12 @@ final class SettingsViewModel {
             return
         }
 
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
             do {
                 _ = try await pushManager.requestAuthorization()
             } catch {
-                errorMessage = error.localizedDescription
+                self.errorMessage = error.localizedDescription
             }
         }
     }

@@ -32,24 +32,3 @@ extension View {
     }
 
 }
-
-extension View {
-    func callToActionButton(
-        font: Font = .headline,
-        foregroundColor: Color = .textOnAccent,
-        backgroundColor: Color = .themeAccent,
-        verticalPadding: CGFloat? = DSSpacing.smd,
-        horizontalPadding: CGFloat? = nil,
-        cornerRadius: CGFloat = DSSpacing.md
-    ) -> some View {
-        self
-            .font(font)
-            .foregroundStyle(foregroundColor)
-            .padding(.horizontal, horizontalPadding)
-            .frame(maxWidth: horizontalPadding == nil ? .infinity : nil)
-            .padding(.vertical, verticalPadding)
-            .frame(maxHeight: verticalPadding == nil ? .infinity : nil)
-            .background(backgroundColor)
-            .cornerRadius(cornerRadius)
-    }
-}

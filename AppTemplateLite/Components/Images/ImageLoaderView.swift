@@ -33,9 +33,11 @@ struct ImageLoaderView: View {
 }
 
 #Preview {
-    ImageLoaderView()
-        .frame(width: 100, height: 200)
-        .anyButton(.highlight) {
-            
-        }
+    Button {
+        // Preview tap action
+    } label: {
+        ImageLoaderView()
+            .frame(width: 100, height: 200)
+    }
+    .buttonStyle(.plain)
 }

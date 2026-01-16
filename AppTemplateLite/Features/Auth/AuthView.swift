@@ -26,37 +26,38 @@ struct AuthView: View {
             }
 
             VStack(spacing: DSSpacing.smd) {
-                SignInAppleButtonView(
-                    type: .signIn,
-                    style: .black,
-                    cornerRadius: 12
-                )
-                .frame(height: 55)
-                .frame(maxWidth: 420)
-                .anyButton(.press) {
+                Button {
                     viewModel.signInApple(services: services, session: session)
-                }
-
-                SignInGoogleButtonView(
-                    type: .signIn,
-                    backgroundColor: .googleRed,
-                    cornerRadius: 12
-                )
-                .frame(height: 55)
-                .frame(maxWidth: 420)
-                .anyButton(.press) {
-                    viewModel.signInGoogle(services: services, session: session)
-                }
-
-                Text("Continue as Guest")
-                    .callToActionButton(
-                        font: .headline,
-                        foregroundColor: .primary,
-                        backgroundColor: Color.backgroundSecondary
+                } label: {
+                    SignInAppleButtonView(
+                        type: .signIn,
+                        style: .black,
+                        cornerRadius: 12
                     )
-                    .anyButton(.press) {
-                        viewModel.signInAnonymously(services: services, session: session)
-                    }
+                    .frame(height: 55)
+                    .frame(maxWidth: 420)
+                }
+                .buttonStyle(.plain)
+
+                Button {
+                    viewModel.signInGoogle(services: services, session: session)
+                } label: {
+                    SignInGoogleButtonView(
+                        type: .signIn,
+                        backgroundColor: .googleRed,
+                        cornerRadius: 12
+                    )
+                    .frame(height: 55)
+                    .frame(maxWidth: 420)
+                }
+                .buttonStyle(.plain)
+
+                DSButton(
+                    title: "Continue as Guest",
+                    style: .secondary
+                ) {
+                    viewModel.signInAnonymously(services: services, session: session)
+                }
             }
             .disabled(viewModel.isLoading)
 

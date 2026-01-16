@@ -63,16 +63,10 @@ struct PaywallView: View {
             }
 
             if allowSkip {
-                Text("Not now")
-                    .callToActionButton(
-                        font: .headline,
-                        foregroundColor: .primary,
-                        backgroundColor: Color.backgroundSecondary
-                    )
-                    .anyButton(.press) {
-                        session.markPaywallDismissed()
-                    }
-                    .padding(.horizontal, DSSpacing.md)
+                DSButton(title: "Not now", style: .secondary) {
+                    session.markPaywallDismissed()
+                }
+                .padding(.horizontal, DSSpacing.md)
             }
         }
         .padding(.vertical, DSSpacing.md)

@@ -30,14 +30,9 @@ struct ProfileView: View {
                 LabeledContent("Email", value: email)
             }
 
-            Text("Open settings")
-                .callToActionButton(
-                    foregroundColor: .primary,
-                    backgroundColor: Color.backgroundSecondary
-                )
-                .anyButton(.press) {
-                    router.presentSheet(.settings)
-                }
+            DSButton(title: "Open settings", style: .secondary) {
+                router.presentSheet(.settings)
+            }
 
             Spacer()
         }

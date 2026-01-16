@@ -26,7 +26,8 @@ final class OnboardingViewModel {
     func onFlowComplete(flowData: OnbFlowData, services: AppServices, session: AppSession) {
         services.logManager.trackEvent(event: Event.flowComplete(flowData: flowData))
 
-        Task {
+        Task { [weak self] in
+            guard self != nil else { return }
             if session.isSignedIn {
                 try? await services.userManager.saveOnboardingCompleteForCurrentUser()
             }

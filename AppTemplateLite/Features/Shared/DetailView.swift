@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AppRouter
+import DesignSystem
 
 struct DetailView: View {
     @Environment(Router<AppTab, AppRoute, AppSheet>.self) private var router
@@ -20,11 +21,9 @@ struct DetailView: View {
             Text("This is a lightweight destination powered by AppRouter.")
                 .foregroundStyle(.secondary)
 
-            Text("Show paywall")
-                .callToActionButton()
-                .anyButton(.press) {
-                    router.presentSheet(.paywall)
-                }
+            DSButton(title: "Show paywall") {
+                router.presentSheet(.paywall)
+            }
 
             Spacer()
         }

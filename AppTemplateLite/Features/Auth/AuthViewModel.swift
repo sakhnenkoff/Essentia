@@ -19,16 +19,17 @@ final class AuthViewModel {
         errorMessage = nil
         services.logManager.trackEvent(event: Event.appleStart)
 
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
             do {
                 let result = try await services.authManager.signInApple()
-                try await handleAuthResult(result, services: services, session: session)
+                try await self.handleAuthResult(result, services: services, session: session)
                 services.logManager.trackEvent(event: Event.appleSuccess(isNewUser: result.isNewUser))
             } catch {
-                errorMessage = error.localizedDescription
+                self.errorMessage = error.localizedDescription
                 services.logManager.trackEvent(event: Event.appleFail(error: error))
             }
-            isLoading = false
+            self.isLoading = false
         }
     }
 
@@ -38,19 +39,20 @@ final class AuthViewModel {
         errorMessage = nil
         services.logManager.trackEvent(event: Event.googleStart)
 
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
             do {
                 guard let clientId = Constants.firebaseAppClientId else {
                     throw AppError("Missing Google Client ID")
                 }
                 let result = try await services.authManager.signInGoogle(GIDClientID: clientId)
-                try await handleAuthResult(result, services: services, session: session)
+                try await self.handleAuthResult(result, services: services, session: session)
                 services.logManager.trackEvent(event: Event.googleSuccess(isNewUser: result.isNewUser))
             } catch {
-                errorMessage = error.localizedDescription
+                self.errorMessage = error.localizedDescription
                 services.logManager.trackEvent(event: Event.googleFail(error: error))
             }
-            isLoading = false
+            self.isLoading = false
         }
     }
 
@@ -60,16 +62,17 @@ final class AuthViewModel {
         errorMessage = nil
         services.logManager.trackEvent(event: Event.anonStart)
 
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
             do {
                 let result = try await services.authManager.signInAnonymously()
-                try await handleAuthResult(result, services: services, session: session)
+                try await self.handleAuthResult(result, services: services, session: session)
                 services.logManager.trackEvent(event: Event.anonSuccess(isNewUser: result.isNewUser))
             } catch {
-                errorMessage = error.localizedDescription
+                self.errorMessage = error.localizedDescription
                 services.logManager.trackEvent(event: Event.anonFail(error: error))
             }
-            isLoading = false
+            self.isLoading = false
         }
     }
 

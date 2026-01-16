@@ -38,15 +38,17 @@ struct CustomPaywallView: View {
                         productRow(product: product)
                     }
 
-                    Text("Already have a subscription?\nRestore Purchase")
-                        .font(.callout)
-                        .fontWeight(.medium)
-                        .underline()
-                        .foregroundStyle(Color.textOnPrimary)
-                        .anyButton(.plain) {
-                            onRestorePurchasePressed()
-                        }
-                        .padding(DSSpacing.md)
+                    Button {
+                        onRestorePurchasePressed()
+                    } label: {
+                        Text("Already have a subscription?\nRestore Purchase")
+                            .font(.callout)
+                            .fontWeight(.medium)
+                            .underline()
+                            .foregroundStyle(Color.textOnPrimary)
+                    }
+                    .buttonStyle(.plain)
+                    .padding(DSSpacing.md)
                 }
 
                 Spacer(minLength: 0)
@@ -55,42 +57,45 @@ struct CustomPaywallView: View {
         }
         .multilineTextAlignment(.center)
         .overlay(
-            Image(systemName: "xmark.circle.fill")
-                .foregroundStyle(Color.textOnPrimary)
-                .font(.title)
-                .padding(DSSpacing.sm)
-                .tappableBackground()
-                .anyButton(.plain, action: {
-                    onBackButtonPressed()
-                })
-                .padding(DSSpacing.md),
+            Button {
+                onBackButtonPressed()
+            } label: {
+                Image(systemName: "xmark.circle.fill")
+                    .foregroundStyle(Color.textOnPrimary)
+                    .font(.title)
+                    .padding(DSSpacing.sm)
+            }
+            .buttonStyle(.plain)
+            .padding(DSSpacing.md),
             alignment: .topLeading
         )
     }
 
     private func productRow(product: AnyProduct) -> some View {
-        VStack(alignment: .leading) {
-            HStack(spacing: 0) {
-                VStack(alignment: .leading, spacing: DSSpacing.xs) {
-                    Text(product.title)
-                        .font(.headline)
-                    Text(product.priceStringWithDuration)
-                        .font(.subheadline)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            Divider()
-            Text(product.subtitle)
-                .font(.body)
-                .foregroundStyle(.secondary)
-        }
-        .padding(DSSpacing.md)
-        .background(Color.backgroundPrimary)
-        .cornerRadius(DSSpacing.md)
-        .shadow(color: Color.black.opacity(0.3), radius: DSSpacing.sm, x: 0, y: 2)
-        .anyButton(.press, action: {
+        Button {
             onPurchaseProductPressed(product)
-        })
+        } label: {
+            VStack(alignment: .leading) {
+                HStack(spacing: 0) {
+                    VStack(alignment: .leading, spacing: DSSpacing.xs) {
+                        Text(product.title)
+                            .font(.headline)
+                        Text(product.priceStringWithDuration)
+                            .font(.subheadline)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                Divider()
+                Text(product.subtitle)
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(DSSpacing.md)
+            .background(Color.backgroundPrimary)
+            .cornerRadius(DSSpacing.md)
+            .shadow(color: Color.black.opacity(0.3), radius: DSSpacing.sm, x: 0, y: 2)
+        }
+        .buttonStyle(.plain)
         .padding(DSSpacing.md)
     }
 }

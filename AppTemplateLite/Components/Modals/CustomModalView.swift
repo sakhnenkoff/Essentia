@@ -33,25 +33,16 @@ struct CustomModalView: View {
             .padding(DSSpacing.smd)
 
             VStack(spacing: DSSpacing.sm) {
-                Text(primaryButtonTitle)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, DSSpacing.smd)
-                    .background(Color.themeAccent)
-                    .foregroundStyle(Color.textOnPrimary)
-                    .cornerRadius(DSSpacing.md)
-                    .anyButton(.press) {
-                        primaryButtonAction()
-                    }
+                DSButton(title: primaryButtonTitle, action: primaryButtonAction)
 
-                Text(secondaryButtonTitle)
-                    .font(.headline)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, DSSpacing.smd)
-                    .tappableBackground()
-                    .anyButton(.plain) {
-                        secondaryButtonAction()
-                    }
+                Button(action: secondaryButtonAction) {
+                    Text(secondaryButtonTitle)
+                        .font(.headline)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, DSSpacing.smd)
+                }
+                .buttonStyle(.plain)
             }
         }
         .multilineTextAlignment(.center)

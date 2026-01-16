@@ -70,21 +70,14 @@ struct HomeView: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
 
-            Text("View detail screen")
-                .callToActionButton()
-                .anyButton(.press) {
-                    router.navigateTo(.detail(title: "Starter detail"), for: .home)
-                }
+            DSButton(title: "View detail screen") {
+                router.navigateTo(.detail(title: "Starter detail"), for: .home)
+            }
 
-            Text("Open profile")
-                .callToActionButton(
-                    foregroundColor: .primary,
-                    backgroundColor: Color.backgroundSecondary
-                )
-                .anyButton(.press) {
-                    let userId = session.auth?.uid ?? "guest"
-                    router.navigateTo(.profile(userId: userId), for: .home)
-                }
+            DSButton(title: "Open profile", style: .secondary) {
+                let userId = session.auth?.uid ?? "guest"
+                router.navigateTo(.profile(userId: userId), for: .home)
+            }
         }
         .frame(maxWidth: .infinity)
     }
@@ -120,14 +113,7 @@ struct HomeView: View {
             Text(detail)
                 .font(.footnote)
                 .foregroundStyle(.secondary)
-            Text(actionTitle)
-                .callToActionButton(
-                    font: .footnote,
-                    foregroundColor: .primary,
-                    backgroundColor: Color.backgroundSecondary,
-                    verticalPadding: DSSpacing.xs
-                )
-                .anyButton(.press, action: action)
+            DSButton(title: actionTitle, style: .secondary, size: .small, action: action)
         }
         .padding(DSSpacing.md)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -137,16 +123,18 @@ struct HomeView: View {
     }
 
     private func quickButton(title: String, systemImage: String, action: @escaping () -> Void) -> some View {
-        HStack(spacing: DSSpacing.xs) {
-            Image(systemName: systemImage)
-            Text(title)
+        Button(action: action) {
+            HStack(spacing: DSSpacing.xs) {
+                Image(systemName: systemImage)
+                Text(title)
+            }
+            .font(.footnote)
+            .padding(.vertical, DSSpacing.xs)
+            .padding(.horizontal, DSSpacing.sm)
+            .background(Color.backgroundSecondary)
+            .cornerRadius(DSSpacing.sm)
         }
-        .font(.footnote)
-        .padding(.vertical, DSSpacing.xs)
-        .padding(.horizontal, DSSpacing.sm)
-        .background(Color.backgroundSecondary)
-        .cornerRadius(DSSpacing.sm)
-        .anyButton(.press, action: action)
+        .buttonStyle(.plain)
     }
 }
 
