@@ -28,34 +28,10 @@ enum FeatureFlags {
     /// Enable in-app purchases via RevenueCat
     static let enablePurchases = true
 
-    // MARK: - Gamification
-
-    /// Enable streak tracking (daily engagement)
-    static let enableStreaks = true
-
-    /// Enable experience points system
-    static let enableExperiencePoints = true
-
-    /// Enable progress tracking
-    static let enableProgress = true
-
-    /// Convenience: true if any gamification feature is enabled
-    static var enableGamification: Bool {
-        enableStreaks || enableExperiencePoints || enableProgress
-    }
-
     // MARK: - Notifications
 
     /// Enable push notifications via Firebase Cloud Messaging
     static let enablePushNotifications = true
-
-    // MARK: - User Experience
-
-    /// Enable haptic feedback
-    static let enableHaptics = true
-
-    /// Enable sound effects
-    static let enableSoundEffects = true
 
     // MARK: - A/B Testing
 

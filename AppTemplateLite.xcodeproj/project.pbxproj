@@ -7,22 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0200345B2EAC73C700D87C8F /* SwiftfulOnboarding in Frameworks */ = {isa = PBXBuildFile; productRef = 0200345A2EAC73C700D87C8F /* SwiftfulOnboarding */; };
-		0207BD952EA0958200E46D93 /* SwiftfulGamificationFirebase in Frameworks */ = {isa = PBXBuildFile; productRef = 0207BD942EA0958200E46D93 /* SwiftfulGamificationFirebase */; };
-		0207BD982EA0958B00E46D93 /* SwiftfulGamification in Frameworks */ = {isa = PBXBuildFile; productRef = 0207BD972EA0958B00E46D93 /* SwiftfulGamification */; };
 		0229588C2CEE932F00765488 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 0229588B2CEE932F00765488 /* SDWebImageSwiftUI */; };
 		028200B32EA3434D0004887E /* SwiftfulDataManagers in Frameworks */ = {isa = PBXBuildFile; productRef = 028200B22EA3434D0004887E /* SwiftfulDataManagers */; };
 		028200B62EA3437B0004887E /* SwiftfulDataManagersFirebase in Frameworks */ = {isa = PBXBuildFile; productRef = 028200B52EA3437B0004887E /* SwiftfulDataManagersFirebase */; };
-		028744422D3396FC00C2C3E1 /* SwiftfulHaptics in Frameworks */ = {isa = PBXBuildFile; productRef = 028744412D3396FC00C2C3E1 /* SwiftfulHaptics */; };
-		028744482D33A58F00C2C3E1 /* SwiftfulSoundEffects in Frameworks */ = {isa = PBXBuildFile; productRef = 028744472D33A58F00C2C3E1 /* SwiftfulSoundEffects */; };
-		028F9B862CECF666009B9F48 /* SwiftfulUtilities in Frameworks */ = {isa = PBXBuildFile; productRef = 028F9B852CECF666009B9F48 /* SwiftfulUtilities */; };
 		028F9BC52CED14CA009B9F48 /* SwiftfulLogging in Frameworks */ = {isa = PBXBuildFile; productRef = 028F9BC42CED14CA009B9F48 /* SwiftfulLogging */; };
 		028F9BCE2CED152A009B9F48 /* SwiftfulLoggingMixpanel in Frameworks */ = {isa = PBXBuildFile; productRef = 028F9BCD2CED152A009B9F48 /* SwiftfulLoggingMixpanel */; };
 		028F9BD12CED1539009B9F48 /* SwiftfulPurchasing in Frameworks */ = {isa = PBXBuildFile; productRef = 028F9BD02CED1539009B9F48 /* SwiftfulPurchasing */; };
 		028F9BD42CED1547009B9F48 /* SwiftfulPurchasingRevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 028F9BD32CED1547009B9F48 /* SwiftfulPurchasingRevenueCat */; };
 		028F9BD72CED155A009B9F48 /* SwiftfulAuthUI in Frameworks */ = {isa = PBXBuildFile; productRef = 028F9BD62CED155A009B9F48 /* SwiftfulAuthUI */; };
 		028F9BD92CED155A009B9F48 /* SwiftfulAuthenticating in Frameworks */ = {isa = PBXBuildFile; productRef = 028F9BD82CED155A009B9F48 /* SwiftfulAuthenticating */; };
-		028F9BDF2CED1617009B9F48 /* SwiftfulUI in Frameworks */ = {isa = PBXBuildFile; productRef = 028F9BDE2CED1617009B9F48 /* SwiftfulUI */; };
 		02B62BA22E662DC3008FB7FF /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 02B62BA12E662DC3008FB7FF /* FirebaseMessaging */; };
 		02B62BA52E662DD7008FB7FF /* SwiftfulAuthenticatingFirebase in Frameworks */ = {isa = PBXBuildFile; productRef = 02B62BA42E662DD7008FB7FF /* SwiftfulAuthenticatingFirebase */; };
 		02B62BA82E662DE7008FB7FF /* SwiftfulLoggingFirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 02B62BA72E662DE7008FB7FF /* SwiftfulLoggingFirebaseAnalytics */; };
@@ -106,18 +99,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				028F9BDF2CED1617009B9F48 /* SwiftfulUI in Frameworks */,
-				028744422D3396FC00C2C3E1 /* SwiftfulHaptics in Frameworks */,
 				028F9BCE2CED152A009B9F48 /* SwiftfulLoggingMixpanel in Frameworks */,
 				02B62BAB2E662DF3008FB7FF /* SwiftfulLoggingFirebaseCrashlytics in Frameworks */,
 				02B62BA52E662DD7008FB7FF /* SwiftfulAuthenticatingFirebase in Frameworks */,
-				028744482D33A58F00C2C3E1 /* SwiftfulSoundEffects in Frameworks */,
 				5AD577B22EF43191006AE4ED /* Data in Frameworks */,
 				0229588C2CEE932F00765488 /* SDWebImageSwiftUI in Frameworks */,
-				028F9B862CECF666009B9F48 /* SwiftfulUtilities in Frameworks */,
 				5AD577AC2EF4316F006AE4ED /* LocalPersistanceMock in Frameworks */,
-				0207BD952EA0958200E46D93 /* SwiftfulGamificationFirebase in Frameworks */,
-				0207BD982EA0958B00E46D93 /* SwiftfulGamification in Frameworks */,
 				028200B32EA3434D0004887E /* SwiftfulDataManagers in Frameworks */,
 				5AD577AF2EF4317E006AE4ED /* DesignSystem in Frameworks */,
 				028F9BD72CED155A009B9F48 /* SwiftfulAuthUI in Frameworks */,
@@ -126,7 +113,6 @@
 				028F9BD12CED1539009B9F48 /* SwiftfulPurchasing in Frameworks */,
 				02B62BA22E662DC3008FB7FF /* FirebaseMessaging in Frameworks */,
 				028F9BC52CED14CA009B9F48 /* SwiftfulLogging in Frameworks */,
-				0200345B2EAC73C700D87C8F /* SwiftfulOnboarding in Frameworks */,
 				44A5F726E65B42E393C059CB /* AppRouter in Frameworks */,
 				028200B62EA3437B0004887E /* SwiftfulDataManagersFirebase in Frameworks */,
 				5AD577AA2EF4316F006AE4ED /* LocalPersistance in Frameworks */,
@@ -225,17 +211,13 @@
 			);
 			name = AppTemplateLite;
 			packageProductDependencies = (
-				028F9B852CECF666009B9F48 /* SwiftfulUtilities */,
 				028F9BC42CED14CA009B9F48 /* SwiftfulLogging */,
 				028F9BCD2CED152A009B9F48 /* SwiftfulLoggingMixpanel */,
 				028F9BD02CED1539009B9F48 /* SwiftfulPurchasing */,
 				028F9BD32CED1547009B9F48 /* SwiftfulPurchasingRevenueCat */,
 				028F9BD62CED155A009B9F48 /* SwiftfulAuthUI */,
 				028F9BD82CED155A009B9F48 /* SwiftfulAuthenticating */,
-				028F9BDE2CED1617009B9F48 /* SwiftfulUI */,
 				0229588B2CEE932F00765488 /* SDWebImageSwiftUI */,
-				028744412D3396FC00C2C3E1 /* SwiftfulHaptics */,
-				028744472D33A58F00C2C3E1 /* SwiftfulSoundEffects */,
 				B589628E0344458686490681 /* AppRouter */,
 				02B62BA12E662DC3008FB7FF /* FirebaseMessaging */,
 				02B62BA42E662DD7008FB7FF /* SwiftfulAuthenticatingFirebase */,
@@ -244,11 +226,8 @@
 				02B62BAD2E662E14008FB7FF /* SwiftfulFirestore */,
 				02B62BAF2E662E60008FB7FF /* FirebaseRemoteConfig */,
 				02B62BB12E662E85008FB7FF /* FirebaseStorage */,
-				0207BD942EA0958200E46D93 /* SwiftfulGamificationFirebase */,
-				0207BD972EA0958B00E46D93 /* SwiftfulGamification */,
 				028200B22EA3434D0004887E /* SwiftfulDataManagers */,
 				028200B52EA3437B0004887E /* SwiftfulDataManagersFirebase */,
-				0200345A2EAC73C700D87C8F /* SwiftfulOnboarding */,
 				5AD577A92EF4316F006AE4ED /* LocalPersistance */,
 				5AD577AB2EF4316F006AE4ED /* LocalPersistanceMock */,
 				5AD577AE2EF4317E006AE4ED /* DesignSystem */,
@@ -292,28 +271,21 @@
 			mainGroup = 028F9B4A2CECF2C2009B9F48;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				028F9B842CECF666009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulUtilities" */,
 				028F9BC32CED14CA009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulLogging" */,
 				028F9BCC2CED152A009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulLoggingMixpanel" */,
 				028F9BCF2CED1539009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulPurchasing" */,
 				028F9BD22CED1547009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulPurchasingRevenueCat" */,
 				028F9BD52CED155A009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulAuthenticating" */,
-				028F9BDD2CED1617009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulUI" */,
 				0229588A2CEE932F00765488 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
-				028744402D3396FC00C2C3E1 /* XCRemoteSwiftPackageReference "SwiftfulHaptics" */,
-				028744462D33A58F00C2C3E1 /* XCRemoteSwiftPackageReference "SwiftfulSoundEffects" */,
 				3C0A26DE24FC4478954EB23D /* XCRemoteSwiftPackageReference "AppRouter" */,
 				02B62BA02E662DC3008FB7FF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				02B62BA32E662DD7008FB7FF /* XCRemoteSwiftPackageReference "SwiftfulAuthenticatingFirebase" */,
 				02B62BA62E662DE7008FB7FF /* XCRemoteSwiftPackageReference "SwiftfulLoggingFirebaseAnalytics" */,
 				02B62BA92E662DF3008FB7FF /* XCRemoteSwiftPackageReference "SwiftfulLoggingFirebaseCrashlytics" */,
 				02B62BAC2E662E14008FB7FF /* XCRemoteSwiftPackageReference "SwiftfulFirestore" */,
-				0207BD932EA0958200E46D93 /* XCRemoteSwiftPackageReference "SwiftfulGamificationFirebase" */,
-				0207BD962EA0958B00E46D93 /* XCRemoteSwiftPackageReference "SwiftfulGamification" */,
 				028200B12EA3434D0004887E /* XCRemoteSwiftPackageReference "SwiftfulDataManagers" */,
 				028200B42EA3437B0004887E /* XCRemoteSwiftPackageReference "SwiftfulDataManagersFirebase" */,
-				020034592EAC73C700D87C8F /* XCRemoteSwiftPackageReference "SwiftfulOnboarding" */,
-				5AD577A82EF4316F006AE4ED /* XCRemoteSwiftPackageReference "app-core-packages" */,
+				5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/app-core-packages" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 028F9B542CECF2C2009B9F48 /* Products */;
@@ -960,31 +932,14 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/app-core-packages" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../../Packages/app-core-packages";
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
-		020034592EAC73C700D87C8F /* XCRemoteSwiftPackageReference "SwiftfulOnboarding" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulOnboarding.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
-		0207BD932EA0958200E46D93 /* XCRemoteSwiftPackageReference "SwiftfulGamificationFirebase" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulGamificationFirebase.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.1;
-			};
-		};
-		0207BD962EA0958B00E46D93 /* XCRemoteSwiftPackageReference "SwiftfulGamification" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulGamification.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
 		0229588A2CEE932F00765488 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI.git";
@@ -1007,30 +962,6 @@
 			requirement = {
 				branch = main;
 				kind = branch;
-			};
-		};
-		028744402D3396FC00C2C3E1 /* XCRemoteSwiftPackageReference "SwiftfulHaptics" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulHaptics.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.0;
-			};
-		};
-		028744462D33A58F00C2C3E1 /* XCRemoteSwiftPackageReference "SwiftfulSoundEffects" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulSoundEffects.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
-		028F9B842CECF666009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulUtilities" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulUtilities";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.5;
 			};
 		};
 		028F9BC32CED14CA009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulLogging" */ = {
@@ -1071,14 +1002,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 1.0.0;
-			};
-		};
-		028F9BDD2CED1617009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulUI" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulUI";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.2.0;
 			};
 		};
 		02B62BA02E662DC3008FB7FF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
@@ -1129,32 +1052,9 @@
 				minimumVersion = 1.0.0;
 			};
 		};
-		5AD577A82EF4316F006AE4ED /* XCRemoteSwiftPackageReference "app-core-packages" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/sakhnenkoff/app-core-packages.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		0200345A2EAC73C700D87C8F /* SwiftfulOnboarding */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 020034592EAC73C700D87C8F /* XCRemoteSwiftPackageReference "SwiftfulOnboarding" */;
-			productName = SwiftfulOnboarding;
-		};
-		0207BD942EA0958200E46D93 /* SwiftfulGamificationFirebase */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 0207BD932EA0958200E46D93 /* XCRemoteSwiftPackageReference "SwiftfulGamificationFirebase" */;
-			productName = SwiftfulGamificationFirebase;
-		};
-		0207BD972EA0958B00E46D93 /* SwiftfulGamification */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 0207BD962EA0958B00E46D93 /* XCRemoteSwiftPackageReference "SwiftfulGamification" */;
-			productName = SwiftfulGamification;
-		};
 		0229588B2CEE932F00765488 /* SDWebImageSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 0229588A2CEE932F00765488 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
@@ -1169,21 +1069,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 028200B42EA3437B0004887E /* XCRemoteSwiftPackageReference "SwiftfulDataManagersFirebase" */;
 			productName = SwiftfulDataManagersFirebase;
-		};
-		028744412D3396FC00C2C3E1 /* SwiftfulHaptics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 028744402D3396FC00C2C3E1 /* XCRemoteSwiftPackageReference "SwiftfulHaptics" */;
-			productName = SwiftfulHaptics;
-		};
-		028744472D33A58F00C2C3E1 /* SwiftfulSoundEffects */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 028744462D33A58F00C2C3E1 /* XCRemoteSwiftPackageReference "SwiftfulSoundEffects" */;
-			productName = SwiftfulSoundEffects;
-		};
-		028F9B852CECF666009B9F48 /* SwiftfulUtilities */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 028F9B842CECF666009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulUtilities" */;
-			productName = SwiftfulUtilities;
 		};
 		028F9BC42CED14CA009B9F48 /* SwiftfulLogging */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1214,11 +1099,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 028F9BD52CED155A009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulAuthenticating" */;
 			productName = SwiftfulAuthenticating;
-		};
-		028F9BDE2CED1617009B9F48 /* SwiftfulUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 028F9BDD2CED1617009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulUI" */;
-			productName = SwiftfulUI;
 		};
 		02B62BA12E662DC3008FB7FF /* FirebaseMessaging */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1257,27 +1137,27 @@
 		};
 		5AD577A92EF4316F006AE4ED /* LocalPersistance */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5AD577A82EF4316F006AE4ED /* XCRemoteSwiftPackageReference "app-core-packages" */;
+			package = 5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/app-core-packages" */;
 			productName = LocalPersistance;
 		};
 		5AD577AB2EF4316F006AE4ED /* LocalPersistanceMock */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5AD577A82EF4316F006AE4ED /* XCRemoteSwiftPackageReference "app-core-packages" */;
+			package = 5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/app-core-packages" */;
 			productName = LocalPersistanceMock;
 		};
 		5AD577AE2EF4317E006AE4ED /* DesignSystem */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5AD577A82EF4316F006AE4ED /* XCRemoteSwiftPackageReference "app-core-packages" */;
+			package = 5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/app-core-packages" */;
 			productName = DesignSystem;
 		};
 		5AD577B12EF43191006AE4ED /* Data */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5AD577A82EF4316F006AE4ED /* XCRemoteSwiftPackageReference "app-core-packages" */;
+			package = 5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/app-core-packages" */;
 			productName = Data;
 		};
 		5AD577B32EF43191006AE4ED /* DataMock */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5AD577A82EF4316F006AE4ED /* XCRemoteSwiftPackageReference "app-core-packages" */;
+			package = 5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/app-core-packages" */;
 			productName = DataMock;
 		};
 		B589628E0344458686490681 /* AppRouter */ = {

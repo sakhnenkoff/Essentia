@@ -19,19 +19,11 @@ private struct ServiceBundle {
     let networkingService: NetworkingServiceProtocol
     let abTestManager: ABTestManager?
     let purchaseManager: PurchaseManager?
-    let hapticManager: HapticManager?
-    let streakManager: StreakManager?
-    let xpManager: ExperiencePointsManager?
-    let progressManager: ProgressManager?
 }
 
 private struct OptionalManagers {
     let abTestManager: ABTestManager?
     let purchaseManager: PurchaseManager?
-    let hapticManager: HapticManager?
-    let streakManager: StreakManager?
-    let xpManager: ExperiencePointsManager?
-    let progressManager: ProgressManager?
 }
 
 @MainActor
@@ -50,11 +42,6 @@ final class AppServices {
     let abTestManager: ABTestManager?
     let purchaseManager: PurchaseManager?
     let pushManager: PushManager?
-    let hapticManager: HapticManager?
-    let soundEffectManager: SoundEffectManager?
-    let streakManager: StreakManager?
-    let xpManager: ExperiencePointsManager?
-    let progressManager: ProgressManager?
 
     init(configuration: BuildConfiguration = .current) {
         self.configuration = configuration
@@ -82,9 +69,6 @@ final class AppServices {
         let pushManager = FeatureFlags.enablePushNotifications
             ? PushManager(logManager: bundle.logManager)
             : nil
-        let soundEffectManager = FeatureFlags.enableSoundEffects
-            ? SoundEffectManager(logger: bundle.logManager)
-            : nil
 
         self.consentManager = consentManager
         self.logManager = bundle.logManager
@@ -96,11 +80,6 @@ final class AppServices {
         self.abTestManager = bundle.abTestManager
         self.purchaseManager = bundle.purchaseManager
         self.pushManager = pushManager
-        self.hapticManager = bundle.hapticManager
-        self.soundEffectManager = soundEffectManager
-        self.streakManager = bundle.streakManager
-        self.xpManager = bundle.xpManager
-        self.progressManager = bundle.progressManager
         bundle.logManager.addUserProperties(dict: consentManager.eventParameters, isHighPriority: false)
     }
 
@@ -127,11 +106,7 @@ final class AppServices {
             userDefaultsService: MockUserDefaultsCacheService(),
             networkingService: NetworkingService(),
             abTestManager: managers.abTestManager,
-            purchaseManager: managers.purchaseManager,
-            hapticManager: managers.hapticManager,
-            streakManager: managers.streakManager,
-            xpManager: managers.xpManager,
-            progressManager: managers.progressManager
+            purchaseManager: managers.purchaseManager
         )
     }
 
@@ -206,11 +181,7 @@ final class AppServices {
             userDefaultsService: UserDefaultsCacheService(),
             networkingService: NetworkingService(),
             abTestManager: managers.abTestManager,
-            purchaseManager: managers.purchaseManager,
-            hapticManager: managers.hapticManager,
-            streakManager: managers.streakManager,
-            xpManager: managers.xpManager,
-            progressManager: managers.progressManager
+            purchaseManager: managers.purchaseManager
         )
     }
 
@@ -221,38 +192,10 @@ final class AppServices {
         let purchaseManager = FeatureFlags.enablePurchases
             ? PurchaseManager(service: MockPurchaseService(), logger: logManager)
             : nil
-        let hapticManager = FeatureFlags.enableHaptics
-            ? HapticManager(logger: logManager)
-            : nil
-        let streakManager = FeatureFlags.enableStreaks
-            ? StreakManager(
-                services: MockStreakServices(),
-                configuration: Self.streakConfiguration,
-                logger: logManager
-            )
-            : nil
-        let xpManager = FeatureFlags.enableExperiencePoints
-            ? ExperiencePointsManager(
-                services: MockExperiencePointsServices(),
-                configuration: Self.xpConfiguration,
-                logger: logManager
-            )
-            : nil
-        let progressManager = FeatureFlags.enableProgress
-            ? ProgressManager(
-                services: MockProgressServices(),
-                configuration: Self.progressConfiguration,
-                logger: logManager
-            )
-            : nil
 
         return OptionalManagers(
             abTestManager: abTestManager,
-            purchaseManager: purchaseManager,
-            hapticManager: hapticManager,
-            streakManager: streakManager,
-            xpManager: xpManager,
-            progressManager: progressManager
+            purchaseManager: purchaseManager
         )
     }
 
@@ -269,38 +212,10 @@ final class AppServices {
                 logger: logManager
             )
             : nil
-        let hapticManager = FeatureFlags.enableHaptics
-            ? HapticManager(logger: logManager)
-            : nil
-        let streakManager = FeatureFlags.enableStreaks
-            ? StreakManager(
-                services: ProdStreakServices(),
-                configuration: Self.streakConfiguration,
-                logger: logManager
-            )
-            : nil
-        let xpManager = FeatureFlags.enableExperiencePoints
-            ? ExperiencePointsManager(
-                services: ProdExperiencePointsServices(),
-                configuration: Self.xpConfiguration,
-                logger: logManager
-            )
-            : nil
-        let progressManager = FeatureFlags.enableProgress
-            ? ProgressManager(
-                services: ProdProgressServices(),
-                configuration: Self.progressConfiguration,
-                logger: logManager
-            )
-            : nil
 
         return OptionalManagers(
             abTestManager: abTestManager,
-            purchaseManager: purchaseManager,
-            hapticManager: hapticManager,
-            streakManager: streakManager,
-            xpManager: xpManager,
-            progressManager: progressManager
+            purchaseManager: purchaseManager
         )
     }
 
@@ -311,37 +226,18 @@ final class AppServices {
             logManager.trackEvent(eventName: "UserManager_LogIn_Fail", parameters: error.eventParameters, type: .warning)
         }
 
-        await withTaskGroup(of: Void.self) { group in
-            if let purchaseManager {
-                group.addTask {
-                    _ = try? await purchaseManager.logIn(
-                        userId: user.uid,
-                        userAttributes: PurchaseProfileAttributes(
-                            email: user.email,
-                            mixpanelDistinctId: Constants.mixpanelDistinctId,
-                            firebaseAppInstanceId: Constants.firebaseAnalyticsAppInstanceID
-                        )
-                    )
-                }
-            }
-            if let streakManager {
-                group.addTask {
-                    try? await streakManager.logIn(userId: user.uid)
-                }
-            }
-            if let xpManager {
-                group.addTask {
-                    try? await xpManager.logIn(userId: user.uid)
-                }
-            }
-            if let progressManager {
-                group.addTask {
-                    try? await progressManager.logIn(userId: user.uid)
-                }
-            }
+        if let purchaseManager {
+            _ = try? await purchaseManager.logIn(
+                userId: user.uid,
+                userAttributes: PurchaseProfileAttributes(
+                    email: user.email,
+                    mixpanelDistinctId: Constants.mixpanelDistinctId,
+                    firebaseAppInstanceId: Constants.firebaseAnalyticsAppInstanceID
+                )
+            )
         }
 
-        logManager.addUserProperties(dict: Utilities.eventParameters, isHighPriority: false)
+        logManager.addUserProperties(dict: AppUtilities.eventParameters, isHighPriority: false)
     }
 
     func logIn(user: UserAuthInfo, isNewUser: Bool) async throws {
@@ -356,34 +252,12 @@ final class AppServices {
         if let purchaseManager {
             try await purchaseManager.logOut()
         }
-        streakManager?.logOut()
-        xpManager?.logOut()
-        if let progressManager {
-            await progressManager.logOut()
-        }
 
         logManager.deleteUserProfile()
     }
 }
 
 extension AppServices {
-    static let streakConfiguration = StreakConfiguration(
-        streakKey: Constants.streakKey,
-        eventsRequiredPerDay: 1,
-        useServerCalculation: false,
-        leewayHours: 0,
-        freezeBehavior: .autoConsumeFreezes
-    )
-
-    static let xpConfiguration = ExperiencePointsConfiguration(
-        experienceKey: Constants.xpKey,
-        useServerCalculation: false
-    )
-
-    static let progressConfiguration = ProgressConfiguration(
-        progressKey: Constants.progressKey
-    )
-
     static let userManagerConfiguration = DataManagerSyncConfiguration(
         managerKey: "UserMan",
         enablePendingWrites: true
