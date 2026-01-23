@@ -19,8 +19,8 @@ struct ProfileView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: DSSpacing.xl) {
-                headerCard
-                accountDetails
+                header
+                accountSection
                 activitySection
                 actionSection
             }
@@ -33,17 +33,17 @@ struct ProfileView: View {
         .toast($toast)
     }
 
-    private var headerCard: some View {
+    private var header: some View {
         HStack(alignment: .top, spacing: DSSpacing.md) {
             profileAvatar
 
             VStack(alignment: .leading, spacing: DSSpacing.xs) {
                 Text(session.currentUser?.commonNameCalculated ?? "Guest")
-                    .font(.headlineMedium())
+                    .font(.titleSmall())
                     .foregroundStyle(Color.textPrimary)
-                Text("User ID: \(userId)")
-                    .font(.captionLarge())
-                    .foregroundStyle(Color.textTertiary)
+                Text(session.isPremium ? "Premium member" : "Free plan")
+                    .font(.bodySmall())
+                    .foregroundStyle(Color.textSecondary)
 
                 if let email = session.currentUser?.emailCalculated ?? session.auth?.email {
                     Text(email)
@@ -52,11 +52,8 @@ struct ProfileView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-
-            statusChip
         }
-        .padding(DSSpacing.md)
-        .cardSurface(cornerRadius: DSSpacing.md)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var profileAvatar: some View {
@@ -78,31 +75,41 @@ struct ProfileView: View {
         .clipShape(Circle())
     }
 
-    private var statusChip: some View {
-        let isPremium = session.isPremium
-        let text = isPremium ? "Premium" : "Free plan"
-        let tint = isPremium ? Color.success : Color.info
+    private var accountSection: some View {
+        section(title: "Account") {
+            listCard {
+                if let name = session.currentUser?.commonNameCalculated {
+                    DSListRow(
+                        title: "Name",
+                        subtitle: name,
+                        leadingIcon: "person.fill",
+                        leadingTint: .textPrimary
+                    )
+                    Divider()
+                }
 
-        return Text(text)
-            .font(.captionLarge())
-            .foregroundStyle(tint)
-            .padding(.horizontal, DSSpacing.sm)
-            .padding(.vertical, DSSpacing.xs)
-            .background(tint.opacity(0.15))
-            .clipShape(Capsule())
-    }
+                if let email = session.currentUser?.emailCalculated ?? session.auth?.email {
+                    DSListRow(
+                        title: "Email",
+                        subtitle: email,
+                        leadingIcon: "envelope",
+                        leadingTint: .info,
+                        trailingIcon: "doc.on.doc"
+                    ) {
+                        copyToPasteboard(email)
+                    }
+                    Divider()
+                }
 
-    private var accountDetails: some View {
-        sectionCard(title: "Account details") {
-            if let name = session.currentUser?.commonNameCalculated {
-                keyValueRow(title: "Name", value: name)
-            }
-            if let email = session.currentUser?.emailCalculated ?? session.auth?.email {
-                keyValueRow(title: "Email", value: email)
-            }
-
-            DSButton(title: "Copy user ID", style: .secondary, isFullWidth: true) {
-                copyToPasteboard(userId)
+                DSListRow(
+                    title: "User ID",
+                    subtitle: userId,
+                    leadingIcon: "person.crop.circle",
+                    leadingTint: .textSecondary,
+                    trailingIcon: "doc.on.doc"
+                ) {
+                    copyToPasteboard(userId)
+                }
             }
         }
     }
@@ -110,7 +117,7 @@ struct ProfileView: View {
     private var activitySection: some View {
         let activityItems = sampleActivityItems
 
-        return sectionCard(title: "Recent activity") {
+        return section(title: "Recent activity") {
             if activityItems.isEmpty {
                 EmptyStateView(
                     icon: "sparkles",
@@ -120,9 +127,12 @@ struct ProfileView: View {
                     action: { router.navigateTo(.detail(title: "Onboarding progress"), for: router.selectedTab) }
                 )
             } else {
-                VStack(spacing: DSSpacing.sm) {
-                    ForEach(activityItems) { item in
+                listCard {
+                    ForEach(Array(activityItems.enumerated()), id: \.element.id) { index, item in
                         activityRow(item)
+                        if index < activityItems.count - 1 {
+                            Divider()
+                        }
                     }
                 }
             }
@@ -130,20 +140,32 @@ struct ProfileView: View {
     }
 
     private var actionSection: some View {
-        sectionCard(title: "Quick actions") {
-            GlassStack(spacing: DSSpacing.sm) {
-                DSButton(title: "Open settings", icon: "gearshape.fill", style: .secondary, isFullWidth: true) {
+        section(title: "Quick actions") {
+            listCard {
+                DSListRow(
+                    title: "Open settings",
+                    subtitle: "Privacy and notifications.",
+                    leadingIcon: "gearshape.fill",
+                    leadingTint: .textPrimary,
+                    showsDisclosure: true
+                ) {
                     router.presentSheet(.settings)
                 }
-
-                DSButton(title: session.isPremium ? "Manage subscription" : "View paywall", icon: "sparkles", isFullWidth: true) {
+                Divider()
+                DSListRow(
+                    title: session.isPremium ? "Manage subscription" : "View paywall",
+                    subtitle: "Upgrade options.",
+                    leadingIcon: "sparkles",
+                    leadingTint: .warning,
+                    showsDisclosure: true
+                ) {
                     router.presentSheet(.paywall)
                 }
             }
         }
     }
 
-    private func sectionCard(title: String, @ViewBuilder content: () -> some View) -> some View {
+    private func section(title: String, @ViewBuilder content: () -> some View) -> some View {
         VStack(alignment: .leading, spacing: DSSpacing.sm) {
             Text(title)
                 .font(.headlineMedium())
@@ -151,43 +173,22 @@ struct ProfileView: View {
 
             content()
         }
-        .padding(DSSpacing.md)
-        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func listCard(@ViewBuilder content: () -> some View) -> some View {
+        VStack(spacing: 0) {
+            content()
+        }
         .cardSurface(cornerRadius: DSSpacing.md)
     }
 
-    private func keyValueRow(title: String, value: String) -> some View {
-        VStack(alignment: .leading, spacing: DSSpacing.xs) {
-            Text(title)
-                .font(.captionLarge())
-                .foregroundStyle(Color.textTertiary)
-            Text(value)
-                .font(.bodySmall())
-                .foregroundStyle(Color.textPrimary)
-        }
-    }
-
     private func activityRow(_ item: ActivityItem) -> some View {
-        HStack(alignment: .top, spacing: DSSpacing.sm) {
-            DSIconBadge(
-                systemName: item.icon,
-                size: 28,
-                cornerRadius: 14,
-                backgroundColor: item.tint.opacity(0.15),
-                foregroundColor: item.tint,
-                font: .headlineSmall()
-            )
-
-            VStack(alignment: .leading, spacing: DSSpacing.xs) {
-                Text(item.title)
-                    .font(.headlineSmall())
-                    .foregroundStyle(Color.textPrimary)
-                Text(item.message)
-                    .font(.bodySmall())
-                    .foregroundStyle(Color.textSecondary)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
+        DSListRow(
+            title: item.title,
+            subtitle: item.message,
+            leadingIcon: item.icon,
+            leadingTint: item.tint
+        )
     }
 
     private func copyToPasteboard(_ value: String) {

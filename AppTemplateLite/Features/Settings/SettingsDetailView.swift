@@ -76,43 +76,70 @@ struct SettingsDetailView: View {
     }
 
     private var privacySection: some View {
-        sectionCard(title: "Analytics") {
-            Toggle(
-                "Share analytics",
-                isOn: Binding(
-                    get: { viewModel.analyticsOptIn },
-                    set: { viewModel.setAnalyticsOptIn($0, services: services) }
+        section(title: "Analytics") {
+            listCard {
+                Toggle(
+                    "Share analytics",
+                    isOn: Binding(
+                        get: { viewModel.analyticsOptIn },
+                        set: { viewModel.setAnalyticsOptIn($0, services: services) }
+                    )
                 )
-            )
-            .tint(Color.themePrimary)
+                .tint(Color.themePrimary)
+                .padding(.horizontal, DSSpacing.md)
+                .padding(.vertical, DSSpacing.smd)
 
-            Text("Analytics help us understand onboarding and paywall performance.")
-                .font(.bodySmall())
-                .foregroundStyle(Color.textSecondary)
+                Divider()
+
+                Text("Analytics help us understand onboarding and paywall performance.")
+                    .font(.bodySmall())
+                    .foregroundStyle(Color.textSecondary)
+                    .padding(.horizontal, DSSpacing.md)
+                    .padding(.vertical, DSSpacing.smd)
+            }
         }
     }
 
     private var trackingSection: some View {
-        sectionCard(title: "Tracking") {
-            Toggle(
-                "Allow tracking (ATT)",
-                isOn: Binding(
-                    get: { viewModel.trackingOptIn },
-                    set: { viewModel.setTrackingOptIn($0, services: services) }
+        section(title: "Tracking") {
+            listCard {
+                Toggle(
+                    "Allow tracking (ATT)",
+                    isOn: Binding(
+                        get: { viewModel.trackingOptIn },
+                        set: { viewModel.setTrackingOptIn($0, services: services) }
+                    )
                 )
-            )
-            .tint(Color.themePrimary)
+                .tint(Color.themePrimary)
+                .padding(.horizontal, DSSpacing.md)
+                .padding(.vertical, DSSpacing.smd)
 
-            keyValueRow(title: "Tracking status", value: viewModel.trackingStatusLabel)
+                Divider()
 
-            DSButton(title: "Request tracking authorization", style: .secondary, isFullWidth: true) {
-                viewModel.requestTrackingAuthorization(services: services)
+                DSListRow(
+                    title: "Tracking status",
+                    subtitle: viewModel.trackingStatusLabel,
+                    leadingIcon: "lock.shield",
+                    leadingTint: .textSecondary
+                )
+
+                Divider()
+
+                DSListRow(
+                    title: "Request tracking authorization",
+                    subtitle: "Prompt the system dialog.",
+                    leadingIcon: "checkmark.seal",
+                    leadingTint: .warning,
+                    showsDisclosure: true
+                ) {
+                    viewModel.requestTrackingAuthorization(services: services)
+                }
+                .disabled(!viewModel.trackingOptIn || viewModel.isProcessing || AppConfiguration.isMock)
             }
-            .disabled(!viewModel.trackingOptIn || viewModel.isProcessing || AppConfiguration.isMock)
         }
     }
 
-    private func sectionCard(title: String, @ViewBuilder content: () -> some View) -> some View {
+    private func section(title: String, @ViewBuilder content: () -> some View) -> some View {
         VStack(alignment: .leading, spacing: DSSpacing.sm) {
             Text(title)
                 .font(.headlineMedium())
@@ -120,20 +147,13 @@ struct SettingsDetailView: View {
 
             content()
         }
-        .padding(DSSpacing.md)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .cardSurface(cornerRadius: DSSpacing.md)
     }
 
-    private func keyValueRow(title: String, value: String) -> some View {
-        VStack(alignment: .leading, spacing: DSSpacing.xs) {
-            Text(title)
-                .font(.captionLarge())
-                .foregroundStyle(Color.textTertiary)
-            Text(value)
-                .font(.bodySmall())
-                .foregroundStyle(Color.textPrimary)
+    private func listCard(@ViewBuilder content: () -> some View) -> some View {
+        VStack(spacing: 0) {
+            content()
         }
+        .cardSurface(cornerRadius: DSSpacing.md)
     }
 
     private func infoCard(title: String, message: String, icon: String) -> some View {

@@ -18,23 +18,29 @@ struct CustomPaywallView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: DSSpacing.lg) {
-            heroCard
+            header
 
-            VStack(alignment: .leading, spacing: DSSpacing.sm) {
-                Text("Choose your plan")
-                    .font(.headlineMedium())
-                    .foregroundStyle(Color.textPrimary)
-                Text("Cancel anytime. Plans renew automatically unless cancelled in Settings.")
-                    .font(.bodySmall())
-                    .foregroundStyle(Color.textSecondary)
-            }
-
-            GlassStack(spacing: DSSpacing.sm) {
+            listCard {
                 let featuredId = products.first?.id
-                ForEach(products) { product in
-                    productCard(product: product, isFeatured: product.id == featuredId)
+                ForEach(Array(products.enumerated()), id: \.element.id) { index, product in
+                    let isFeatured = product.id == featuredId
+                    DSListRow(
+                        title: product.title,
+                        subtitle: productSubtitle(product, isFeatured: isFeatured),
+                        leadingIcon: "sparkles",
+                        leadingTint: isFeatured ? .success : .textPrimary,
+                        trailingText: product.priceStringWithDuration,
+                        showsDisclosure: true
+                    ) {
+                        onPurchaseProductPressed(product)
+                    }
+
+                    if index < products.count - 1 {
+                        Divider()
+                    }
                 }
             }
+            .disabled(isProcessing)
 
             DSButton.link(title: "Restore Purchase", action: onRestorePurchasePressed)
                 .disabled(isProcessing)
@@ -43,81 +49,34 @@ struct CustomPaywallView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private var heroCard: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.sm) {
+    private var header: some View {
+        VStack(alignment: .leading, spacing: DSSpacing.xs) {
             Text(title)
                 .font(.titleLarge())
                 .foregroundStyle(Color.textPrimary)
             Text(subtitle)
                 .font(.bodyMedium())
                 .foregroundStyle(Color.textSecondary)
-
-            HStack(spacing: DSSpacing.sm) {
-                featureChip(text: "Premium templates", icon: "sparkles")
-                featureChip(text: "Analytics", icon: "chart.line.uptrend.xyaxis")
-            }
         }
-        .padding(DSSpacing.lg)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .cardSurface(cornerRadius: DSSpacing.lg)
     }
 
-    private func productCard(product: AnyProduct, isFeatured: Bool) -> some View {
-        VStack(alignment: .leading, spacing: DSSpacing.sm) {
-            if isFeatured {
-                Text("Best value")
-                    .font(.captionLarge())
-                    .foregroundStyle(Color.success)
-                    .padding(.horizontal, DSSpacing.sm)
-                    .padding(.vertical, DSSpacing.xs)
-                    .background(Color.success.opacity(0.15))
-                    .clipShape(Capsule())
-            }
-
-            Text(product.title)
-                .font(.headlineMedium())
-                .foregroundStyle(Color.textPrimary)
-
-            Text(product.subtitle)
-                .font(.bodySmall())
-                .foregroundStyle(Color.textSecondary)
-
-            Text(product.priceStringWithDuration)
-                .font(.headlineSmall())
-                .foregroundStyle(Color.textPrimary)
-
-            DSButton(title: "Select plan", isLoading: isProcessing, isFullWidth: true) {
-                onPurchaseProductPressed(product)
-            }
-            .disabled(isProcessing)
+    private func productSubtitle(_ product: AnyProduct, isFeatured: Bool) -> String {
+        if isFeatured {
+            return "Best value · \(product.subtitle)"
         }
-        .padding(DSSpacing.md)
-        .frame(maxWidth: .infinity, alignment: .leading)
+        return product.subtitle
+    }
+
+    private func listCard(@ViewBuilder content: () -> some View) -> some View {
+        VStack(spacing: 0) {
+            content()
+        }
         .cardSurface(
             cornerRadius: DSSpacing.md,
-            tint: isFeatured ? Color.success.opacity(0.06) : Color.textPrimary.opacity(0.02),
-            borderColor: isFeatured ? Color.success.opacity(0.35) : Color.border,
-            shadowRadius: 6,
-            shadowYOffset: 3
+            tint: Color.textPrimary.opacity(0.04),
+            usesGlass: true
         )
-    }
-
-    private func featureChip(text: String, icon: String) -> some View {
-        HStack(spacing: DSSpacing.xs) {
-            Image(systemName: icon)
-                .font(.captionLarge())
-            Text(text)
-                .font(.captionLarge())
-        }
-        .foregroundStyle(Color.textSecondary)
-        .padding(.horizontal, DSSpacing.sm)
-        .padding(.vertical, DSSpacing.xs)
-        .background(Color.surface)
-        .overlay(
-            Capsule()
-                .stroke(Color.border, lineWidth: 1)
-        )
-        .clipShape(Capsule())
     }
 }
 

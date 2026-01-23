@@ -57,44 +57,110 @@ struct DebugMenuView: View {
     }
 
     private var environmentSection: some View {
-        sectionCard(title: "Environment") {
-            keyValueRow(title: "Build", value: AppConfiguration.environment)
-            keyValueRow(title: "Premium", value: session.isPremium ? "true" : "false")
-            keyValueRow(title: "Onboarding", value: session.isOnboardingComplete ? "complete" : "incomplete")
+        section(title: "Environment") {
+            listCard {
+                DSListRow(
+                    title: "Build",
+                    subtitle: AppConfiguration.environment,
+                    leadingIcon: "wrench",
+                    leadingTint: .textSecondary
+                )
+                Divider()
+                DSListRow(
+                    title: "Premium",
+                    subtitle: session.isPremium ? "true" : "false",
+                    leadingIcon: "sparkles",
+                    leadingTint: .warning
+                )
+                Divider()
+                DSListRow(
+                    title: "Onboarding",
+                    subtitle: session.isOnboardingComplete ? "complete" : "incomplete",
+                    leadingIcon: "checkmark.seal",
+                    leadingTint: .info
+                )
+            }
         }
     }
 
     private var userSection: some View {
-        sectionCard(title: "User") {
-            keyValueRow(title: "User ID", value: session.auth?.uid ?? "none")
-            if let email = session.currentUser?.emailCalculated ?? session.auth?.email {
-                keyValueRow(title: "Email", value: email)
+        section(title: "User") {
+            listCard {
+                DSListRow(
+                    title: "User ID",
+                    subtitle: session.auth?.uid ?? "none",
+                    leadingIcon: "person.crop.circle",
+                    leadingTint: .textSecondary,
+                    trailingIcon: "doc.on.doc"
+                ) {
+                    copyToPasteboard(session.auth?.uid)
+                }
+
+                if let email = session.currentUser?.emailCalculated ?? session.auth?.email {
+                    Divider()
+                    DSListRow(
+                        title: "Email",
+                        subtitle: email,
+                        leadingIcon: "envelope",
+                        leadingTint: .info,
+                        trailingIcon: "doc.on.doc"
+                    ) {
+                        copyToPasteboard(email)
+                    }
+                }
             }
         }
     }
 
     private var actionSection: some View {
-        sectionCard(title: "Actions") {
-            GlassStack(spacing: DSSpacing.sm) {
-                DSButton(title: "Reset onboarding", style: .secondary, isFullWidth: true) {
+        section(title: "Actions") {
+            listCard {
+                DSListRow(
+                    title: "Reset onboarding",
+                    subtitle: "Restart the setup flow.",
+                    leadingIcon: "arrow.counterclockwise",
+                    leadingTint: .textSecondary,
+                    showsDisclosure: true
+                ) {
                     session.resetOnboarding()
                     toast = .info("Onboarding reset.")
                 }
-                DSButton(title: "Reset paywall", style: .secondary, isFullWidth: true) {
+                Divider()
+                DSListRow(
+                    title: "Reset paywall",
+                    subtitle: "Show on next launch.",
+                    leadingIcon: "sparkles",
+                    leadingTint: .warning,
+                    showsDisclosure: true
+                ) {
                     session.resetPaywallDismissal()
                     toast = .info("Paywall reset.")
                 }
-                DSButton(title: "Copy Mixpanel Distinct ID", style: .tertiary, isFullWidth: true) {
+                Divider()
+                DSListRow(
+                    title: "Copy Mixpanel Distinct ID",
+                    subtitle: "Developer identifier.",
+                    leadingIcon: "doc.on.doc",
+                    leadingTint: .textSecondary,
+                    trailingIcon: "doc.on.doc"
+                ) {
                     copyToPasteboard(Constants.mixpanelDistinctId)
                 }
-                DSButton(title: "Copy Firebase Instance ID", style: .tertiary, isFullWidth: true) {
+                Divider()
+                DSListRow(
+                    title: "Copy Firebase Instance ID",
+                    subtitle: "Analytics identifier.",
+                    leadingIcon: "doc.on.doc",
+                    leadingTint: .textSecondary,
+                    trailingIcon: "doc.on.doc"
+                ) {
                     copyToPasteboard(Constants.firebaseAnalyticsAppInstanceID)
                 }
             }
         }
     }
 
-    private func sectionCard(title: String, @ViewBuilder content: () -> some View) -> some View {
+    private func section(title: String, @ViewBuilder content: () -> some View) -> some View {
         VStack(alignment: .leading, spacing: DSSpacing.sm) {
             Text(title)
                 .font(.headlineMedium())
@@ -102,20 +168,13 @@ struct DebugMenuView: View {
 
             content()
         }
-        .padding(DSSpacing.md)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .cardSurface(cornerRadius: DSSpacing.md)
     }
 
-    private func keyValueRow(title: String, value: String) -> some View {
-        VStack(alignment: .leading, spacing: DSSpacing.xs) {
-            Text(title)
-                .font(.captionLarge())
-                .foregroundStyle(Color.textTertiary)
-            Text(value)
-                .font(.bodySmall())
-                .foregroundStyle(Color.textPrimary)
+    private func listCard(@ViewBuilder content: () -> some View) -> some View {
+        VStack(spacing: 0) {
+            content()
         }
+        .cardSurface(cornerRadius: DSSpacing.md)
     }
 }
 

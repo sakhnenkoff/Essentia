@@ -27,6 +27,7 @@ struct PaywallView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: DSSpacing.lg) {
                 header
+                includedSection
 
                 if FeatureFlags.enablePurchases {
                     paywallContent
@@ -62,7 +63,7 @@ struct PaywallView: View {
                     }
                 }
 
-                Text("Cancel anytime. Subscriptions renew automatically unless cancelled in Settings.")
+                Text("Cancel anytime in Settings.")
                     .font(.captionLarge())
                     .foregroundStyle(Color.textTertiary)
             }
@@ -166,38 +167,53 @@ struct PaywallView: View {
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.sm) {
+        VStack(alignment: .leading, spacing: DSSpacing.xs) {
             Text("Upgrade to Premium")
                 .font(.titleLarge())
                 .foregroundStyle(Color.textPrimary)
-            Text("Unlock the full template experience with premium flows, advanced analytics, and beautiful paywall presets.")
+            Text("Unlock premium flows and advanced analytics.")
                 .font(.bodyMedium())
                 .foregroundStyle(Color.textSecondary)
-
-            VStack(alignment: .leading, spacing: DSSpacing.sm) {
-                benefitRow(icon: "star.fill", title: "Premium templates", message: "Get additional layouts and onboarding polish.")
-                benefitRow(icon: "bolt.fill", title: "Faster launches", message: "Prewired services and routing shortcuts.")
-                benefitRow(icon: "shield.fill", title: "Priority support", message: "Launch confidently with guided updates.")
-            }
         }
-        .padding(DSSpacing.lg)
-        .cardSurface(cornerRadius: DSSpacing.lg)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private func benefitRow(icon: String, title: String, message: String) -> some View {
-        HStack(alignment: .top, spacing: DSSpacing.sm) {
-            DSIconBadge(systemName: icon)
+    private var includedSection: some View {
+        VStack(alignment: .leading, spacing: DSSpacing.sm) {
+            Text("Included")
+                .font(.headlineMedium())
+                .foregroundStyle(Color.textPrimary)
 
-            VStack(alignment: .leading, spacing: DSSpacing.xs) {
-                Text(title)
-                    .font(.headlineSmall())
-                    .foregroundStyle(Color.textPrimary)
-                Text(message)
-                    .font(.bodySmall())
-                    .foregroundStyle(Color.textSecondary)
+            listCard {
+                DSListRow(
+                    title: "Premium templates",
+                    subtitle: "Additional layouts and onboarding polish.",
+                    leadingIcon: "star.fill",
+                    leadingTint: .warning
+                )
+                Divider()
+                DSListRow(
+                    title: "Advanced analytics",
+                    subtitle: "Track onboarding and paywall performance.",
+                    leadingIcon: "chart.line.uptrend.xyaxis",
+                    leadingTint: .info
+                )
+                Divider()
+                DSListRow(
+                    title: "Priority support",
+                    subtitle: "Guided updates and launch help.",
+                    leadingIcon: "shield.fill",
+                    leadingTint: .success
+                )
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
+    }
+
+    private func listCard(@ViewBuilder content: () -> some View) -> some View {
+        VStack(spacing: 0) {
+            content()
+        }
+        .cardSurface(cornerRadius: DSSpacing.md)
     }
 
     private var paywallSkeleton: some View {

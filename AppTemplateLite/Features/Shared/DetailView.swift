@@ -20,7 +20,7 @@ struct DetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: DSSpacing.xl) {
                 header
-                overviewCard
+                overviewSection
 
                 if isLoading {
                     ProgressView("Loading detail...")
@@ -54,31 +54,46 @@ struct DetailView: View {
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.sm) {
+        VStack(alignment: .leading, spacing: DSSpacing.xs) {
             Text(title)
                 .font(.titleLarge())
                 .foregroundStyle(Color.textPrimary)
-            Text("This routed screen shows how AppRouter pushes detail content.")
+            Text("Routed detail content.")
                 .font(.bodyMedium())
                 .foregroundStyle(Color.textSecondary)
         }
     }
 
-    private var overviewCard: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.sm) {
-            Text("Overview")
-                .font(.headlineMedium())
-                .foregroundStyle(Color.textPrimary)
-            Text("Use this view to show rich content, status, and the next best action.")
-                .font(.bodySmall())
-                .foregroundStyle(Color.textSecondary)
-
-            DSButton(title: "Show paywall", icon: "sparkles", isFullWidth: true) {
-                router.presentSheet(.paywall)
+    private var overviewSection: some View {
+        sectionCard(title: "Overview") {
+            listCard {
+                DSListRow(
+                    title: "Status",
+                    subtitle: "Active",
+                    leadingIcon: "checkmark.seal",
+                    leadingTint: .success,
+                    trailingText: "Today"
+                )
+                Divider()
+                DSListRow(
+                    title: "Owner",
+                    subtitle: "Demo workspace",
+                    leadingIcon: "person.fill",
+                    leadingTint: .textPrimary,
+                    trailingText: sessionName
+                )
+                Divider()
+                DSListRow(
+                    title: "View paywall",
+                    subtitle: "Preview upgrade flow.",
+                    leadingIcon: "sparkles",
+                    leadingTint: .warning,
+                    showsDisclosure: true
+                ) {
+                    router.presentSheet(.paywall)
+                }
             }
         }
-        .padding(DSSpacing.md)
-        .cardSurface(cornerRadius: DSSpacing.md)
     }
 
     private var relatedSection: some View {
@@ -97,8 +112,14 @@ struct DetailView: View {
 
     private var actionSection: some View {
         sectionCard(title: "Demo states") {
-            GlassStack(spacing: DSSpacing.sm) {
-                DSButton(title: "Simulate loading", style: .secondary, isFullWidth: true) {
+            listCard {
+                DSListRow(
+                    title: "Simulate loading",
+                    subtitle: "Show a loading state.",
+                    leadingIcon: "hourglass",
+                    leadingTint: .textSecondary,
+                    showsDisclosure: true
+                ) {
                     guard !isLoading else { return }
                     isLoading = true
                     Task {
@@ -106,12 +127,24 @@ struct DetailView: View {
                         isLoading = false
                     }
                 }
-
-                DSButton(title: "Simulate error", style: .secondary, isFullWidth: true) {
+                Divider()
+                DSListRow(
+                    title: "Simulate error",
+                    subtitle: "Show an error state.",
+                    leadingIcon: "exclamationmark.triangle.fill",
+                    leadingTint: .warning,
+                    showsDisclosure: true
+                ) {
                     showError = true
                 }
-
-                DSButton(title: "Show success toast", style: .tertiary, isFullWidth: true) {
+                Divider()
+                DSListRow(
+                    title: "Show success toast",
+                    subtitle: "Display a confirmation.",
+                    leadingIcon: "checkmark.circle.fill",
+                    leadingTint: .success,
+                    showsDisclosure: true
+                ) {
                     toast = .success("Detail updated successfully.")
                 }
             }
@@ -126,9 +159,17 @@ struct DetailView: View {
 
             content()
         }
-        .padding(DSSpacing.md)
-        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func listCard(@ViewBuilder content: () -> some View) -> some View {
+        VStack(spacing: 0) {
+            content()
+        }
         .cardSurface(cornerRadius: DSSpacing.md)
+    }
+
+    private var sessionName: String {
+        "Workspace"
     }
 }
 

@@ -17,11 +17,11 @@ struct StoreKitPaywallView: View {
     var body: some View {
         SubscriptionStoreView(productIDs: productIds) {
             VStack(spacing: DSSpacing.sm) {
-                Text("Premium Studio")
+                Text("Premium")
                     .font(.titleLarge())
                     .foregroundStyle(Color.textPrimary)
 
-                Text("Unlock premium tools, templates, and analytics upgrades.")
+                Text("Unlock premium templates and analytics.")
                     .font(.bodyMedium())
                     .foregroundStyle(Color.textSecondary)
             }

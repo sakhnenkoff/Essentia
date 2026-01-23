@@ -53,14 +53,9 @@ struct SettingsView: View {
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.xs) {
-            Text("Settings")
-                .font(.titleLarge())
-                .foregroundStyle(Color.textPrimary)
-            Text("Account, notifications, and demo utilities.")
-                .font(.bodyMedium())
-                .foregroundStyle(Color.textSecondary)
-        }
+        Text("Account, notifications, and demo utilities.")
+            .font(.bodyMedium())
+            .foregroundStyle(Color.textSecondary)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
@@ -96,8 +91,7 @@ struct SettingsView: View {
                         title: "Sign out",
                         subtitle: "End this session.",
                         leadingIcon: "arrow.backward.square",
-                        leadingTint: .textSecondary,
-                        trailingIcon: "chevron.right"
+                        leadingTint: .textSecondary
                     ) {
                         viewModel.signOut(services: services, session: session)
                     }
@@ -106,8 +100,7 @@ struct SettingsView: View {
                         title: "Delete account",
                         subtitle: "Remove demo data.",
                         leadingIcon: "trash",
-                        leadingTint: .error,
-                        trailingIcon: "chevron.right"
+                        leadingTint: .error
                     ) {
                         viewModel.deleteAccount(services: services, session: session)
                     }
