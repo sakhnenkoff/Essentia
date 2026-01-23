@@ -20,48 +20,26 @@ struct OnboardingView: View {
                 progress: controller.progress,
                 showBackButton: controller.canGoBack,
                 onBack: {
-                    withAnimation(.easeInOut(duration: 0.25)) {
+                    withAnimation(.smooth(duration: 0.5)) {
                         controller.goBack()
                     }
                 }
             )
 
-            ScrollView {
-                VStack(alignment: .center, spacing: DSSpacing.xl) {
-                    heroIcon
-                    headlineView
-                    subtitleView
-                    cardContent
-
-                    if let errorMessage = errorMessage {
-                        ErrorStateView(
-                            title: "Couldn't finish setup",
-                            message: errorMessage,
-                            retryTitle: "Try again",
-                            onRetry: { completeOnboarding() },
-                            dismissTitle: "Continue anyway",
-                            onDismiss: {
-                                self.errorMessage = nil
-                                session.setOnboardingComplete()
-                            }
-                        )
-                    }
-
-                    if isSaving {
-                        ProgressView("Setting up your workspace...")
-                            .font(.bodySmall())
-                            .foregroundStyle(Color.textSecondary)
-                            .multilineTextAlignment(.center)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                    }
+            ZStack {
+                // Text-intro screens with line-by-line blur
+                if controller.currentStep.isTextIntro {
+                    textIntroContent
+                        .id(controller.currentStep)
+                        .transition(lineByLineTransition)
+                } else {
+                    // Data-gathering screens with staggered fade-in
+                    dataGatheringContent
+                        .id(controller.currentStep)
+                        .transition(.opacity.combined(with: .scale(scale: 0.98)))
                 }
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, DSSpacing.xl)
-                .padding(.top, DSSpacing.xl)
-                .padding(.bottom, DSSpacing.xxl)
             }
-            .scrollIndicators(.hidden)
-            .scrollDismissesKeyboard(.interactively)
+            .animation(.smooth(duration: 0.5), value: controller.currentStep)
         }
         .background(AmbientBackground())
         .safeAreaInset(edge: .bottom) {
@@ -74,6 +52,84 @@ struct OnboardingView: View {
         .onDisappear {
             trackEvent(.onDisappear)
         }
+    }
+
+    private var lineByLineTransition: AnyTransition {
+        if #available(iOS 18.0, *) {
+            return .asymmetric(
+                insertion: AnyTransition(LineByLineInBlurOutTransition()),
+                removal: .opacity.combined(with: .scale(scale: 0.95))
+            )
+        } else {
+            return .opacity.combined(with: .scale(scale: 0.98))
+        }
+    }
+
+    // MARK: - Text Intro Content
+
+    private var textIntroContent: some View {
+        VStack(spacing: DSSpacing.xxl) {
+            Spacer()
+
+            Text(controller.currentStep.introHeadline)
+                .font(.system(size: 32, weight: .semibold, design: .monospaced))
+                .multilineTextAlignment(.center)
+                .foregroundStyle(Color.textPrimary)
+                .lineSpacing(8)
+
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.horizontal, DSSpacing.xxl)
+    }
+
+    // MARK: - Data Gathering Content
+
+    private var dataGatheringContent: some View {
+        ScrollView {
+            VStack(alignment: .center, spacing: DSSpacing.xl) {
+                heroIcon
+                    .staggeredAppearance(index: 0)
+
+                headlineView
+                    .staggeredAppearance(index: 1)
+
+                subtitleView
+                    .staggeredAppearance(index: 2)
+
+                cardContent
+                    .staggeredAppearance(index: 3, baseDelay: 0.15, staggerDelay: 0.1)
+
+                if let errorMessage = errorMessage {
+                    ErrorStateView(
+                        title: "Couldn't finish setup",
+                        message: errorMessage,
+                        retryTitle: "Try again",
+                        onRetry: { completeOnboarding() },
+                        dismissTitle: "Continue anyway",
+                        onDismiss: {
+                            self.errorMessage = nil
+                            session.setOnboardingComplete()
+                        }
+                    )
+                    .staggeredAppearance(index: 4)
+                }
+
+                if isSaving {
+                    ProgressView("Setting up your workspace...")
+                        .font(.bodySmall())
+                        .foregroundStyle(Color.textSecondary)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, DSSpacing.xl)
+            .padding(.top, DSSpacing.xl)
+            .padding(.bottom, DSSpacing.xxl)
+        }
+        .scrollIndicators(.hidden)
+        .scrollDismissesKeyboard(.interactively)
     }
 
     private var heroIcon: some View {
@@ -107,38 +163,14 @@ struct OnboardingView: View {
     @ViewBuilder
     private var cardContent: some View {
         switch controller.currentStep {
-        case .welcome:
-            welcomeCard
+        case .intro1, .intro2, .intro3:
+            // Text-only screens have no card content
+            EmptyView()
         case .goals:
             goalsCard
         case .name:
             nameCard
         }
-    }
-
-    private var welcomeCard: some View {
-        GlassCard(tint: Color.surfaceVariant.opacity(0.7), usesGlass: false, tilt: -4) {
-            VStack(alignment: .leading, spacing: DSSpacing.sm) {
-                HStack {
-                    Text("Saturday, 24.05")
-                        .font(.captionLarge())
-                        .foregroundStyle(Color.themePrimary)
-                    Spacer()
-                    Text("18/365")
-                        .font(.captionLarge())
-                        .foregroundStyle(Color.textTertiary)
-                }
-
-                Text("How was your day?")
-                    .font(.headlineMedium())
-                    .foregroundStyle(Color.themePrimary)
-
-                RoundedRectangle(cornerRadius: DSRadii.lg, style: .continuous)
-                    .fill(Color.surfaceVariant.opacity(0.9))
-                    .frame(height: 180)
-            }
-        }
-        .frame(maxWidth: 340)
     }
 
     private var goalsCard: some View {

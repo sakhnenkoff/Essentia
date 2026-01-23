@@ -13,7 +13,7 @@ import Foundation
 final class OnboardingController {
     // MARK: - Flow State
 
-    private(set) var currentStep: OnboardingStep = .welcome
+    private(set) var currentStep: OnboardingStep = .intro1
     private(set) var stepStartTime: Date = .now
 
     // MARK: - Collected Data
@@ -29,7 +29,7 @@ final class OnboardingController {
 
     var canContinue: Bool {
         switch currentStep {
-        case .welcome:
+        case .intro1, .intro2, .intro3:
             true
         case .goals:
             !selectedGoals.isEmpty
