@@ -30,6 +30,7 @@ struct SettingsView: View {
                         .frame(maxWidth: .infinity, alignment: .center)
                 }
 
+                demoSection
                 accountSection
                 subscriptionSection
                 notificationsSection
@@ -51,6 +52,7 @@ struct SettingsView: View {
         .scrollBounceBehavior(.basedOnSize)
         .background(AmbientBackground())
         .navigationTitle("Settings")
+        .navigationBarTitleDisplayMode(.inline)
         .toast($viewModel.toast)
     }
 
@@ -58,7 +60,7 @@ struct SettingsView: View {
         Text("Account, notifications, and demo utilities.")
             .font(.bodyMedium())
             .foregroundStyle(Color.textSecondary)
-        .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var accountSection: some View {
@@ -85,19 +87,6 @@ struct SettingsView: View {
                             copyToPasteboard(email)
                         } trailing: {
                             DSIconButton(icon: "doc.on.doc", style: .secondary, size: .small)
-                        }
-                    }
-
-                    if FeatureFlags.enableAuth {
-                        Divider()
-                        DSListRow(
-                            title: "Show sign-in screen",
-                            subtitle: "Preview the auth demo again.",
-                            leadingIcon: "person.crop.circle.badge.plus"
-                        ) {
-                            viewModel.showAuthScreen(services: services, session: session)
-                        } trailing: {
-                            DSIconButton(icon: "chevron.right", style: .secondary, size: .small)
                         }
                     }
 
@@ -145,6 +134,61 @@ struct SettingsView: View {
         }
     }
 
+    private var demoSection: some View {
+        section(title: "Demo toggles") {
+            listCard {
+                DSListRow(
+                    title: "Onboarding flow",
+                    subtitle: "Show the onboarding steps.",
+                    leadingIcon: "sparkles"
+                ) {
+                    GlassToggle(isOn: onboardingToggle)
+                }
+
+                Divider()
+
+                if FeatureFlags.enableAuth {
+                    DSListRow(
+                        title: "Sign-in screen",
+                        subtitle: "Reopen the auth demo.",
+                        leadingIcon: "person.crop.circle"
+                    ) {
+                        GlassToggle(isOn: authToggle)
+                    }
+                } else {
+                    DSListRow(
+                        title: "Sign-in screen",
+                        subtitle: "Disabled in FeatureFlags.",
+                        leadingIcon: "person.crop.circle.badge.checkmark"
+                    ) {
+                        TagBadge(text: "Disabled", tint: .textSecondary)
+                    }
+                }
+
+                Divider()
+
+                if FeatureFlags.enablePurchases {
+                    DSListRow(
+                        title: "Paywall flow",
+                        subtitle: "Show the premium upsell.",
+                        leadingIcon: "creditcard.fill"
+                    ) {
+                        GlassToggle(isOn: paywallToggle)
+                    }
+                } else {
+                    DSListRow(
+                        title: "Paywall flow",
+                        subtitle: "Disabled in FeatureFlags.",
+                        leadingIcon: "creditcard.fill"
+                    ) {
+                        TagBadge(text: "Disabled", tint: .textSecondary)
+                    }
+                }
+            }
+            .disabled(viewModel.isProcessing)
+        }
+    }
+
     private var subscriptionSection: some View {
         section(title: "Monetization") {
             listCard {
@@ -188,10 +232,7 @@ struct SettingsView: View {
                     subtitle: "Enable notifications.",
                     leadingIcon: "calendar"
                 ) {
-                    remindersEnabled.toggle()
-                    viewModel.requestPushAuthorization(services: services)
-                } trailing: {
-                    GlassToggle(isOn: $remindersEnabled)
+                    GlassToggle(isOn: remindersToggle)
                 }
             }
             .disabled(!FeatureFlags.enablePushNotifications)
@@ -228,26 +269,6 @@ struct SettingsView: View {
         section(title: "Debug tools") {
             listCard {
                 DSListRow(
-                    title: "Reset onboarding",
-                    subtitle: "Restart the setup flow.",
-                    leadingIcon: "arrow.counterclockwise"
-                ) {
-                    viewModel.resetOnboarding(services: services, session: session)
-                } trailing: {
-                    DSIconButton(icon: "arrow.counterclockwise", style: .secondary, size: .small)
-                }
-                Divider()
-                DSListRow(
-                    title: "Reset paywall",
-                    subtitle: "Show on next launch.",
-                    leadingIcon: "sparkles"
-                ) {
-                    viewModel.resetPaywall(services: services, session: session)
-                } trailing: {
-                    DSIconButton(icon: "arrow.counterclockwise", style: .secondary, size: .small)
-                }
-                Divider()
-                DSListRow(
                     title: "Open debug menu",
                     subtitle: "Developer utilities.",
                     leadingIcon: "ladybug.fill"
@@ -258,6 +279,62 @@ struct SettingsView: View {
                 }
             }
         }
+    }
+
+    private var onboardingToggle: Binding<Bool> {
+        Binding(
+            get: { !session.isOnboardingComplete },
+            set: { newValue in
+                if newValue {
+                    viewModel.resetOnboarding(services: services, session: session)
+                } else {
+                    session.setOnboardingComplete()
+                    viewModel.toast = .info("Onboarding hidden.")
+                }
+            }
+        )
+    }
+
+    private var authToggle: Binding<Bool> {
+        Binding(
+            get: { FeatureFlags.enableAuth && !session.hasDismissedAuth },
+            set: { newValue in
+                guard FeatureFlags.enableAuth else { return }
+                if newValue {
+                    viewModel.showAuthScreen(services: services, session: session)
+                } else {
+                    session.markAuthDismissed()
+                    viewModel.toast = .info("Sign-in hidden.")
+                }
+            }
+        )
+    }
+
+    private var paywallToggle: Binding<Bool> {
+        Binding(
+            get: { FeatureFlags.enablePurchases && !session.hasDismissedPaywall },
+            set: { newValue in
+                guard FeatureFlags.enablePurchases else { return }
+                if newValue {
+                    viewModel.resetPaywall(services: services, session: session)
+                } else {
+                    session.markPaywallDismissed()
+                    viewModel.toast = .info("Paywall hidden.")
+                }
+            }
+        )
+    }
+
+    private var remindersToggle: Binding<Bool> {
+        Binding(
+            get: { remindersEnabled },
+            set: { newValue in
+                remindersEnabled = newValue
+                if newValue {
+                    viewModel.requestPushAuthorization(services: services)
+                }
+            }
+        )
     }
 
     private func copyToPasteboard(_ value: String) {

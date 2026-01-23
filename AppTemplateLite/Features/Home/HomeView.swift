@@ -12,11 +12,18 @@ struct HomeView: View {
     @Environment(AppServices.self) private var services
     @Environment(AppSession.self) private var session
     @Environment(Router<AppTab, AppRoute, AppSheet>.self) private var router
+
     @State private var viewModel = HomeViewModel()
+    @State private var demoFrequency = "Daily"
+    @State private var demoToggle = true
+    @State private var demoPillToggle = true
+    @State private var demoName = ""
+    @State private var demoEmail = ""
+    @State private var showSkeletonDemo = true
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: DSSpacing.xl) {
+            LazyVStack(alignment: .leading, spacing: DSSpacing.xl) {
                 hero
                 screensSection
                 componentsSection
@@ -27,6 +34,17 @@ struct HomeView: View {
         .scrollBounceBehavior(.basedOnSize)
         .background(AmbientBackground())
         .navigationTitle("Home")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    router.selectedTab = .settings
+                } label: {
+                    Image(systemName: "gearshape")
+                        .foregroundStyle(Color.themePrimary)
+                }
+            }
+        }
         .toast($viewModel.toast)
         .onAppear {
             viewModel.onAppear(services: services, session: session)
@@ -103,8 +121,13 @@ struct HomeView: View {
                             .foregroundStyle(Color.textPrimary)
 
                         HStack(spacing: DSSpacing.sm) {
-                            GlassButton(title: "Primary") { }
-                            GlassButton(title: "Secondary", style: .secondary) { }
+                            DSButton(title: "Primary") { }
+                            DSButton(title: "Secondary", style: .secondary) { }
+                        }
+
+                        HStack(spacing: DSSpacing.sm) {
+                            DSButton(title: "Text only", style: .tertiary) { }
+                            GlassButton(title: "Glass", style: .secondary) { }
                         }
                     }
                 }
@@ -115,12 +138,24 @@ struct HomeView: View {
                             .font(.headlineMedium())
                             .foregroundStyle(Color.textPrimary)
 
-                        GlassSegmentedControl(items: ["Daily", "Weekly", "Monthly"], selection: .constant("Daily"))
+                        GlassSegmentedControl(items: ["Daily", "Weekly", "Monthly"], selection: $demoFrequency)
 
                         HStack(spacing: DSSpacing.sm) {
-                            GlassToggle(isOn: .constant(true))
+                            GlassToggle(isOn: $demoToggle)
+                            DSPillToggle(isOn: $demoPillToggle, icon: "leaf.fill")
                             PickerPill(title: "17:00", usesGlass: true)
                         }
+                    }
+                }
+
+                GlassCard(usesGlass: false, tilt: 0) {
+                    VStack(alignment: .leading, spacing: DSSpacing.sm) {
+                        Text("Inputs")
+                            .font(.headlineMedium())
+                            .foregroundStyle(Color.textPrimary)
+
+                        DSTextField.name(placeholder: "Your name", text: $demoName)
+                        DSTextField.email(placeholder: "Email", text: $demoEmail)
                     }
                 }
 
@@ -133,7 +168,66 @@ struct HomeView: View {
                         HStack(spacing: DSSpacing.sm) {
                             IconTileButton(systemName: "heart")
                             IconTileButton(systemName: "tray.and.arrow.down")
+                            DSIconButton(icon: "xmark", style: .tertiary, size: .small, usesGlass: false)
                             TagBadge(text: "Featured")
+                        }
+                    }
+                }
+
+                GlassCard(usesGlass: false, tilt: 0) {
+                    VStack(alignment: .leading, spacing: DSSpacing.sm) {
+                        Text("List rows")
+                            .font(.headlineMedium())
+                            .foregroundStyle(Color.textPrimary)
+
+                        VStack(spacing: 0) {
+                            DSListRow(
+                                title: "Daily prompt",
+                                subtitle: "Add one memory.",
+                                leadingIcon: "doc.text"
+                            ) {
+                                TagBadge(text: "New")
+                            }
+                            Divider()
+                            DSListRow(
+                                title: "Reminder time",
+                                subtitle: "Set a calm nudge.",
+                                leadingIcon: "bell.fill"
+                            ) {
+                                TimePill(title: "17:00")
+                            }
+                        }
+                        .cardSurface(cornerRadius: DSRadii.lg)
+                    }
+                }
+
+                GlassCard(usesGlass: false, tilt: 0) {
+                    VStack(alignment: .leading, spacing: DSSpacing.sm) {
+                        Text("States")
+                            .font(.headlineMedium())
+                            .foregroundStyle(Color.textPrimary)
+
+                        // Shimmer loading demo
+                        HStack(spacing: DSSpacing.sm) {
+                            Circle()
+                                .fill(Color.surfaceVariant)
+                                .frame(width: 44, height: 44)
+                            VStack(alignment: .leading, spacing: DSSpacing.xs) {
+                                Text("Profile Name")
+                                    .font(.headlineSmall())
+                                Text("Loading content...")
+                                    .font(.bodySmall())
+                            }
+                            Spacer()
+                        }
+                        .shimmer(showSkeletonDemo)
+
+                        DSButton(title: showSkeletonDemo ? "Stop shimmer" : "Start shimmer", style: .secondary) {
+                            showSkeletonDemo.toggle()
+                        }
+
+                        DSButton(title: "Show Toast", style: .tertiary) {
+                            viewModel.toast = Toast(style: .success, message: "Action completed!")
                         }
                     }
                 }
@@ -156,6 +250,7 @@ struct HomeView: View {
         }
         .cardSurface(cornerRadius: DSRadii.lg)
     }
+
 }
 
 #Preview {

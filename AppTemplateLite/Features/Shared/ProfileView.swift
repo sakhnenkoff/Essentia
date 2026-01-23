@@ -27,6 +27,7 @@ struct ProfileView: View {
         .scrollBounceBehavior(.basedOnSize)
         .background(AmbientBackground())
         .navigationTitle("Profile")
+        .navigationBarTitleDisplayMode(.inline)
         .toast($toast)
     }
 

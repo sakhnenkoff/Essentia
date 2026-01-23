@@ -25,6 +25,7 @@ struct DetailView: View {
         .scrollBounceBehavior(.basedOnSize)
         .background(AmbientBackground())
         .navigationTitle("Detail")
+        .navigationBarTitleDisplayMode(.inline)
         .toast($toast)
     }
 

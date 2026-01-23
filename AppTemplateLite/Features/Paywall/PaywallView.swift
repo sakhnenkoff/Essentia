@@ -13,7 +13,6 @@ struct PaywallView: View {
     @Environment(AppSession.self) private var session
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel = PaywallViewModel()
-    @State private var paywallMode: PaywallMode = .custom
 
     let showCloseButton: Bool
     let allowSkip: Bool
@@ -25,19 +24,23 @@ struct PaywallView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: DSSpacing.lg) {
+            VStack(spacing: DSSpacing.lg) {
+                // Close button row
+                if showCloseButton {
+                    HStack {
+                        Spacer()
+                        DSIconButton(icon: "xmark", style: .secondary, size: .small, usesGlass: false) {
+                            dismiss()
+                        }
+                    }
+                } else {
+                    Spacer().frame(height: DSSpacing.xl)
+                }
+
                 heroCard
 
                 if FeatureFlags.enablePurchases {
                     paywallContent
-
-                    #if DEBUG
-                    Picker("Paywall style", selection: $paywallMode) {
-                        Text("StoreKit").tag(PaywallMode.storeKit)
-                        Text("Custom").tag(PaywallMode.custom)
-                    }
-                    .pickerStyle(.segmented)
-                    #endif
 
                     if viewModel.isProcessingPurchase {
                         ProgressView("Updating your access...")
@@ -65,6 +68,7 @@ struct PaywallView: View {
                 Text("Cancel anytime in Settings.")
                     .font(.captionLarge())
                     .foregroundStyle(Color.textTertiary)
+                    .frame(maxWidth: .infinity, alignment: .center)
             }
             .padding(DSSpacing.md)
         }
@@ -72,14 +76,6 @@ struct PaywallView: View {
         .scrollBounceBehavior(.basedOnSize)
         .background(AmbientBackground())
         .toolbar(.hidden, for: .navigationBar)
-        .overlay(alignment: .topTrailing) {
-            if showCloseButton {
-                DSIconButton(icon: "xmark", style: .secondary, size: .small) {
-                    dismiss()
-                }
-                .padding(DSSpacing.md)
-            }
-        }
         .toast($viewModel.toast)
         .task {
             await viewModel.loadProducts(services: services)
@@ -104,65 +100,40 @@ struct PaywallView: View {
                     }
                 }
             )
+        } else if viewModel.isLoadingProducts {
+            paywallSkeleton
+        } else if viewModel.products.isEmpty {
+            EmptyStateView(
+                icon: "cart",
+                title: "No offers available",
+                message: "We couldn't load subscription options right now.",
+                actionTitle: "Refresh",
+                action: {
+                    Task {
+                        await viewModel.loadProducts(services: services)
+                    }
+                }
+            )
         } else {
-            switch paywallMode {
-            case .storeKit:
-                StoreKitPaywallView(
-                    productIds: viewModel.productIds,
-                    onInAppPurchaseStart: { product in
-                        viewModel.onStoreKitPurchaseStart(product: product, services: services)
-                    },
-                    onInAppPurchaseCompletion: { product, result in
-                        viewModel.onStoreKitPurchaseComplete(
-                            product: product,
-                            result: result,
+            CustomPaywallView(
+                products: viewModel.products,
+                isProcessing: viewModel.isProcessingPurchase,
+                onRestorePurchasePressed: {
+                    Task {
+                        await viewModel.restorePurchases(services: services, session: session)
+                    }
+                },
+                onPurchaseProductPressed: { product in
+                    Task {
+                        await viewModel.purchase(
+                            productId: product.id,
                             services: services,
                             session: session
                         )
                     }
-                )
-            case .custom:
-                if viewModel.isLoadingProducts {
-                    paywallSkeleton
-                } else if viewModel.products.isEmpty {
-                    EmptyStateView(
-                        icon: "cart",
-                        title: "No offers available",
-                        message: "We couldn't load subscription options right now.",
-                        actionTitle: "Refresh",
-                        action: {
-                            Task {
-                                await viewModel.loadProducts(services: services)
-                            }
-                        }
-                    )
-                } else {
-                    CustomPaywallView(
-                        products: viewModel.products,
-                        isProcessing: viewModel.isProcessingPurchase,
-                        onRestorePurchasePressed: {
-                            Task {
-                                await viewModel.restorePurchases(services: services, session: session)
-                            }
-                        },
-                        onPurchaseProductPressed: { product in
-                            Task {
-                                await viewModel.purchase(
-                                    productId: product.id,
-                                    services: services,
-                                    session: session
-                                )
-                            }
-                        }
-                    )
                 }
-            }
+            )
         }
-    }
-
-    enum PaywallMode: String {
-        case storeKit
-        case custom
     }
 
     private var heroCard: some View {
@@ -184,6 +155,7 @@ struct PaywallView: View {
             }
         }
         .frame(maxWidth: 360)
+        .frame(maxWidth: .infinity)
     }
 
     private var paywallSkeleton: some View {

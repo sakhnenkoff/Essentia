@@ -59,6 +59,7 @@ struct SettingsDetailView: View {
         .scrollBounceBehavior(.basedOnSize)
         .background(AmbientBackground())
         .navigationTitle("Settings Detail")
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             viewModel.onAppear(services: services)
         }
@@ -83,8 +84,6 @@ struct SettingsDetailView: View {
                     subtitle: "Help us improve onboarding.",
                     leadingIcon: "chart.line.uptrend.xyaxis"
                 ) {
-                    viewModel.setAnalyticsOptIn(!viewModel.analyticsOptIn, services: services)
-                } trailing: {
                     GlassToggle(isOn: Binding(
                         get: { viewModel.analyticsOptIn },
                         set: { viewModel.setAnalyticsOptIn($0, services: services) }
@@ -112,8 +111,6 @@ struct SettingsDetailView: View {
                     subtitle: "Personalize the demo.",
                     leadingIcon: "hand.raised"
                 ) {
-                    viewModel.setTrackingOptIn(!viewModel.trackingOptIn, services: services)
-                } trailing: {
                     GlassToggle(isOn: Binding(
                         get: { viewModel.trackingOptIn },
                         set: { viewModel.setTrackingOptIn($0, services: services) }
