@@ -29,7 +29,7 @@ struct CustomPaywallView: View {
                     .foregroundStyle(Color.textSecondary)
             }
 
-            VStack(spacing: DSSpacing.sm) {
+            GlassStack(spacing: DSSpacing.sm) {
                 let featuredId = products.first?.id
                 ForEach(products) { product in
                     productCard(product: product, isFeatured: product.id == featuredId)
@@ -59,20 +59,7 @@ struct CustomPaywallView: View {
         }
         .padding(DSSpacing.lg)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            LinearGradient(
-                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
-        .cornerRadius(DSSpacing.lg)
-        .glassBackground(cornerRadius: DSSpacing.lg)
-        .overlay(
-            RoundedRectangle(cornerRadius: DSSpacing.lg)
-                .stroke(Color.themePrimary.opacity(0.08), lineWidth: 1)
-        )
-        .shadow(color: Color.themePrimary.opacity(0.08), radius: 16, x: 0, y: 10)
+        .cardSurface(cornerRadius: DSSpacing.lg)
     }
 
     private func productCard(product: AnyProduct, isFeatured: Bool) -> some View {
@@ -106,13 +93,13 @@ struct CustomPaywallView: View {
         }
         .padding(DSSpacing.md)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.backgroundSecondary)
-        .cornerRadius(DSSpacing.md)
-        .overlay(
-            RoundedRectangle(cornerRadius: DSSpacing.md)
-                .stroke(isFeatured ? Color.success.opacity(0.4) : Color.clear, lineWidth: 1)
+        .cardSurface(
+            cornerRadius: DSSpacing.md,
+            tint: isFeatured ? Color.success.opacity(0.06) : Color.textPrimary.opacity(0.02),
+            borderColor: isFeatured ? Color.success.opacity(0.35) : Color.border,
+            shadowRadius: 6,
+            shadowYOffset: 3
         )
-        .shadow(color: Color.themePrimary.opacity(0.05), radius: 8, x: 0, y: 6)
     }
 
     private func featureChip(text: String, icon: String) -> some View {
@@ -125,7 +112,11 @@ struct CustomPaywallView: View {
         .foregroundStyle(Color.textSecondary)
         .padding(.horizontal, DSSpacing.sm)
         .padding(.vertical, DSSpacing.xs)
-        .background(Color.backgroundSecondary)
+        .background(Color.surface)
+        .overlay(
+            Capsule()
+                .stroke(Color.border, lineWidth: 1)
+        )
         .clipShape(Capsule())
     }
 }

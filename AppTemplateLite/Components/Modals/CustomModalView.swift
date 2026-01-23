@@ -32,27 +32,14 @@ struct CustomModalView: View {
             }
             .padding(DSSpacing.smd)
 
-            VStack(spacing: DSSpacing.sm) {
+            GlassStack(spacing: DSSpacing.sm, alignment: .center) {
                 DSButton(title: primaryButtonTitle, isFullWidth: true, action: primaryButtonAction)
                 DSButton(title: secondaryButtonTitle, style: .tertiary, isFullWidth: true, action: secondaryButtonAction)
             }
         }
         .multilineTextAlignment(.center)
         .padding(DSSpacing.md)
-        .background(
-            LinearGradient(
-                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
-        .cornerRadius(DSSpacing.md)
-        .glassBackground(cornerRadius: DSSpacing.md)
-        .overlay(
-            RoundedRectangle(cornerRadius: DSSpacing.md)
-                .stroke(Color.themePrimary.opacity(0.06), lineWidth: 1)
-        )
-        .shadow(color: Color.themePrimary.opacity(0.08), radius: 16, x: 0, y: 10)
+        .cardSurface(cornerRadius: DSSpacing.md)
         .padding(DSSpacing.xxlg)
     }
 }

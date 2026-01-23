@@ -50,10 +50,10 @@ struct AuthView: View {
 
     private var hero: some View {
         VStack(alignment: .leading, spacing: DSSpacing.sm) {
-            Text("Sign in to sync your demo")
+            Text("Sign in")
                 .font(.titleLarge())
                 .foregroundStyle(Color.textPrimary)
-            Text("Bring your progress across devices, unlock premium previews, and personalize your experience.")
+            Text("Sync your demo progress and unlock premium previews.")
                 .font(.bodyMedium())
                 .foregroundStyle(Color.textSecondary)
         }
@@ -79,19 +79,7 @@ struct AuthView: View {
             )
         }
         .padding(DSSpacing.md)
-        .background(
-            LinearGradient(
-                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
-        .cornerRadius(DSSpacing.md)
-        .overlay(
-            RoundedRectangle(cornerRadius: DSSpacing.md)
-                .stroke(Color.themePrimary.opacity(0.06), lineWidth: 1)
-        )
-        .shadow(color: Color.themePrimary.opacity(0.06), radius: 12, x: 0, y: 8)
+        .cardSurface(cornerRadius: DSSpacing.md)
     }
 
     @ViewBuilder
@@ -105,21 +93,45 @@ struct AuthView: View {
                 action: { viewModel.refreshProviders() }
             )
         } else {
-            VStack(spacing: DSSpacing.sm) {
+            listCard {
                 if viewModel.availableProviders.contains(.apple) {
-                    DSButton(title: "Continue with Apple", icon: "apple.logo", isFullWidth: true) {
+                    DSListRow(
+                        title: "Continue with Apple",
+                        subtitle: "Private sign-in",
+                        leadingIcon: "apple.logo",
+                        leadingTint: .textPrimary,
+                        showsDisclosure: true
+                    ) {
                         viewModel.signInApple(services: services, session: session)
                     }
                 }
 
                 if viewModel.availableProviders.contains(.google) {
-                    DSButton(title: "Continue with Google", icon: "globe", style: .secondary, isFullWidth: true) {
+                    if viewModel.availableProviders.contains(.apple) {
+                        Divider()
+                    }
+                    DSListRow(
+                        title: "Continue with Google",
+                        subtitle: "Fast setup",
+                        leadingIcon: "globe",
+                        leadingTint: .info,
+                        showsDisclosure: true
+                    ) {
                         viewModel.signInGoogle(services: services, session: session)
                     }
                 }
 
                 if viewModel.availableProviders.contains(.guest) {
-                    DSButton(title: "Explore as Guest", style: .tertiary, isFullWidth: true) {
+                    if viewModel.availableProviders.contains(.apple) || viewModel.availableProviders.contains(.google) {
+                        Divider()
+                    }
+                    DSListRow(
+                        title: "Explore as guest",
+                        subtitle: "Skip sign-in for now",
+                        leadingIcon: "person",
+                        leadingTint: .textSecondary,
+                        showsDisclosure: true
+                    ) {
                         viewModel.signInAnonymously(services: services, session: session)
                     }
                 }
@@ -137,12 +149,7 @@ struct AuthView: View {
 
     private func featureRow(icon: String, title: String, message: String) -> some View {
         HStack(alignment: .top, spacing: DSSpacing.sm) {
-            Image(systemName: icon)
-                .font(.headlineSmall())
-                .foregroundStyle(Color.themePrimary)
-                .frame(width: 28, height: 28)
-                .background(Color.themePrimary.opacity(0.15))
-                .clipShape(Circle())
+            DSIconBadge(systemName: icon)
 
             VStack(alignment: .leading, spacing: DSSpacing.xs) {
                 Text(title)
@@ -154,6 +161,13 @@ struct AuthView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+    }
+
+    private func listCard(@ViewBuilder content: () -> some View) -> some View {
+        VStack(spacing: 0) {
+            content()
+        }
+        .cardSurface(cornerRadius: DSSpacing.md)
     }
 }
 

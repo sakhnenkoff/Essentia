@@ -78,19 +78,7 @@ struct DetailView: View {
             }
         }
         .padding(DSSpacing.md)
-        .background(
-            LinearGradient(
-                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
-        .cornerRadius(DSSpacing.md)
-        .overlay(
-            RoundedRectangle(cornerRadius: DSSpacing.md)
-                .stroke(Color.themePrimary.opacity(0.06), lineWidth: 1)
-        )
-        .shadow(color: Color.themePrimary.opacity(0.05), radius: 10, x: 0, y: 6)
+        .cardSurface(cornerRadius: DSSpacing.md)
     }
 
     private var relatedSection: some View {
@@ -109,7 +97,7 @@ struct DetailView: View {
 
     private var actionSection: some View {
         sectionCard(title: "Demo states") {
-            VStack(spacing: DSSpacing.sm) {
+            GlassStack(spacing: DSSpacing.sm) {
                 DSButton(title: "Simulate loading", style: .secondary, isFullWidth: true) {
                     guard !isLoading else { return }
                     isLoading = true
@@ -140,19 +128,7 @@ struct DetailView: View {
         }
         .padding(DSSpacing.md)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            LinearGradient(
-                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
-        .cornerRadius(DSSpacing.md)
-        .overlay(
-            RoundedRectangle(cornerRadius: DSSpacing.md)
-                .stroke(Color.themePrimary.opacity(0.06), lineWidth: 1)
-        )
-        .shadow(color: Color.themePrimary.opacity(0.05), radius: 10, x: 0, y: 6)
+        .cardSurface(cornerRadius: DSSpacing.md)
     }
 }
 

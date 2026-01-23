@@ -122,19 +122,7 @@ struct SettingsDetailView: View {
         }
         .padding(DSSpacing.md)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            LinearGradient(
-                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
-        .cornerRadius(DSSpacing.md)
-        .overlay(
-            RoundedRectangle(cornerRadius: DSSpacing.md)
-                .stroke(Color.themePrimary.opacity(0.06), lineWidth: 1)
-        )
-        .shadow(color: Color.themePrimary.opacity(0.05), radius: 10, x: 0, y: 6)
+        .cardSurface(cornerRadius: DSSpacing.md)
     }
 
     private func keyValueRow(title: String, value: String) -> some View {
@@ -150,12 +138,11 @@ struct SettingsDetailView: View {
 
     private func infoCard(title: String, message: String, icon: String) -> some View {
         HStack(alignment: .top, spacing: DSSpacing.sm) {
-            Image(systemName: icon)
-                .font(.headlineSmall())
-                .foregroundStyle(Color.warning)
-                .frame(width: 28, height: 28)
-                .background(Color.warning.opacity(0.15))
-                .clipShape(Circle())
+            DSIconBadge(
+                systemName: icon,
+                backgroundColor: Color.warning.opacity(0.15),
+                foregroundColor: Color.warning
+            )
 
             VStack(alignment: .leading, spacing: DSSpacing.xs) {
                 Text(title)
@@ -168,19 +155,12 @@ struct SettingsDetailView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(DSSpacing.md)
-        .background(
-            LinearGradient(
-                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+        .cardSurface(
+            cornerRadius: DSSpacing.md,
+            tint: Color.warning.opacity(0.06),
+            shadowRadius: 6,
+            shadowYOffset: 3
         )
-        .cornerRadius(DSSpacing.md)
-        .overlay(
-            RoundedRectangle(cornerRadius: DSSpacing.md)
-                .stroke(Color.themePrimary.opacity(0.05), lineWidth: 1)
-        )
-        .shadow(color: Color.themePrimary.opacity(0.05), radius: 8, x: 0, y: 6)
     }
 }
 

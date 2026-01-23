@@ -75,7 +75,7 @@ struct DebugMenuView: View {
 
     private var actionSection: some View {
         sectionCard(title: "Actions") {
-            VStack(spacing: DSSpacing.sm) {
+            GlassStack(spacing: DSSpacing.sm) {
                 DSButton(title: "Reset onboarding", style: .secondary, isFullWidth: true) {
                     session.resetOnboarding()
                     toast = .info("Onboarding reset.")
@@ -104,19 +104,7 @@ struct DebugMenuView: View {
         }
         .padding(DSSpacing.md)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            LinearGradient(
-                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
-        .cornerRadius(DSSpacing.md)
-        .overlay(
-            RoundedRectangle(cornerRadius: DSSpacing.md)
-                .stroke(Color.themePrimary.opacity(0.06), lineWidth: 1)
-        )
-        .shadow(color: Color.themePrimary.opacity(0.05), radius: 10, x: 0, y: 6)
+        .cardSurface(cornerRadius: DSSpacing.md)
     }
 
     private func keyValueRow(title: String, value: String) -> some View {

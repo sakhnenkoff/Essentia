@@ -56,19 +56,7 @@ struct ProfileView: View {
             statusChip
         }
         .padding(DSSpacing.md)
-        .background(
-            LinearGradient(
-                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
-        .cornerRadius(DSSpacing.md)
-        .overlay(
-            RoundedRectangle(cornerRadius: DSSpacing.md)
-                .stroke(Color.themePrimary.opacity(0.06), lineWidth: 1)
-        )
-        .shadow(color: Color.themePrimary.opacity(0.05), radius: 10, x: 0, y: 6)
+        .cardSurface(cornerRadius: DSSpacing.md)
     }
 
     private var profileAvatar: some View {
@@ -143,7 +131,7 @@ struct ProfileView: View {
 
     private var actionSection: some View {
         sectionCard(title: "Quick actions") {
-            VStack(spacing: DSSpacing.sm) {
+            GlassStack(spacing: DSSpacing.sm) {
                 DSButton(title: "Open settings", icon: "gearshape.fill", style: .secondary, isFullWidth: true) {
                     router.presentSheet(.settings)
                 }
@@ -165,19 +153,7 @@ struct ProfileView: View {
         }
         .padding(DSSpacing.md)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            LinearGradient(
-                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
-        .cornerRadius(DSSpacing.md)
-        .overlay(
-            RoundedRectangle(cornerRadius: DSSpacing.md)
-                .stroke(Color.themePrimary.opacity(0.06), lineWidth: 1)
-        )
-        .shadow(color: Color.themePrimary.opacity(0.05), radius: 10, x: 0, y: 6)
+        .cardSurface(cornerRadius: DSSpacing.md)
     }
 
     private func keyValueRow(title: String, value: String) -> some View {
@@ -193,12 +169,14 @@ struct ProfileView: View {
 
     private func activityRow(_ item: ActivityItem) -> some View {
         HStack(alignment: .top, spacing: DSSpacing.sm) {
-            Image(systemName: item.icon)
-                .font(.headlineSmall())
-                .foregroundStyle(item.tint)
-                .frame(width: 28, height: 28)
-                .background(item.tint.opacity(0.15))
-                .clipShape(Circle())
+            DSIconBadge(
+                systemName: item.icon,
+                size: 28,
+                cornerRadius: 14,
+                backgroundColor: item.tint.opacity(0.15),
+                foregroundColor: item.tint,
+                font: .headlineSmall()
+            )
 
             VStack(alignment: .leading, spacing: DSSpacing.xs) {
                 Text(item.title)

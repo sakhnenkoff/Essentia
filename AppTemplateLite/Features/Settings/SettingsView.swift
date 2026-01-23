@@ -3,9 +3,9 @@
 //  AppTemplateLite
 //
 //
-//
 
 import SwiftUI
+import UIKit
 import AppRouter
 import DesignSystem
 
@@ -53,11 +53,11 @@ struct SettingsView: View {
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.sm) {
-            Text("Personalize your experience")
+        VStack(alignment: .leading, spacing: DSSpacing.xs) {
+            Text("Settings")
                 .font(.titleLarge())
                 .foregroundStyle(Color.textPrimary)
-            Text("Manage account details, privacy preferences, and demo features.")
+            Text("Account, notifications, and demo utilities.")
                 .font(.bodyMedium())
                 .foregroundStyle(Color.textSecondary)
         }
@@ -65,24 +65,54 @@ struct SettingsView: View {
     }
 
     private var accountSection: some View {
-        sectionCard(title: "Account") {
+        section(title: "Account") {
             if session.isSignedIn {
-                VStack(alignment: .leading, spacing: DSSpacing.sm) {
-                    keyValueRow(title: "User ID", value: session.auth?.uid ?? "unknown")
-                    if let email = session.currentUser?.emailCalculated ?? session.auth?.email {
-                        keyValueRow(title: "Email", value: email)
+                listCard {
+                    DSListRow(
+                        title: "User ID",
+                        subtitle: session.auth?.uid ?? "unknown",
+                        leadingIcon: "person.crop.circle",
+                        leadingTint: .textPrimary,
+                        trailingIcon: "doc.on.doc"
+                    ) {
+                        copyToPasteboard(session.auth?.uid ?? "")
                     }
 
-                    DSButton(title: "Sign out", style: .secondary, isFullWidth: true) {
+                    if let email = session.currentUser?.emailCalculated ?? session.auth?.email {
+                        Divider()
+                        DSListRow(
+                            title: "Email",
+                            subtitle: email,
+                            leadingIcon: "envelope",
+                            leadingTint: .info,
+                            trailingIcon: "doc.on.doc"
+                        ) {
+                            copyToPasteboard(email)
+                        }
+                    }
+
+                    Divider()
+                    DSListRow(
+                        title: "Sign out",
+                        subtitle: "End this session.",
+                        leadingIcon: "arrow.backward.square",
+                        leadingTint: .textSecondary,
+                        trailingIcon: "chevron.right"
+                    ) {
                         viewModel.signOut(services: services, session: session)
                     }
-                    .disabled(viewModel.isProcessing)
-
-                    DSButton(title: "Delete account", style: .destructive, isFullWidth: true) {
+                    Divider()
+                    DSListRow(
+                        title: "Delete account",
+                        subtitle: "Remove demo data.",
+                        leadingIcon: "trash",
+                        leadingTint: .error,
+                        trailingIcon: "chevron.right"
+                    ) {
                         viewModel.deleteAccount(services: services, session: session)
                     }
-                    .disabled(viewModel.isProcessing)
                 }
+                .disabled(viewModel.isProcessing)
             } else {
                 EmptyStateView(
                     icon: "person.crop.circle.badge.exclamationmark",
@@ -96,41 +126,68 @@ struct SettingsView: View {
     }
 
     private var subscriptionSection: some View {
-        sectionCard(title: "Monetization") {
-            VStack(alignment: .leading, spacing: DSSpacing.sm) {
-                keyValueRow(title: "Plan", value: session.isPremium ? "Premium active" : "Free plan")
-
-                DSButton(title: "View paywall", icon: "sparkles", isFullWidth: true) {
+        section(title: "Monetization") {
+            listCard {
+                DSListRow(
+                    title: "Plan",
+                    subtitle: session.isPremium ? "Premium active." : "Free plan.",
+                    leadingIcon: "sparkles",
+                    leadingTint: session.isPremium ? .success : .warning,
+                    trailingText: session.isPremium ? "Premium" : "Free"
+                )
+                Divider()
+                DSListRow(
+                    title: "View paywall",
+                    subtitle: "See the upgrade flow.",
+                    leadingIcon: "creditcard.fill",
+                    leadingTint: .success,
+                    showsDisclosure: true
+                ) {
                     router.presentSheet(.paywall)
                 }
-                .disabled(!FeatureFlags.enablePurchases)
             }
+            .disabled(!FeatureFlags.enablePurchases)
         }
     }
 
     private var notificationsSection: some View {
-        sectionCard(title: "Notifications") {
-            VStack(alignment: .leading, spacing: DSSpacing.sm) {
-                Text("Enable push notifications to preview engagement flows.")
-                    .font(.bodySmall())
-                    .foregroundStyle(Color.textSecondary)
-
-                DSButton(title: "Enable push notifications", icon: "bell.fill", style: .secondary, isFullWidth: true) {
+        section(title: "Notifications") {
+            listCard {
+                DSListRow(
+                    title: "Enable push notifications",
+                    subtitle: "Preview engagement flows.",
+                    leadingIcon: "bell.fill",
+                    leadingTint: .info,
+                    trailingText: FeatureFlags.enablePushNotifications ? "Ready" : "Off",
+                    showsDisclosure: FeatureFlags.enablePushNotifications
+                ) {
                     viewModel.requestPushAuthorization(services: services)
                 }
-                .disabled(!FeatureFlags.enablePushNotifications)
             }
+            .disabled(!FeatureFlags.enablePushNotifications)
         }
     }
 
     private var navigationSection: some View {
-        sectionCard(title: "Navigation") {
-            VStack(spacing: DSSpacing.sm) {
-                DSButton(title: "Open settings detail", icon: "slider.horizontal.3", style: .secondary, isFullWidth: true) {
+        section(title: "Navigation") {
+            listCard {
+                DSListRow(
+                    title: "Settings detail",
+                    subtitle: "Privacy and tracking.",
+                    leadingIcon: "slider.horizontal.3",
+                    leadingTint: .textPrimary,
+                    showsDisclosure: true
+                ) {
                     router.navigateTo(.settingsDetail, for: .settings)
                 }
-
-                DSButton(title: "Open profile", icon: "person.crop.circle", style: .secondary, isFullWidth: true) {
+                Divider()
+                DSListRow(
+                    title: "Profile",
+                    subtitle: "Account overview.",
+                    leadingIcon: "person.crop.circle",
+                    leadingTint: .warning,
+                    showsDisclosure: true
+                ) {
                     router.navigateTo(.profile(userId: session.auth?.uid ?? "guest"), for: .settings)
                 }
             }
@@ -138,57 +195,61 @@ struct SettingsView: View {
     }
 
     private var debugSection: some View {
-        sectionCard(title: "Debug tools") {
-            VStack(spacing: DSSpacing.sm) {
-                DSButton(title: "Reset onboarding", icon: "arrow.counterclockwise", style: .tertiary, isFullWidth: true) {
+        section(title: "Debug tools") {
+            listCard {
+                DSListRow(
+                    title: "Reset onboarding",
+                    subtitle: "Restart the setup flow.",
+                    leadingIcon: "arrow.counterclockwise",
+                    leadingTint: .textSecondary,
+                    trailingIcon: "arrow.counterclockwise"
+                ) {
                     viewModel.resetOnboarding(services: services, session: session)
                 }
-
-                DSButton(title: "Reset paywall prompt", icon: "sparkles", style: .tertiary, isFullWidth: true) {
+                Divider()
+                DSListRow(
+                    title: "Reset paywall",
+                    subtitle: "Show on next launch.",
+                    leadingIcon: "sparkles",
+                    leadingTint: .textSecondary,
+                    trailingIcon: "arrow.counterclockwise"
+                ) {
                     viewModel.resetPaywall(services: services, session: session)
                 }
-
-                DSButton(title: "Open debug menu", icon: "ladybug.fill", style: .tertiary, isFullWidth: true) {
+                Divider()
+                DSListRow(
+                    title: "Open debug menu",
+                    subtitle: "Developer utilities.",
+                    leadingIcon: "ladybug.fill",
+                    leadingTint: .textSecondary,
+                    showsDisclosure: true
+                ) {
                     router.presentSheet(.debug)
                 }
             }
         }
     }
 
-    private func sectionCard(title: String, @ViewBuilder content: () -> some View) -> some View {
+    private func copyToPasteboard(_ value: String) {
+        guard !value.isEmpty else { return }
+        UIPasteboard.general.string = value
+        viewModel.toast = .success("Copied to clipboard.")
+    }
+
+    private func section(title: String, @ViewBuilder content: () -> some View) -> some View {
         VStack(alignment: .leading, spacing: DSSpacing.sm) {
             Text(title)
                 .font(.headlineMedium())
                 .foregroundStyle(Color.textPrimary)
-
             content()
         }
-        .padding(DSSpacing.md)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            LinearGradient(
-                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
-        .cornerRadius(DSSpacing.md)
-        .overlay(
-            RoundedRectangle(cornerRadius: DSSpacing.md)
-                .stroke(Color.themePrimary.opacity(0.06), lineWidth: 1)
-        )
-        .shadow(color: Color.themePrimary.opacity(0.05), radius: 10, x: 0, y: 6)
     }
 
-    private func keyValueRow(title: String, value: String) -> some View {
-        VStack(alignment: .leading, spacing: DSSpacing.xs) {
-            Text(title)
-                .font(.captionLarge())
-                .foregroundStyle(Color.textTertiary)
-            Text(value)
-                .font(.bodySmall())
-                .foregroundStyle(Color.textPrimary)
+    private func listCard(@ViewBuilder content: () -> some View) -> some View {
+        VStack(spacing: 0) {
+            content()
         }
+        .cardSurface(cornerRadius: DSSpacing.md)
     }
 }
 

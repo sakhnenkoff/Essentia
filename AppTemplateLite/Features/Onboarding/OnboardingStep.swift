@@ -27,7 +27,7 @@ enum OnboardingStep: Int, CaseIterable {
         switch self {
         case .welcome: "Welcome"
         case .goals: "Goals"
-        case .name: "Your Name"
+        case .name: "Profile"
         }
     }
 
@@ -35,11 +35,11 @@ enum OnboardingStep: Int, CaseIterable {
     var headline: String {
         switch self {
         case .welcome:
-            "Build something\ndelightful"
+            "Build something delightful"
         case .goals:
-            "What are you\nshipping first?"
+            "What are you shipping first?"
         case .name:
-            "How should we\nsay hello?"
+            "What should we call you?"
         }
     }
 
@@ -47,7 +47,7 @@ enum OnboardingStep: Int, CaseIterable {
     var subtitle: String? {
         switch self {
         case .welcome:
-            "Templates, design system,\nand real integrations included."
+            "Templates, design system, and real integrations included."
         case .goals:
             "Pick a focus to tailor the demo flow."
         case .name:

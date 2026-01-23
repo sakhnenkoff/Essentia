@@ -26,7 +26,7 @@ struct StoreKitPaywallView: View {
                     .foregroundStyle(Color.textSecondary)
             }
             .multilineTextAlignment(.center)
-            .containerBackground(Color.backgroundSecondary.gradient, for: .subscriptionStore)
+            .containerBackground(Color.backgroundSecondary, for: .subscriptionStore)
         }
         .storeButton(.visible, for: .restorePurchases)
         .subscriptionStoreControlStyle(.prominentPicker)

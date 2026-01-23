@@ -24,23 +24,29 @@ struct OnboardingHeader: View {
     }
 
     var body: some View {
-        HStack(spacing: DSSpacing.md) {
+        HStack(spacing: DSSpacing.sm) {
             if showBackButton {
-                DSIconButton(icon: "chevron.left", style: .tertiary, size: .small, action: onBack)
-                    .frame(width: 44, height: 44)
+                Button(action: onBack) {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(Color.textPrimary)
+                        .frame(width: 36, height: 36)
+                        .contentShape(Rectangle())
+                }
             } else {
-                Spacer()
-                    .frame(width: 44)
+                Color.clear
+                    .frame(width: 36, height: 36)
             }
 
             ProgressView(value: progress)
-                .tint(Color.themePrimary)
+                .tint(Color.textPrimary)
+                .progressViewStyle(.linear)
                 .animation(.easeInOut(duration: 0.3), value: progress)
 
-            Spacer()
-                .frame(width: 44)
+            Color.clear
+                .frame(width: 36, height: 36)
         }
-        .padding(.horizontal, DSSpacing.md)
+        .padding(.horizontal, DSSpacing.lg)
         .padding(.vertical, DSSpacing.sm)
     }
 }

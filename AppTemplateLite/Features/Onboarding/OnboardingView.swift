@@ -26,53 +26,45 @@ struct OnboardingView: View {
                 }
             )
 
-            VStack(alignment: .leading, spacing: DSSpacing.lg) {
-                // Animated headline area
-                headlineArea
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.top, DSSpacing.lg)
+            ScrollView {
+                VStack(alignment: .leading, spacing: DSSpacing.lg) {
+                    stepHeader
 
-                // Step-specific content
-                stepContent
-            }
-            .padding(.horizontal, DSSpacing.lg)
+                    stepContent
 
-            Spacer(minLength: DSSpacing.sm)
-
-            if let errorMessage = errorMessage {
-                ErrorStateView(
-                    title: "Couldn't finish setup",
-                    message: errorMessage,
-                    retryTitle: "Try again",
-                    onRetry: { completeOnboarding() },
-                    dismissTitle: "Continue anyway",
-                    onDismiss: {
-                        self.errorMessage = nil
-                        session.setOnboardingComplete()
+                    if let errorMessage = errorMessage {
+                        ErrorStateView(
+                            title: "Couldn't finish setup",
+                            message: errorMessage,
+                            retryTitle: "Try again",
+                            onRetry: { completeOnboarding() },
+                            dismissTitle: "Continue anyway",
+                            onDismiss: {
+                                self.errorMessage = nil
+                                session.setOnboardingComplete()
+                            }
+                        )
                     }
-                )
+
+                    if isSaving {
+                        ProgressView("Setting up your workspace...")
+                            .font(.bodySmall())
+                            .foregroundStyle(Color.textSecondary)
+                            .multilineTextAlignment(.center)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    }
+                }
                 .padding(.horizontal, DSSpacing.lg)
+                .padding(.top, DSSpacing.lg)
+                .padding(.bottom, DSSpacing.xl)
             }
-
-            if isSaving {
-                ProgressView("Setting up your workspace...")
-                    .font(.bodySmall())
-                    .foregroundStyle(Color.textSecondary)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.horizontal, DSSpacing.lg)
-            }
-
-            DSButton.cta(
-                title: controller.isLastStep ? "Get Started" : "Continue",
-                isEnabled: controller.canContinue
-            ) {
-                onContinue()
-            }
-            .padding(.horizontal, DSSpacing.lg)
-            .padding(.bottom, DSSpacing.lg)
+            .scrollIndicators(.hidden)
+            .scrollDismissesKeyboard(.interactively)
         }
         .background(AmbientBackground())
+        .safeAreaInset(edge: .bottom) {
+            ctaBar
+        }
         .toolbar(.hidden, for: .navigationBar)
         .onAppear {
             trackEvent(.onAppear)
@@ -82,35 +74,25 @@ struct OnboardingView: View {
         }
     }
 
-    // MARK: - Animated Headline
+    // MARK: - Step Header
 
-    private var headlineArea: some View {
+    private var stepHeader: some View {
         VStack(alignment: .leading, spacing: DSSpacing.sm) {
             Text(controller.currentStep.title.uppercased())
-                .id("step-title-\(controller.currentStep)")
                 .font(.captionLarge())
                 .foregroundStyle(Color.textTertiary)
-                .transition(LineByLineTransition(duration: 0.4))
 
-            ZStack(alignment: .topLeading) {
-                Text(controller.currentStep.headline)
-                    .id(controller.currentStep)
-                    .font(.titleLarge())
-                    .foregroundStyle(Color.textPrimary)
-                    .transition(LineByLineTransition())
-            }
+            Text(controller.currentStep.headline)
+                .font(.titleLarge())
+                .foregroundStyle(Color.textPrimary)
 
             if let subtitle = controller.currentStep.subtitle {
-                ZStack(alignment: .topLeading) {
-                    Text(subtitle)
-                        .id("subtitle-\(controller.currentStep)")
-                        .font(.bodyMedium())
-                        .foregroundStyle(Color.textSecondary)
-                        .transition(LineByLineTransition(duration: 0.5))
-                }
+                Text(subtitle)
+                    .font(.bodyMedium())
+                    .foregroundStyle(Color.textSecondary)
             }
         }
-        .frame(minHeight: 132, alignment: .topLeading)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     // MARK: - Step Content
@@ -130,10 +112,17 @@ struct OnboardingView: View {
     // MARK: - Welcome Step
 
     private var welcomeContent: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.md) {
-            welcomeHeroCard
+        VStack(alignment: .leading, spacing: DSSpacing.lg) {
+            VStack(alignment: .leading, spacing: DSSpacing.xs) {
+                Text("What you get")
+                    .font(.headlineMedium())
+                    .foregroundStyle(Color.textPrimary)
+                Text("Everything you need to ship a polished demo quickly.")
+                    .font(.bodySmall())
+                    .foregroundStyle(Color.textSecondary)
+            }
 
-            VStack(alignment: .leading, spacing: DSSpacing.sm) {
+            VStack(spacing: DSSpacing.sm) {
                 featureRow(
                     icon: "person.crop.circle.badge.checkmark",
                     title: "Guided onboarding",
@@ -151,7 +140,6 @@ struct OnboardingView: View {
                 )
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     // MARK: - Goals Step
@@ -194,13 +182,9 @@ struct OnboardingView: View {
             }
 
             if controller.selectedGoals.isEmpty {
-                EmptyStateView(
-                    icon: "sparkles",
-                    title: "Nothing selected yet",
-                    message: "Pick at least one goal to unlock the next step.",
-                    actionTitle: "Select a goal",
-                    action: { controller.toggleGoal("launch") }
-                )
+                Text("Select at least one goal to continue.")
+                    .font(.captionLarge())
+                    .foregroundStyle(Color.textTertiary)
             }
         }
     }
@@ -260,56 +244,9 @@ struct OnboardingView: View {
         services.logManager.trackEvent(event: event)
     }
 
-    private var welcomeHeroCard: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.sm) {
-            HStack(spacing: DSSpacing.md) {
-                Image(systemName: "wand.and.stars")
-                    .font(.headlineLarge())
-                    .foregroundStyle(Color.themePrimary)
-                    .frame(width: 52, height: 52)
-                    .background(Color.themePrimary.opacity(0.15))
-                    .clipShape(Circle())
-
-                VStack(alignment: .leading, spacing: DSSpacing.xs) {
-                    Text("Launch with confidence")
-                        .font(.headlineMedium())
-                        .foregroundStyle(Color.textPrimary)
-                    Text("Designed for joyful first-run experiences.")
-                        .font(.bodySmall())
-                        .foregroundStyle(Color.textSecondary)
-                }
-            }
-
-            Text("Everything here is structured, accessible, and ready for production.")
-                .font(.bodySmall())
-                .foregroundStyle(Color.textSecondary)
-        }
-        .padding(DSSpacing.md)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            LinearGradient(
-                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
-        .cornerRadius(DSSpacing.md)
-        .glassBackground(cornerRadius: DSSpacing.md)
-        .overlay(
-            RoundedRectangle(cornerRadius: DSSpacing.md)
-                .stroke(Color.themePrimary.opacity(0.08), lineWidth: 1)
-        )
-        .shadow(color: Color.themePrimary.opacity(0.08), radius: 14, x: 0, y: 8)
-    }
-
     private func featureRow(icon: String, title: String, message: String) -> some View {
         HStack(alignment: .top, spacing: DSSpacing.sm) {
-            Image(systemName: icon)
-                .font(.headlineSmall())
-                .foregroundStyle(Color.themePrimary)
-                .frame(width: 28, height: 28)
-                .background(Color.themePrimary.opacity(0.15))
-                .clipShape(Circle())
+            DSIconBadge(systemName: icon)
 
             VStack(alignment: .leading, spacing: DSSpacing.xs) {
                 Text(title)
@@ -321,6 +258,23 @@ struct OnboardingView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+    }
+
+    private var ctaBar: some View {
+        VStack(spacing: DSSpacing.sm) {
+            Divider()
+
+            DSButton.cta(
+                title: controller.isLastStep ? "Get Started" : "Continue",
+                isEnabled: controller.canContinue
+            ) {
+                onContinue()
+            }
+        }
+        .padding(.horizontal, DSSpacing.lg)
+        .padding(.top, DSSpacing.sm)
+        .padding(.bottom, DSSpacing.lg)
+        .background(Color.backgroundPrimary)
     }
 }
 

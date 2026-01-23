@@ -179,35 +179,14 @@ struct PaywallView: View {
                 benefitRow(icon: "bolt.fill", title: "Faster launches", message: "Prewired services and routing shortcuts.")
                 benefitRow(icon: "shield.fill", title: "Priority support", message: "Launch confidently with guided updates.")
             }
-            .padding(DSSpacing.md)
-            .background(Color.backgroundPrimary.opacity(0.6))
-            .clipShape(RoundedRectangle(cornerRadius: DSSpacing.md))
-            .glassBackground(cornerRadius: DSSpacing.md)
         }
         .padding(DSSpacing.lg)
-        .background(
-            LinearGradient(
-                colors: [Color.backgroundSecondary, Color.backgroundTertiary],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
-        .cornerRadius(DSSpacing.lg)
-        .overlay(
-            RoundedRectangle(cornerRadius: DSSpacing.lg)
-                .stroke(Color.themePrimary.opacity(0.08), lineWidth: 1)
-        )
-        .shadow(color: Color.themePrimary.opacity(0.08), radius: 16, x: 0, y: 10)
+        .cardSurface(cornerRadius: DSSpacing.lg)
     }
 
     private func benefitRow(icon: String, title: String, message: String) -> some View {
         HStack(alignment: .top, spacing: DSSpacing.sm) {
-            Image(systemName: icon)
-                .font(.headlineSmall())
-                .foregroundStyle(Color.themePrimary)
-                .frame(width: 28, height: 28)
-                .background(Color.themePrimary.opacity(0.15))
-                .clipShape(Circle())
+            DSIconBadge(systemName: icon)
 
             VStack(alignment: .leading, spacing: DSSpacing.xs) {
                 Text(title)
