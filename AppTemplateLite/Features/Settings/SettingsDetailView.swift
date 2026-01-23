@@ -78,24 +78,28 @@ struct SettingsDetailView: View {
     private var privacySection: some View {
         section(title: "Analytics") {
             listCard {
-                Toggle(
-                    "Share analytics",
-                    isOn: Binding(
+                DSListRow(
+                    title: "Share analytics",
+                    subtitle: "Help us improve onboarding.",
+                    leadingIcon: "chart.line.uptrend.xyaxis"
+                ) {
+                    viewModel.setAnalyticsOptIn(!viewModel.analyticsOptIn, services: services)
+                } trailing: {
+                    GlassToggle(isOn: Binding(
                         get: { viewModel.analyticsOptIn },
                         set: { viewModel.setAnalyticsOptIn($0, services: services) }
-                    )
-                )
-                .tint(Color.themePrimary)
-                .padding(.horizontal, DSSpacing.md)
-                .padding(.vertical, DSSpacing.smd)
+                    ))
+                }
 
                 Divider()
 
-                Text("Analytics help us understand onboarding and paywall performance.")
-                    .font(.bodySmall())
-                    .foregroundStyle(Color.textSecondary)
-                    .padding(.horizontal, DSSpacing.md)
-                    .padding(.vertical, DSSpacing.smd)
+                DSListRow(
+                    title: "What we collect",
+                    subtitle: "Anonymized engagement data.",
+                    leadingIcon: "doc.text.magnifyingglass",
+                    leadingTint: .textSecondary,
+                    titleColor: .textPrimary
+                )
             }
         }
     }
@@ -103,16 +107,18 @@ struct SettingsDetailView: View {
     private var trackingSection: some View {
         section(title: "Tracking") {
             listCard {
-                Toggle(
-                    "Allow tracking (ATT)",
-                    isOn: Binding(
+                DSListRow(
+                    title: "Allow tracking (ATT)",
+                    subtitle: "Personalize the demo.",
+                    leadingIcon: "hand.raised"
+                ) {
+                    viewModel.setTrackingOptIn(!viewModel.trackingOptIn, services: services)
+                } trailing: {
+                    GlassToggle(isOn: Binding(
                         get: { viewModel.trackingOptIn },
                         set: { viewModel.setTrackingOptIn($0, services: services) }
-                    )
-                )
-                .tint(Color.themePrimary)
-                .padding(.horizontal, DSSpacing.md)
-                .padding(.vertical, DSSpacing.smd)
+                    ))
+                }
 
                 Divider()
 
@@ -120,19 +126,20 @@ struct SettingsDetailView: View {
                     title: "Tracking status",
                     subtitle: viewModel.trackingStatusLabel,
                     leadingIcon: "lock.shield",
-                    leadingTint: .textSecondary
+                    leadingTint: .textSecondary,
+                    titleColor: .textPrimary
                 )
 
                 Divider()
 
                 DSListRow(
-                    title: "Request tracking authorization",
-                    subtitle: "Prompt the system dialog.",
-                    leadingIcon: "checkmark.seal",
-                    leadingTint: .warning,
-                    showsDisclosure: true
+                    title: "Request authorization",
+                    subtitle: "Show the system dialog.",
+                    leadingIcon: "checkmark.seal"
                 ) {
                     viewModel.requestTrackingAuthorization(services: services)
+                } trailing: {
+                    DSIconButton(icon: "chevron.right", style: .secondary, size: .small)
                 }
                 .disabled(!viewModel.trackingOptIn || viewModel.isProcessing || AppConfiguration.isMock)
             }
@@ -153,16 +160,12 @@ struct SettingsDetailView: View {
         VStack(spacing: 0) {
             content()
         }
-        .cardSurface(cornerRadius: DSSpacing.md)
+        .cardSurface(cornerRadius: DSRadii.lg)
     }
 
     private func infoCard(title: String, message: String, icon: String) -> some View {
         HStack(alignment: .top, spacing: DSSpacing.sm) {
-            DSIconBadge(
-                systemName: icon,
-                backgroundColor: Color.warning.opacity(0.15),
-                foregroundColor: Color.warning
-            )
+            HeroIcon(systemName: icon, size: 20, tint: Color.warning)
 
             VStack(alignment: .leading, spacing: DSSpacing.xs) {
                 Text(title)
@@ -176,7 +179,7 @@ struct SettingsDetailView: View {
         }
         .padding(DSSpacing.md)
         .cardSurface(
-            cornerRadius: DSSpacing.md,
+            cornerRadius: DSRadii.lg,
             tint: Color.warning.opacity(0.06),
             shadowRadius: 6,
             shadowYOffset: 3

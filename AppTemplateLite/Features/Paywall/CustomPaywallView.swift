@@ -3,80 +3,118 @@
 //  AppTemplateLite
 //
 //
-//
 
 import SwiftUI
 import DesignSystem
 
 struct CustomPaywallView: View {
     var products: [AnyProduct] = []
-    var title: String = "Premium Studio"
-    var subtitle: String = "Unlock premium flows, refined templates, and advanced analytics."
     var isProcessing: Bool = false
     var onRestorePurchasePressed: () -> Void = { }
     var onPurchaseProductPressed: (AnyProduct) -> Void = { _ in }
 
+    @State private var selectedProductId: String?
+
+    init(
+        products: [AnyProduct] = [],
+        isProcessing: Bool = false,
+        onRestorePurchasePressed: @escaping () -> Void = { },
+        onPurchaseProductPressed: @escaping (AnyProduct) -> Void = { _ in }
+    ) {
+        self.products = products
+        self.isProcessing = isProcessing
+        self.onRestorePurchasePressed = onRestorePurchasePressed
+        self.onPurchaseProductPressed = onPurchaseProductPressed
+        _selectedProductId = State(initialValue: products.first?.id)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: DSSpacing.lg) {
-            header
+            planSection
 
-            listCard {
-                let featuredId = products.first?.id
+            DSButton.cta(
+                title: "Unlock Premium",
+                isLoading: isProcessing,
+                isEnabled: selectedProduct != nil
+            ) {
+                guard let selectedProduct else { return }
+                onPurchaseProductPressed(selectedProduct)
+            }
+
+            DSButton.link(title: "Restore purchase", action: onRestorePurchasePressed)
+                .frame(maxWidth: .infinity, alignment: .center)
+        }
+        .onChange(of: products.count) { _, _ in
+            if selectedProductId == nil {
+                selectedProductId = products.first?.id
+            }
+        }
+    }
+
+    private var planSection: some View {
+        VStack(alignment: .leading, spacing: DSSpacing.sm) {
+            Text("Choose a plan")
+                .font(.headlineMedium())
+                .foregroundStyle(Color.textPrimary)
+
+            VStack(spacing: DSSpacing.sm) {
                 ForEach(Array(products.enumerated()), id: \.element.id) { index, product in
-                    let isFeatured = product.id == featuredId
-                    DSListRow(
-                        title: product.title,
-                        subtitle: productSubtitle(product, isFeatured: isFeatured),
-                        leadingIcon: "sparkles",
-                        leadingTint: isFeatured ? .success : .textPrimary,
-                        trailingText: product.priceStringWithDuration,
-                        showsDisclosure: true
-                    ) {
-                        onPurchaseProductPressed(product)
-                    }
-
-                    if index < products.count - 1 {
-                        Divider()
-                    }
+                    planCard(product, isFeatured: index == 0)
                 }
             }
             .disabled(isProcessing)
-
-            DSButton.link(title: "Restore Purchase", action: onRestorePurchasePressed)
-                .disabled(isProcessing)
-                .frame(maxWidth: .infinity, alignment: .center)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private var header: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.xs) {
-            Text(title)
-                .font(.titleLarge())
-                .foregroundStyle(Color.textPrimary)
-            Text(subtitle)
-                .font(.bodyMedium())
-                .foregroundStyle(Color.textSecondary)
+    private func planCard(_ product: AnyProduct, isFeatured: Bool) -> some View {
+        let isSelected = product.id == selectedProductId
+
+        return Button {
+            selectedProductId = product.id
+        } label: {
+            VStack(alignment: .leading, spacing: DSSpacing.smd) {
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: DSSpacing.xs) {
+                        Text(product.title)
+                            .font(.headlineMedium())
+                            .foregroundStyle(Color.textPrimary)
+
+                        Text(product.subtitle)
+                            .font(.bodySmall())
+                            .foregroundStyle(Color.textSecondary)
+                    }
+
+                    Spacer()
+
+                    if isFeatured {
+                        TagBadge(text: "Best value")
+                    }
+                }
+
+                PickerPill(
+                    title: product.priceStringWithDuration,
+                    isHighlighted: isSelected,
+                    usesGlass: isSelected
+                )
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(DSSpacing.md)
+            .cardSurface(
+                cornerRadius: DSRadii.lg,
+                tint: Color.surfaceVariant.opacity(0.7),
+                usesGlass: isSelected,
+                isInteractive: true,
+                borderColor: isSelected ? Color.themePrimary.opacity(0.4) : Color.border,
+                shadowColor: isSelected ? DSShadows.lifted.color : DSShadows.card.color,
+                shadowRadius: isSelected ? DSShadows.lifted.radius : DSShadows.card.radius,
+                shadowYOffset: isSelected ? DSShadows.lifted.y : DSShadows.card.y
+            )
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .buttonStyle(.plain)
     }
 
-    private func productSubtitle(_ product: AnyProduct, isFeatured: Bool) -> String {
-        if isFeatured {
-            return "Best value · \(product.subtitle)"
-        }
-        return product.subtitle
-    }
-
-    private func listCard(@ViewBuilder content: () -> some View) -> some View {
-        VStack(spacing: 0) {
-            content()
-        }
-        .cardSurface(
-            cornerRadius: DSSpacing.md,
-            tint: Color.textPrimary.opacity(0.04),
-            usesGlass: true
-        )
+    private var selectedProduct: AnyProduct? {
+        products.first { $0.id == selectedProductId }
     }
 }
 

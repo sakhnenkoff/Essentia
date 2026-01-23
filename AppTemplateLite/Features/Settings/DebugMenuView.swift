@@ -62,23 +62,26 @@ struct DebugMenuView: View {
                 DSListRow(
                     title: "Build",
                     subtitle: AppConfiguration.environment,
-                    leadingIcon: "wrench",
-                    leadingTint: .textSecondary
-                )
+                    leadingIcon: "wrench"
+                ) {
+                    TagBadge(text: AppConfiguration.environment, tint: .textSecondary)
+                }
                 Divider()
                 DSListRow(
                     title: "Premium",
                     subtitle: session.isPremium ? "true" : "false",
-                    leadingIcon: "sparkles",
-                    leadingTint: .warning
-                )
+                    leadingIcon: "sparkles"
+                ) {
+                    TagBadge(text: session.isPremium ? "true" : "false", tint: .textSecondary)
+                }
                 Divider()
                 DSListRow(
                     title: "Onboarding",
                     subtitle: session.isOnboardingComplete ? "complete" : "incomplete",
-                    leadingIcon: "checkmark.seal",
-                    leadingTint: .info
-                )
+                    leadingIcon: "checkmark.seal"
+                ) {
+                    TagBadge(text: session.isOnboardingComplete ? "complete" : "incomplete", tint: .textSecondary)
+                }
             }
         }
     }
@@ -89,11 +92,11 @@ struct DebugMenuView: View {
                 DSListRow(
                     title: "User ID",
                     subtitle: session.auth?.uid ?? "none",
-                    leadingIcon: "person.crop.circle",
-                    leadingTint: .textSecondary,
-                    trailingIcon: "doc.on.doc"
+                    leadingIcon: "person.crop.circle"
                 ) {
                     copyToPasteboard(session.auth?.uid)
+                } trailing: {
+                    DSIconButton(icon: "doc.on.doc", style: .secondary, size: .small)
                 }
 
                 if let email = session.currentUser?.emailCalculated ?? session.auth?.email {
@@ -101,11 +104,11 @@ struct DebugMenuView: View {
                     DSListRow(
                         title: "Email",
                         subtitle: email,
-                        leadingIcon: "envelope",
-                        leadingTint: .info,
-                        trailingIcon: "doc.on.doc"
+                        leadingIcon: "envelope"
                     ) {
                         copyToPasteboard(email)
+                    } trailing: {
+                        DSIconButton(icon: "doc.on.doc", style: .secondary, size: .small)
                     }
                 }
             }
@@ -118,43 +121,43 @@ struct DebugMenuView: View {
                 DSListRow(
                     title: "Reset onboarding",
                     subtitle: "Restart the setup flow.",
-                    leadingIcon: "arrow.counterclockwise",
-                    leadingTint: .textSecondary,
-                    showsDisclosure: true
+                    leadingIcon: "arrow.counterclockwise"
                 ) {
                     session.resetOnboarding()
                     toast = .info("Onboarding reset.")
+                } trailing: {
+                    DSIconButton(icon: "arrow.counterclockwise", style: .secondary, size: .small)
                 }
                 Divider()
                 DSListRow(
                     title: "Reset paywall",
                     subtitle: "Show on next launch.",
-                    leadingIcon: "sparkles",
-                    leadingTint: .warning,
-                    showsDisclosure: true
+                    leadingIcon: "sparkles"
                 ) {
                     session.resetPaywallDismissal()
                     toast = .info("Paywall reset.")
+                } trailing: {
+                    DSIconButton(icon: "arrow.counterclockwise", style: .secondary, size: .small)
                 }
                 Divider()
                 DSListRow(
                     title: "Copy Mixpanel Distinct ID",
                     subtitle: "Developer identifier.",
-                    leadingIcon: "doc.on.doc",
-                    leadingTint: .textSecondary,
-                    trailingIcon: "doc.on.doc"
+                    leadingIcon: "doc.on.doc"
                 ) {
                     copyToPasteboard(Constants.mixpanelDistinctId)
+                } trailing: {
+                    DSIconButton(icon: "doc.on.doc", style: .secondary, size: .small)
                 }
                 Divider()
                 DSListRow(
                     title: "Copy Firebase Instance ID",
                     subtitle: "Analytics identifier.",
-                    leadingIcon: "doc.on.doc",
-                    leadingTint: .textSecondary,
-                    trailingIcon: "doc.on.doc"
+                    leadingIcon: "doc.on.doc"
                 ) {
                     copyToPasteboard(Constants.firebaseAnalyticsAppInstanceID)
+                } trailing: {
+                    DSIconButton(icon: "doc.on.doc", style: .secondary, size: .small)
                 }
             }
         }
@@ -174,7 +177,7 @@ struct DebugMenuView: View {
         VStack(spacing: 0) {
             content()
         }
-        .cardSurface(cornerRadius: DSSpacing.md)
+        .cardSurface(cornerRadius: DSRadii.lg)
     }
 }
 

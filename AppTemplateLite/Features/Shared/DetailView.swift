@@ -3,16 +3,12 @@
 //  AppTemplateLite
 //
 //
-//
 
 import SwiftUI
 import AppRouter
 import DesignSystem
 
 struct DetailView: View {
-    @Environment(Router<AppTab, AppRoute, AppSheet>.self) private var router
-    @State private var isLoading = false
-    @State private var showError = false
     @State private var toast: Toast?
     let title: String
 
@@ -20,28 +16,7 @@ struct DetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: DSSpacing.xl) {
                 header
-                overviewSection
-
-                if isLoading {
-                    ProgressView("Loading detail...")
-                        .font(.bodySmall())
-                        .foregroundStyle(Color.textSecondary)
-                        .multilineTextAlignment(.center)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                }
-
-                if showError {
-                    ErrorStateView(
-                        title: "Detail failed to load",
-                        message: "We couldn't refresh this content. Try again or return later.",
-                        retryTitle: "Retry",
-                        onRetry: { showError = false },
-                        dismissTitle: "Dismiss",
-                        onDismiss: { showError = false }
-                    )
-                }
-
-                relatedSection
+                heroCard
                 actionSection
             }
             .padding(DSSpacing.md)
@@ -58,118 +33,53 @@ struct DetailView: View {
             Text(title)
                 .font(.titleLarge())
                 .foregroundStyle(Color.textPrimary)
-            Text("Routed detail content.")
+            Text("A focused detail surface with a single hero card.")
                 .font(.bodyMedium())
                 .foregroundStyle(Color.textSecondary)
         }
     }
 
-    private var overviewSection: some View {
-        sectionCard(title: "Overview") {
-            listCard {
-                DSListRow(
-                    title: "Status",
-                    subtitle: "Active",
-                    leadingIcon: "checkmark.seal",
-                    leadingTint: .success,
-                    trailingText: "Today"
-                )
-                Divider()
-                DSListRow(
-                    title: "Owner",
-                    subtitle: "Demo workspace",
-                    leadingIcon: "person.fill",
-                    leadingTint: .textPrimary,
-                    trailingText: sessionName
-                )
-                Divider()
-                DSListRow(
-                    title: "View paywall",
-                    subtitle: "Preview upgrade flow.",
-                    leadingIcon: "sparkles",
-                    leadingTint: .warning,
-                    showsDisclosure: true
-                ) {
-                    router.presentSheet(.paywall)
+    private var heroCard: some View {
+        GlassCard(tint: Color.surfaceVariant.opacity(0.7), usesGlass: false, tilt: -3) {
+            VStack(alignment: .leading, spacing: DSSpacing.sm) {
+                HStack(alignment: .top) {
+                    HeroIcon(systemName: "doc.text", size: 22)
+                    Spacer()
+                    TagBadge(text: "Featured")
                 }
+
+                Text("Focus notes")
+                    .font(.headlineMedium())
+                    .foregroundStyle(Color.themePrimary)
+
+                Text("Capture one idea per day and track progress over time.")
+                    .font(.bodySmall())
+                    .foregroundStyle(Color.textSecondary)
+
+                RoundedRectangle(cornerRadius: DSRadii.lg, style: .continuous)
+                    .fill(Color.surfaceVariant.opacity(0.9))
+                    .frame(height: 160)
             }
         }
-    }
-
-    private var relatedSection: some View {
-        sectionCard(title: "Related items") {
-            EmptyStateView(
-                icon: "tray",
-                title: "No related items",
-                message: "Add related content to make this screen feel complete.",
-                actionTitle: "Create sample",
-                action: {
-                    toast = .info("Sample content added.")
-                }
-            )
-        }
+        .frame(maxWidth: 360)
     }
 
     private var actionSection: some View {
-        sectionCard(title: "Demo states") {
-            listCard {
-                DSListRow(
-                    title: "Simulate loading",
-                    subtitle: "Show a loading state.",
-                    leadingIcon: "hourglass",
-                    leadingTint: .textSecondary,
-                    showsDisclosure: true
-                ) {
-                    guard !isLoading else { return }
-                    isLoading = true
-                    Task {
-                        try? await Task.sleep(for: .seconds(1))
-                        isLoading = false
-                    }
-                }
-                Divider()
-                DSListRow(
-                    title: "Simulate error",
-                    subtitle: "Show an error state.",
-                    leadingIcon: "exclamationmark.triangle.fill",
-                    leadingTint: .warning,
-                    showsDisclosure: true
-                ) {
-                    showError = true
-                }
-                Divider()
-                DSListRow(
-                    title: "Show success toast",
-                    subtitle: "Display a confirmation.",
-                    leadingIcon: "checkmark.circle.fill",
-                    leadingTint: .success,
-                    showsDisclosure: true
-                ) {
-                    toast = .success("Detail updated successfully.")
-                }
-            }
-        }
-    }
-
-    private func sectionCard(title: String, @ViewBuilder content: () -> some View) -> some View {
         VStack(alignment: .leading, spacing: DSSpacing.sm) {
-            Text(title)
+            Text("Actions")
                 .font(.headlineMedium())
                 .foregroundStyle(Color.textPrimary)
 
-            content()
-        }
-    }
+            VStack(spacing: DSSpacing.sm) {
+                DSButton.cta(title: "Mark complete") {
+                    toast = .success("Marked complete.")
+                }
 
-    private func listCard(@ViewBuilder content: () -> some View) -> some View {
-        VStack(spacing: 0) {
-            content()
+                DSButton(title: "Share card", style: .secondary, isFullWidth: true) {
+                    toast = .info("Share flow coming soon.")
+                }
+            }
         }
-        .cardSurface(cornerRadius: DSSpacing.md)
-    }
-
-    private var sessionName: String {
-        "Workspace"
     }
 }
 

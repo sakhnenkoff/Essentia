@@ -20,6 +20,7 @@ final class AppSession {
 
     private let onboardingKey = "app_onboarding_complete"
     private let paywallKey = "app_paywall_dismissed"
+    private let authDismissedKey = "app_auth_dismissed"
 
     private var didBootstrap = false
 
@@ -29,11 +30,13 @@ final class AppSession {
     var isOnboardingComplete: Bool
     var isPremium: Bool
     var hasDismissedPaywall: Bool
+    var hasDismissedAuth: Bool
     var lastErrorMessage: String?
 
     init() {
         isOnboardingComplete = UserDefaults.standard.bool(forKey: onboardingKey)
         hasDismissedPaywall = UserDefaults.standard.bool(forKey: paywallKey)
+        hasDismissedAuth = UserDefaults.standard.bool(forKey: authDismissedKey)
         isPremium = false
     }
 
@@ -45,6 +48,10 @@ final class AppSession {
         FeatureFlags.enablePurchases && !isPremium && !hasDismissedPaywall
     }
 
+    var shouldShowAuth: Bool {
+        FeatureFlags.enableAuth && !isSignedIn && !hasDismissedAuth
+    }
+
     var rootState: RootState {
         if isLoading {
             return .loading
@@ -52,7 +59,7 @@ final class AppSession {
         if !isOnboardingComplete {
             return .onboarding
         }
-        if !isSignedIn {
+        if shouldShowAuth {
             return .auth
         }
         if shouldShowPaywall {
@@ -76,6 +83,7 @@ final class AppSession {
             } catch {
                 lastErrorMessage = error.localizedDescription
             }
+            markAuthDismissed()
         }
 
         if currentUser?.didCompleteOnboarding == true {
@@ -99,9 +107,19 @@ final class AppSession {
         UserDefaults.standard.set(true, forKey: paywallKey)
     }
 
+    func markAuthDismissed() {
+        hasDismissedAuth = true
+        UserDefaults.standard.set(true, forKey: authDismissedKey)
+    }
+
     func resetPaywallDismissal() {
         hasDismissedPaywall = false
         UserDefaults.standard.removeObject(forKey: paywallKey)
+    }
+
+    func resetAuthDismissal() {
+        hasDismissedAuth = false
+        UserDefaults.standard.removeObject(forKey: authDismissedKey)
     }
 
     func resetOnboarding() {
@@ -121,9 +139,10 @@ final class AppSession {
                 setOnboardingComplete()
             }
         }
+        markAuthDismissed()
     }
 
-    func resetForSignOut(clearOnboarding: Bool = false) {
+    func resetForSignOut(clearOnboarding: Bool = false, clearAuthDismissal: Bool = false) {
         auth = nil
         currentUser = nil
         isPremium = false
@@ -135,5 +154,9 @@ final class AppSession {
             UserDefaults.standard.removeObject(forKey: onboardingKey)
         }
         UserDefaults.standard.removeObject(forKey: paywallKey)
+
+        if clearAuthDismissal {
+            resetAuthDismissal()
+        }
     }
 }

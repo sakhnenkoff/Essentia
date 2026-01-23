@@ -28,6 +28,11 @@ enum FeatureFlags {
     /// Enable in-app purchases via RevenueCat
     static let enablePurchases = true
 
+    // MARK: - Authentication
+
+    /// Enable the sign-in demo flow
+    static let enableAuth = true
+
     // MARK: - Notifications
 
     /// Enable push notifications via Firebase Cloud Messaging

@@ -28,8 +28,10 @@ struct StoreKitPaywallView: View {
             .multilineTextAlignment(.center)
             .containerBackground(Color.backgroundSecondary, for: .subscriptionStore)
         }
-        .storeButton(.visible, for: .restorePurchases)
+        .storeButton(.hidden, for: .restorePurchases)
+        .storeButton(.hidden, for: .policies)
         .subscriptionStoreControlStyle(.prominentPicker)
+        .toolbar(.hidden, for: .navigationBar)
         .onInAppPurchaseStart(perform: onInAppPurchaseStart)
         .onInAppPurchaseCompletion(perform: onInAppPurchaseCompletion)
     }

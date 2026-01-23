@@ -13,7 +13,7 @@ struct PaywallView: View {
     @Environment(AppSession.self) private var session
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel = PaywallViewModel()
-    @State private var paywallMode: PaywallMode = .storeKit
+    @State private var paywallMode: PaywallMode = .custom
 
     let showCloseButton: Bool
     let allowSkip: Bool
@@ -26,8 +26,7 @@ struct PaywallView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: DSSpacing.lg) {
-                header
-                includedSection
+                heroCard
 
                 if FeatureFlags.enablePurchases {
                     paywallContent
@@ -75,7 +74,7 @@ struct PaywallView: View {
         .toolbar(.hidden, for: .navigationBar)
         .overlay(alignment: .topTrailing) {
             if showCloseButton {
-                DSIconButton(icon: "xmark", style: .tertiary, size: .small) {
+                DSIconButton(icon: "xmark", style: .secondary, size: .small) {
                     dismiss()
                 }
                 .padding(DSSpacing.md)
@@ -166,54 +165,25 @@ struct PaywallView: View {
         case custom
     }
 
-    private var header: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.xs) {
-            Text("Upgrade to Premium")
-                .font(.titleLarge())
-                .foregroundStyle(Color.textPrimary)
-            Text("Unlock premium flows and advanced analytics.")
-                .font(.bodyMedium())
-                .foregroundStyle(Color.textSecondary)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
+    private var heroCard: some View {
+        GlassCard(tint: Color.surfaceVariant.opacity(0.7), usesGlass: false, tilt: -2) {
+            VStack(alignment: .leading, spacing: DSSpacing.sm) {
+                HStack(alignment: .top) {
+                    HeroIcon(systemName: "sparkles", size: 22)
+                    Spacer()
+                    TagBadge(text: "Premium")
+                }
 
-    private var includedSection: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.sm) {
-            Text("Included")
-                .font(.headlineMedium())
-                .foregroundStyle(Color.textPrimary)
+                Text("Premium Studio")
+                    .font(.headlineMedium())
+                    .foregroundStyle(Color.themePrimary)
 
-            listCard {
-                DSListRow(
-                    title: "Premium templates",
-                    subtitle: "Additional layouts and onboarding polish.",
-                    leadingIcon: "star.fill",
-                    leadingTint: .warning
-                )
-                Divider()
-                DSListRow(
-                    title: "Advanced analytics",
-                    subtitle: "Track onboarding and paywall performance.",
-                    leadingIcon: "chart.line.uptrend.xyaxis",
-                    leadingTint: .info
-                )
-                Divider()
-                DSListRow(
-                    title: "Priority support",
-                    subtitle: "Guided updates and launch help.",
-                    leadingIcon: "shield.fill",
-                    leadingTint: .success
-                )
+                Text("A refined template pack with analytics, paywalls, and onboarding flows.")
+                    .font(.bodySmall())
+                    .foregroundStyle(Color.textSecondary)
             }
         }
-    }
-
-    private func listCard(@ViewBuilder content: () -> some View) -> some View {
-        VStack(spacing: 0) {
-            content()
-        }
-        .cardSurface(cornerRadius: DSSpacing.md)
+        .frame(maxWidth: 360)
     }
 
     private var paywallSkeleton: some View {

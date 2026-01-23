@@ -3,10 +3,8 @@
 //  AppTemplateLite
 //
 //
-//
 
 import SwiftUI
-import UIKit
 import AppRouter
 import DesignSystem
 
@@ -20,9 +18,8 @@ struct ProfileView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: DSSpacing.xl) {
                 header
-                accountSection
-                activitySection
-                actionSection
+                profileCard
+                actionsSection
             }
             .padding(DSSpacing.md)
         }
@@ -34,26 +31,85 @@ struct ProfileView: View {
     }
 
     private var header: some View {
-        HStack(alignment: .top, spacing: DSSpacing.md) {
-            profileAvatar
+        VStack(alignment: .leading, spacing: DSSpacing.xs) {
+            Text("Profile studio")
+                .font(.titleLarge())
+                .foregroundStyle(Color.textPrimary)
+            Text("A calm card with minimal stats and actions.")
+                .font(.bodyMedium())
+                .foregroundStyle(Color.textSecondary)
+        }
+    }
 
-            VStack(alignment: .leading, spacing: DSSpacing.xs) {
-                Text(session.currentUser?.commonNameCalculated ?? "Guest")
-                    .font(.titleSmall())
-                    .foregroundStyle(Color.textPrimary)
-                Text(session.isPremium ? "Premium member" : "Free plan")
-                    .font(.bodySmall())
-                    .foregroundStyle(Color.textSecondary)
+    private var profileCard: some View {
+        GlassCard(tint: Color.surfaceVariant.opacity(0.7), usesGlass: false, tilt: -2) {
+            VStack(alignment: .leading, spacing: DSSpacing.md) {
+                HStack(alignment: .center, spacing: DSSpacing.md) {
+                    profileAvatar
 
-                if let email = session.currentUser?.emailCalculated ?? session.auth?.email {
-                    Text(email)
-                        .font(.bodySmall())
-                        .foregroundStyle(Color.textSecondary)
+                    VStack(alignment: .leading, spacing: DSSpacing.xs) {
+                        Text(session.currentUser?.commonNameCalculated ?? "Guest")
+                            .font(.headlineMedium())
+                            .foregroundStyle(Color.textPrimary)
+                        Text(session.isPremium ? "Premium member" : "Free plan")
+                            .font(.bodySmall())
+                            .foregroundStyle(Color.textSecondary)
+
+                        if let email = session.currentUser?.emailCalculated ?? session.auth?.email {
+                            Text(email)
+                                .font(.bodySmall())
+                                .foregroundStyle(Color.textSecondary)
+                        }
+
+                        if !userId.isEmpty {
+                            Text("ID \(userId)")
+                                .font(.captionLarge())
+                                .foregroundStyle(Color.textTertiary)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+
+                Divider()
+
+                HStack(spacing: DSSpacing.lg) {
+                    statItem(value: "12", title: "Streak")
+                    statItem(value: "4", title: "Projects")
+                    statItem(value: "36", title: "Days")
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: 360)
+    }
+
+    private var actionsSection: some View {
+        VStack(alignment: .leading, spacing: DSSpacing.sm) {
+            Text("Actions")
+                .font(.headlineMedium())
+                .foregroundStyle(Color.textPrimary)
+
+            VStack(spacing: DSSpacing.sm) {
+                DSButton.cta(title: "Edit profile") {
+                    toast = .success("Profile editor coming soon.")
+                }
+
+                DSButton(
+                    title: session.isPremium ? "Manage subscription" : "View paywall",
+                    style: .secondary,
+                    isFullWidth: true
+                ) {
+                    router.presentSheet(.paywall)
+                }
+
+                DSButton(
+                    title: "Open settings",
+                    style: .secondary,
+                    isFullWidth: true
+                ) {
+                    router.presentSheet(.settings)
+                }
+            }
+        }
     }
 
     private var profileAvatar: some View {
@@ -65,163 +121,24 @@ struct ProfileView: View {
                 ZStack {
                     Circle()
                         .fill(Color.backgroundTertiary)
-                    Image(systemName: "person.fill")
-                        .font(.headlineLarge())
-                        .foregroundStyle(Color.textSecondary)
+                    SketchIcon(systemName: "person.fill", size: 22, color: Color.textSecondary)
                 }
             }
         }
-        .frame(width: 64, height: 64)
+        .frame(width: 68, height: 68)
         .clipShape(Circle())
     }
 
-    private var accountSection: some View {
-        section(title: "Account") {
-            listCard {
-                if let name = session.currentUser?.commonNameCalculated {
-                    DSListRow(
-                        title: "Name",
-                        subtitle: name,
-                        leadingIcon: "person.fill",
-                        leadingTint: .textPrimary
-                    )
-                    Divider()
-                }
-
-                if let email = session.currentUser?.emailCalculated ?? session.auth?.email {
-                    DSListRow(
-                        title: "Email",
-                        subtitle: email,
-                        leadingIcon: "envelope",
-                        leadingTint: .info,
-                        trailingIcon: "doc.on.doc"
-                    ) {
-                        copyToPasteboard(email)
-                    }
-                    Divider()
-                }
-
-                DSListRow(
-                    title: "User ID",
-                    subtitle: userId,
-                    leadingIcon: "person.crop.circle",
-                    leadingTint: .textSecondary,
-                    trailingIcon: "doc.on.doc"
-                ) {
-                    copyToPasteboard(userId)
-                }
-            }
-        }
-    }
-
-    private var activitySection: some View {
-        let activityItems = sampleActivityItems
-
-        return section(title: "Recent activity") {
-            if activityItems.isEmpty {
-                EmptyStateView(
-                    icon: "sparkles",
-                    title: "No activity yet",
-                    message: "Complete onboarding and explore features to see updates here.",
-                    actionTitle: "View onboarding",
-                    action: { router.navigateTo(.detail(title: "Onboarding progress"), for: router.selectedTab) }
-                )
-            } else {
-                listCard {
-                    ForEach(Array(activityItems.enumerated()), id: \.element.id) { index, item in
-                        activityRow(item)
-                        if index < activityItems.count - 1 {
-                            Divider()
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private var actionSection: some View {
-        section(title: "Quick actions") {
-            listCard {
-                DSListRow(
-                    title: "Open settings",
-                    subtitle: "Privacy and notifications.",
-                    leadingIcon: "gearshape.fill",
-                    leadingTint: .textPrimary,
-                    showsDisclosure: true
-                ) {
-                    router.presentSheet(.settings)
-                }
-                Divider()
-                DSListRow(
-                    title: session.isPremium ? "Manage subscription" : "View paywall",
-                    subtitle: "Upgrade options.",
-                    leadingIcon: "sparkles",
-                    leadingTint: .warning,
-                    showsDisclosure: true
-                ) {
-                    router.presentSheet(.paywall)
-                }
-            }
-        }
-    }
-
-    private func section(title: String, @ViewBuilder content: () -> some View) -> some View {
-        VStack(alignment: .leading, spacing: DSSpacing.sm) {
-            Text(title)
+    private func statItem(value: String, title: String) -> some View {
+        VStack(alignment: .leading, spacing: DSSpacing.xs) {
+            Text(value)
                 .font(.headlineMedium())
-                .foregroundStyle(Color.textPrimary)
-
-            content()
+                .foregroundStyle(Color.themePrimary)
+            Text(title)
+                .font(.captionLarge())
+                .foregroundStyle(Color.textSecondary)
         }
-    }
-
-    private func listCard(@ViewBuilder content: () -> some View) -> some View {
-        VStack(spacing: 0) {
-            content()
-        }
-        .cardSurface(cornerRadius: DSSpacing.md)
-    }
-
-    private func activityRow(_ item: ActivityItem) -> some View {
-        DSListRow(
-            title: item.title,
-            subtitle: item.message,
-            leadingIcon: item.icon,
-            leadingTint: item.tint
-        )
-    }
-
-    private func copyToPasteboard(_ value: String) {
-        UIPasteboard.general.string = value
-        toast = .success("Copied to clipboard.")
-    }
-
-    private var sampleActivityItems: [ActivityItem] {
-        guard session.isSignedIn else { return [] }
-        return [
-            ActivityItem(
-                id: "onboarding",
-                title: "Onboarding completed",
-                message: "You finished the onboarding flow.",
-                icon: "sparkles",
-                tint: Color.info
-            ),
-            ActivityItem(
-                id: "premium",
-                title: "Premium preview",
-                message: "You reviewed the paywall flow.",
-                icon: "creditcard.fill",
-                tint: Color.success
-            )
-        ]
-    }
-
-    private struct ActivityItem: Identifiable {
-        let id: String
-        let title: String
-        let message: String
-        let icon: String
-        let tint: Color
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 

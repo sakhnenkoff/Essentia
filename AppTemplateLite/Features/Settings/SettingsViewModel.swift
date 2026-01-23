@@ -103,6 +103,28 @@ final class SettingsViewModel {
         services.logManager.trackEvent(event: Event.resetPaywall)
     }
 
+    func showAuthScreen(services: AppServices, session: AppSession) {
+        guard !isProcessing else { return }
+        isProcessing = true
+        errorMessage = nil
+        services.logManager.trackEvent(event: Event.resetAuth)
+
+        Task { [weak self] in
+            guard let self else { return }
+            do {
+                if session.isSignedIn {
+                    try await services.signOut()
+                }
+                session.resetForSignOut(clearAuthDismissal: true)
+                toast = .info("Sign-in screen will show on next launch.")
+            } catch {
+                self.errorMessage = error.localizedDescription
+                services.logManager.trackEvent(event: Event.resetAuthFail(error: error))
+            }
+            self.isProcessing = false
+        }
+    }
+
     func clearError() {
         errorMessage = nil
     }
@@ -128,6 +150,8 @@ extension SettingsViewModel {
         case deleteAccountFail(error: Error)
         case resetOnboarding
         case resetPaywall
+        case resetAuth
+        case resetAuthFail(error: Error)
         case pushRequestStart
         case pushRequestFinish(granted: Bool)
         case pushRequestFail(error: Error)
@@ -150,6 +174,10 @@ extension SettingsViewModel {
                 return "Settings_Reset_Onboarding"
             case .resetPaywall:
                 return "Settings_Reset_Paywall"
+            case .resetAuth:
+                return "Settings_Reset_Auth"
+            case .resetAuthFail:
+                return "Settings_Reset_Auth_Fail"
             case .pushRequestStart:
                 return "Settings_Push_Request_Start"
             case .pushRequestFinish:
@@ -161,7 +189,7 @@ extension SettingsViewModel {
 
         var parameters: [String: Any]? {
             switch self {
-            case .signOutFail(let error), .deleteAccountFail(let error):
+            case .signOutFail(let error), .deleteAccountFail(let error), .resetAuthFail(let error):
                 return error.eventParameters
             case .pushRequestFinish(let granted):
                 return ["granted": granted]
@@ -174,7 +202,7 @@ extension SettingsViewModel {
 
         var type: LogType {
             switch self {
-            case .signOutFail, .deleteAccountFail:
+            case .signOutFail, .deleteAccountFail, .resetAuthFail:
                 return .severe
             case .pushRequestFail:
                 return .severe

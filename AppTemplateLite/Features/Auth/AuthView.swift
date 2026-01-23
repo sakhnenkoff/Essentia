@@ -19,6 +19,7 @@ struct AuthView: View {
                 hero
                 valueProps
                 signInOptions
+                skipButton
                 if viewModel.isLoading {
                     ProgressView("Signing you in...")
                         .font(.bodySmall())
@@ -79,7 +80,7 @@ struct AuthView: View {
             )
         }
         .padding(DSSpacing.md)
-        .cardSurface(cornerRadius: DSSpacing.md)
+        .cardSurface(cornerRadius: DSRadii.lg)
     }
 
     @ViewBuilder
@@ -98,11 +99,11 @@ struct AuthView: View {
                     DSListRow(
                         title: "Continue with Apple",
                         subtitle: "Private sign-in",
-                        leadingIcon: "apple.logo",
-                        leadingTint: .textPrimary,
-                        showsDisclosure: true
+                        leadingIcon: "apple.logo"
                     ) {
                         viewModel.signInApple(services: services, session: session)
+                    } trailing: {
+                        DSIconButton(icon: "chevron.right", style: .secondary, size: .small)
                     }
                 }
 
@@ -113,11 +114,11 @@ struct AuthView: View {
                     DSListRow(
                         title: "Continue with Google",
                         subtitle: "Fast setup",
-                        leadingIcon: "globe",
-                        leadingTint: .info,
-                        showsDisclosure: true
+                        leadingIcon: "globe"
                     ) {
                         viewModel.signInGoogle(services: services, session: session)
+                    } trailing: {
+                        DSIconButton(icon: "chevron.right", style: .secondary, size: .small)
                     }
                 }
 
@@ -128,11 +129,11 @@ struct AuthView: View {
                     DSListRow(
                         title: "Explore as guest",
                         subtitle: "Skip sign-in for now",
-                        leadingIcon: "person",
-                        leadingTint: .textSecondary,
-                        showsDisclosure: true
+                        leadingIcon: "person"
                     ) {
                         viewModel.signInAnonymously(services: services, session: session)
+                    } trailing: {
+                        DSIconButton(icon: "chevron.right", style: .secondary, size: .small)
                     }
                 }
             }
@@ -147,9 +148,16 @@ struct AuthView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
     }
 
+    private var skipButton: some View {
+        DSButton.link(title: "Skip for now") {
+            session.markAuthDismissed()
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
+    }
+
     private func featureRow(icon: String, title: String, message: String) -> some View {
         HStack(alignment: .top, spacing: DSSpacing.sm) {
-            DSIconBadge(systemName: icon)
+            HeroIcon(systemName: icon, size: 22)
 
             VStack(alignment: .leading, spacing: DSSpacing.xs) {
                 Text(title)
@@ -167,7 +175,7 @@ struct AuthView: View {
         VStack(spacing: 0) {
             content()
         }
-        .cardSurface(cornerRadius: DSSpacing.md)
+        .cardSurface(cornerRadius: DSRadii.lg)
     }
 }
 

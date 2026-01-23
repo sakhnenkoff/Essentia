@@ -20,17 +20,18 @@ struct OnboardingView: View {
                 progress: controller.progress,
                 showBackButton: controller.canGoBack,
                 onBack: {
-                    withAnimation(.smooth(duration: 0.5)) {
+                    withAnimation(.easeInOut(duration: 0.25)) {
                         controller.goBack()
                     }
                 }
             )
 
             ScrollView {
-                VStack(alignment: .leading, spacing: DSSpacing.lg) {
-                    stepHeader
-
-                    stepContent
+                VStack(alignment: .center, spacing: DSSpacing.xl) {
+                    heroIcon
+                    headlineView
+                    subtitleView
+                    cardContent
 
                     if let errorMessage = errorMessage {
                         ErrorStateView(
@@ -54,9 +55,10 @@ struct OnboardingView: View {
                             .frame(maxWidth: .infinity, alignment: .center)
                     }
                 }
-                .padding(.horizontal, DSSpacing.lg)
-                .padding(.top, DSSpacing.lg)
-                .padding(.bottom, DSSpacing.xl)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, DSSpacing.xl)
+                .padding(.top, DSSpacing.xl)
+                .padding(.bottom, DSSpacing.xxl)
             }
             .scrollIndicators(.hidden)
             .scrollDismissesKeyboard(.interactively)
@@ -74,151 +76,153 @@ struct OnboardingView: View {
         }
     }
 
-    // MARK: - Step Header
+    private var heroIcon: some View {
+        HeroIcon(systemName: controller.currentStep.icon, size: 28)
+    }
 
-    private var stepHeader: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.sm) {
-            Text(controller.currentStep.title.uppercased())
-                .font(.captionLarge())
-                .foregroundStyle(Color.textTertiary)
-
-            Text(controller.currentStep.headline)
+    private var headlineView: some View {
+        (
+            Text(controller.currentStep.headlineLeading)
                 .font(.titleLarge())
                 .foregroundStyle(Color.textPrimary)
-
-            if let subtitle = controller.currentStep.subtitle {
-                Text(subtitle)
-                    .font(.bodyMedium())
-                    .foregroundStyle(Color.textSecondary)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
+            + Text(controller.currentStep.headlineHighlight)
+                .font(.titleLarge())
+                .foregroundStyle(Color.themePrimary)
+            + Text(controller.currentStep.headlineTrailing)
+                .font(.titleLarge())
+                .foregroundStyle(Color.textPrimary)
+        )
+        .multilineTextAlignment(.center)
+        .lineSpacing(4)
     }
 
-    // MARK: - Step Content
+    private var subtitleView: some View {
+        Text(controller.currentStep.subtitle)
+            .font(.bodyMedium())
+            .foregroundStyle(Color.textSecondary)
+            .multilineTextAlignment(.center)
+            .frame(maxWidth: 260)
+    }
 
     @ViewBuilder
-    private var stepContent: some View {
+    private var cardContent: some View {
         switch controller.currentStep {
         case .welcome:
-            welcomeContent
+            welcomeCard
         case .goals:
-            goalsContent
+            goalsCard
         case .name:
-            nameContent
+            nameCard
         }
     }
 
-    // MARK: - Welcome Step
+    private var welcomeCard: some View {
+        GlassCard(tint: Color.surfaceVariant.opacity(0.7), usesGlass: false, tilt: -4) {
+            VStack(alignment: .leading, spacing: DSSpacing.sm) {
+                HStack {
+                    Text("Saturday, 24.05")
+                        .font(.captionLarge())
+                        .foregroundStyle(Color.themePrimary)
+                    Spacer()
+                    Text("18/365")
+                        .font(.captionLarge())
+                        .foregroundStyle(Color.textTertiary)
+                }
 
-    private var welcomeContent: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.lg) {
-            VStack(alignment: .leading, spacing: DSSpacing.xs) {
-                Text("What you get")
+                Text("How was your day?")
                     .font(.headlineMedium())
-                    .foregroundStyle(Color.textPrimary)
-                Text("Everything you need to ship a polished demo quickly.")
-                    .font(.bodySmall())
-                    .foregroundStyle(Color.textSecondary)
-            }
+                    .foregroundStyle(Color.themePrimary)
 
-            VStack(spacing: DSSpacing.sm) {
-                featureRow(
-                    icon: "person.crop.circle.badge.checkmark",
-                    title: "Guided onboarding",
-                    message: "Progress tracking and analytics are wired in."
-                )
-                featureRow(
-                    icon: "creditcard.fill",
-                    title: "Monetization ready",
-                    message: "StoreKit and custom paywall layouts included."
-                )
-                featureRow(
-                    icon: "paintbrush.pointed.fill",
-                    title: "Design system",
-                    message: "Semantic colors, typography, and spacing rules."
-                )
+                RoundedRectangle(cornerRadius: DSRadii.lg, style: .continuous)
+                    .fill(Color.surfaceVariant.opacity(0.9))
+                    .frame(height: 180)
             }
         }
+        .frame(maxWidth: 340)
     }
 
-    // MARK: - Goals Step
-
-    private var goalsContent: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.lg) {
-            VStack(alignment: .leading, spacing: DSSpacing.xs) {
-                Text("Choose a focus")
+    private var goalsCard: some View {
+        GlassCard(tint: Color.surfaceVariant.opacity(0.7), usesGlass: false, tilt: -3) {
+            VStack(alignment: .leading, spacing: DSSpacing.sm) {
+                Text("Choose your focus")
                     .font(.headlineMedium())
                     .foregroundStyle(Color.textPrimary)
-                Text("Select a couple of goals to personalize this demo.")
-                    .font(.bodySmall())
-                    .foregroundStyle(Color.textSecondary)
-            }
 
-            VStack(spacing: DSSpacing.sm) {
-                DSChoiceButton(
-                    title: "Launch fast",
-                    icon: "paperplane.fill",
-                    isSelected: controller.selectedGoals.contains("launch")
-                ) {
-                    controller.toggleGoal("launch")
-                }
-
-                DSChoiceButton(
-                    title: "Monetize",
-                    icon: "creditcard.fill",
-                    isSelected: controller.selectedGoals.contains("monetize")
-                ) {
-                    controller.toggleGoal("monetize")
-                }
-
-                DSChoiceButton(
-                    title: "Measure growth",
-                    icon: "chart.line.uptrend.xyaxis",
-                    isSelected: controller.selectedGoals.contains("measure")
-                ) {
-                    controller.toggleGoal("measure")
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: DSSpacing.sm) {
+                    goalPill(title: "Launch", id: "launch")
+                    goalPill(title: "Monetize", id: "monetize")
+                    goalPill(title: "Growth", id: "measure")
+                    goalPill(title: "Community", id: "community")
                 }
             }
+        }
+        .frame(maxWidth: 340)
+    }
 
-            if controller.selectedGoals.isEmpty {
-                Text("Select at least one goal to continue.")
+    private var nameCard: some View {
+        GlassCard(tint: Color.surfaceVariant.opacity(0.7), usesGlass: false, tilt: -2) {
+            VStack(alignment: .leading, spacing: DSSpacing.sm) {
+                Text("Your name")
+                    .font(.headlineMedium())
+                    .foregroundStyle(Color.textPrimary)
+
+                DSTextField.name(
+                    placeholder: "Type your name",
+                    text: $controller.userName
+                )
+
+                Text("We use this to personalize your demo.")
                     .font(.captionLarge())
-                    .foregroundStyle(Color.textTertiary)
+                    .foregroundStyle(Color.textSecondary)
             }
         }
+        .frame(maxWidth: 340)
     }
 
-    // MARK: - Name Step
-
-    private var nameContent: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.lg) {
-            Text("Your name")
-                .font(.headlineMedium())
-                .foregroundStyle(Color.textPrimary)
-
-            DSTextField.name(
-                placeholder: "Your name",
-                text: $controller.userName
-            )
-
-            Text("We use this to personalize your demo experience.")
-                .font(.captionLarge())
-                .foregroundStyle(Color.textTertiary)
+    private func goalPill(title: String, id: String) -> some View {
+        Button {
+            controller.toggleGoal(id)
+        } label: {
+            PickerPill(title: title, isHighlighted: controller.selectedGoals.contains(id))
         }
+        .buttonStyle(.plain)
     }
 
-    // MARK: - Actions
+    private var ctaBar: some View {
+        VStack(spacing: DSSpacing.sm) {
+            DSButton.cta(
+                title: controller.currentStep.ctaTitle,
+                isLoading: isSaving,
+                isEnabled: controller.canContinue
+            ) {
+                onContinue()
+            }
+
+            if !controller.isLastStep {
+                DSButton.link(title: "Skip", action: skipOnboarding)
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
+        }
+        .padding(.horizontal, DSSpacing.xl)
+        .padding(.top, DSSpacing.sm)
+        .padding(.bottom, DSSpacing.lg)
+        .background(Color.backgroundPrimary)
+    }
 
     private func onContinue() {
         trackEvent(.stepComplete(result: controller.stepResult()))
 
-        withAnimation(.smooth(duration: 0.5)) {
+        withAnimation(.easeInOut(duration: 0.25)) {
             let completed = controller.goNext()
             if completed {
                 completeOnboarding()
             }
         }
+    }
+
+    private func skipOnboarding() {
+        trackEvent(.flowComplete(result: controller.flowResult))
+        session.setOnboardingComplete()
     }
 
     private func completeOnboarding() {
@@ -242,39 +246,6 @@ struct OnboardingView: View {
 
     private func trackEvent(_ event: OnboardingEvent) {
         services.logManager.trackEvent(event: event)
-    }
-
-    private func featureRow(icon: String, title: String, message: String) -> some View {
-        HStack(alignment: .top, spacing: DSSpacing.sm) {
-            DSIconBadge(systemName: icon)
-
-            VStack(alignment: .leading, spacing: DSSpacing.xs) {
-                Text(title)
-                    .font(.headlineSmall())
-                    .foregroundStyle(Color.textPrimary)
-                Text(message)
-                    .font(.bodySmall())
-                    .foregroundStyle(Color.textSecondary)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
-    }
-
-    private var ctaBar: some View {
-        VStack(spacing: DSSpacing.sm) {
-            Divider()
-
-            DSButton.cta(
-                title: controller.isLastStep ? "Get Started" : "Continue",
-                isEnabled: controller.canContinue
-            ) {
-                onContinue()
-            }
-        }
-        .padding(.horizontal, DSSpacing.lg)
-        .padding(.top, DSSpacing.sm)
-        .padding(.bottom, DSSpacing.lg)
-        .background(Color.backgroundPrimary)
     }
 }
 

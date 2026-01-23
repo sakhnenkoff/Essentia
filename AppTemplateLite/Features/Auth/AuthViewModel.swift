@@ -95,6 +95,7 @@ final class AuthViewModel {
     ) async throws {
         try await services.logIn(user: result.user, isNewUser: result.isNewUser)
         session.updateAuth(user: result.user, currentUser: services.userManager.currentUser)
+        session.markAuthDismissed()
 
         if let purchaseManager = services.purchaseManager {
             session.updatePremiumStatus(entitlements: purchaseManager.entitlements)

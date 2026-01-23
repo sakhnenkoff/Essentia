@@ -39,7 +39,7 @@ struct CustomModalView: View {
         }
         .multilineTextAlignment(.center)
         .padding(DSSpacing.md)
-        .cardSurface(cornerRadius: DSSpacing.md)
+        .cardSurface(cornerRadius: DSRadii.lg)
         .padding(DSSpacing.xxlg)
     }
 }

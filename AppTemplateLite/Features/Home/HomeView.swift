@@ -17,196 +17,127 @@ struct HomeView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: DSSpacing.xl) {
-                header
-                statusSection
-                actionsSection
-                highlightsSection
+                hero
+                screensSection
+                componentsSection
             }
             .padding(DSSpacing.md)
         }
         .scrollIndicators(.hidden)
         .scrollBounceBehavior(.basedOnSize)
         .background(AmbientBackground())
-        .navigationTitle("Inbox")
+        .navigationTitle("Home")
         .toast($viewModel.toast)
         .onAppear {
             viewModel.onAppear(services: services, session: session)
         }
     }
 
-    private var header: some View {
-        let name = session.currentUser?.commonNameCalculated ?? "there"
-
-        return VStack(alignment: .leading, spacing: DSSpacing.xs) {
-            Text("Welcome, \(name)")
+    private var hero: some View {
+        VStack(alignment: .leading, spacing: DSSpacing.sm) {
+            AppTopIcon(systemName: "scribble.variable")
+            Text("Design system showcase")
                 .font(.titleLarge())
                 .foregroundStyle(Color.textPrimary)
-            Text("Your demo workspace is ready.")
+            Text("Calm components with sketch icons and focused glass accents.")
                 .font(.bodyMedium())
                 .foregroundStyle(Color.textSecondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private var statusSection: some View {
-        section(title: "Status") {
+    private var screensSection: some View {
+        section(title: "Screens") {
             listCard {
                 DSListRow(
                     title: "Onboarding",
-                    subtitle: session.isOnboardingComplete ? "All steps completed." : "Start the setup flow.",
-                    leadingIcon: "sparkles",
-                    leadingTint: .info,
-                    trailingText: session.isOnboardingComplete ? "Complete" : "New"
-                )
+                    subtitle: session.isOnboardingComplete ? "Restart the flow." : "Start the demo flow.",
+                    leadingIcon: "sparkles"
+                ) {
+                    viewModel.resetOnboarding(services: services, session: session)
+                } trailing: {
+                    DSIconButton(icon: "arrow.counterclockwise", style: .secondary, size: .small)
+                }
                 Divider()
                 DSListRow(
-                    title: "Subscription",
-                    subtitle: session.isPremium ? "Premium is active." : "Upgrade preview available.",
-                    leadingIcon: "creditcard.fill",
-                    leadingTint: session.isPremium ? .success : .warning,
-                    trailingText: session.isPremium ? "Premium" : "Free"
-                )
+                    title: "Detail",
+                    subtitle: "Hero card + actions.",
+                    leadingIcon: "square.stack.3d.up.fill"
+                ) {
+                    router.navigateTo(.detail(title: "Studio detail"), for: .home)
+                } trailing: {
+                    DSIconButton(icon: "chevron.right", style: .secondary, size: .small)
+                }
                 Divider()
                 DSListRow(
                     title: "Profile",
-                    subtitle: session.isSignedIn ? "Synced account." : "Guest session.",
-                    leadingIcon: "person.fill",
-                    leadingTint: .warning,
-                    trailingText: session.isSignedIn ? "Synced" : "Guest"
-                )
-                Divider()
-                DSListRow(
-                    title: "Notifications",
-                    subtitle: FeatureFlags.enablePushNotifications ? "Opt-in flow ready." : "Feature flag is off.",
-                    leadingIcon: "bell.fill",
-                    leadingTint: .info,
-                    trailingText: FeatureFlags.enablePushNotifications ? "Ready" : "Off"
-                )
-            }
-        }
-    }
-
-    private var actionsSection: some View {
-        section(title: "Quick actions") {
-            listCard {
-                DSListRow(
-                    title: "Preview onboarding",
-                    subtitle: "Reset and start the flow.",
-                    leadingIcon: "sparkles",
-                    leadingTint: .info,
-                    trailingIcon: "arrow.counterclockwise"
-                ) {
-                    viewModel.resetOnboarding(services: services, session: session)
-                }
-                Divider()
-                DSListRow(
-                    title: "View paywall",
-                    subtitle: "StoreKit and custom layouts.",
-                    leadingIcon: "creditcard.fill",
-                    leadingTint: .success,
-                    showsDisclosure: true
-                ) {
-                    router.presentSheet(.paywall)
-                }
-                Divider()
-                DSListRow(
-                    title: "View detail screen",
-                    subtitle: "Routed detail content.",
-                    leadingIcon: "square.stack.3d.up.fill",
-                    leadingTint: .textPrimary,
-                    showsDisclosure: true
-                ) {
-                    router.navigateTo(.detail(title: "Starter detail"), for: .home)
-                }
-                Divider()
-                DSListRow(
-                    title: "Open profile",
-                    subtitle: "Account details and activity.",
-                    leadingIcon: "person.fill",
-                    leadingTint: .warning,
-                    showsDisclosure: true
+                    subtitle: "Avatar, stats, and actions.",
+                    leadingIcon: "person.fill"
                 ) {
                     let userId = session.auth?.uid ?? "guest"
                     router.navigateTo(.profile(userId: userId), for: .home)
+                } trailing: {
+                    DSIconButton(icon: "chevron.right", style: .secondary, size: .small)
+                }
+                Divider()
+                DSListRow(
+                    title: "Paywall",
+                    subtitle: "Plan selector + CTA.",
+                    leadingIcon: "creditcard.fill"
+                ) {
+                    router.presentSheet(.paywall)
+                } trailing: {
+                    DSIconButton(icon: "chevron.right", style: .secondary, size: .small)
                 }
             }
         }
     }
 
-    private var highlightsSection: some View {
-        section(title: "Highlights") {
-            if viewModel.isLoading {
-                VStack(spacing: DSSpacing.sm) {
-                    SkeletonView(style: .listRow)
-                    SkeletonView(style: .listRow)
-                    SkeletonView(style: .listRow)
-                }
-                .padding(.vertical, DSSpacing.sm)
-                .shimmer(true)
-            } else if let errorMessage = viewModel.errorMessage {
-                ErrorStateView(
-                    title: "Unable to refresh highlights",
-                    message: errorMessage,
-                    retryTitle: "Try again",
-                    onRetry: {
-                        Task {
-                            await viewModel.loadHighlights(services: services, session: session)
+    private var componentsSection: some View {
+        section(title: "Components") {
+            VStack(spacing: DSSpacing.md) {
+                GlassCard(usesGlass: false, tilt: 0) {
+                    VStack(alignment: .leading, spacing: DSSpacing.sm) {
+                        Text("Buttons")
+                            .font(.headlineMedium())
+                            .foregroundStyle(Color.textPrimary)
+
+                        HStack(spacing: DSSpacing.sm) {
+                            GlassButton(title: "Primary") { }
+                            GlassButton(title: "Secondary", style: .secondary) { }
                         }
                     }
-                )
-            } else if viewModel.highlights.isEmpty {
-                EmptyStateView(
-                    icon: "tray",
-                    title: "No highlights yet",
-                    message: "Add a sample highlight to preview this section.",
-                    actionTitle: "Add sample highlight",
-                    action: { viewModel.seedHighlights(services: services) }
-                )
-            } else {
-                listCard {
-                    ForEach(Array(viewModel.highlights.enumerated()), id: \.element.id) { index, highlight in
-                        highlightRow(highlight)
-                        if index < viewModel.highlights.count - 1 {
-                            Divider()
+                }
+
+                GlassCard(usesGlass: false, tilt: 0) {
+                    VStack(alignment: .leading, spacing: DSSpacing.sm) {
+                        Text("Controls")
+                            .font(.headlineMedium())
+                            .foregroundStyle(Color.textPrimary)
+
+                        GlassSegmentedControl(items: ["Daily", "Weekly", "Monthly"], selection: .constant("Daily"))
+
+                        HStack(spacing: DSSpacing.sm) {
+                            GlassToggle(isOn: .constant(true))
+                            PickerPill(title: "17:00", usesGlass: true)
+                        }
+                    }
+                }
+
+                GlassCard(usesGlass: false, tilt: 0) {
+                    VStack(alignment: .leading, spacing: DSSpacing.sm) {
+                        Text("Tiles")
+                            .font(.headlineMedium())
+                            .foregroundStyle(Color.textPrimary)
+
+                        HStack(spacing: DSSpacing.sm) {
+                            IconTileButton(systemName: "heart")
+                            IconTileButton(systemName: "tray.and.arrow.down")
+                            TagBadge(text: "Featured")
                         }
                     }
                 }
             }
-        }
-    }
-
-    private func highlightRow(_ highlight: HomeViewModel.Highlight) -> some View {
-        DSListRow(
-            title: highlight.title,
-            subtitle: highlight.message,
-            leadingIcon: highlightIcon(for: highlight.kind),
-            leadingTint: highlightTint(for: highlight.kind)
-        )
-    }
-
-    private func highlightIcon(for kind: HomeViewModel.Highlight.Kind) -> String {
-        switch kind {
-        case .onboarding:
-            return "sparkles"
-        case .analytics:
-            return "chart.line.uptrend.xyaxis"
-        case .monetization:
-            return "creditcard.fill"
-        case .community:
-            return "person.2.fill"
-        }
-    }
-
-    private func highlightTint(for kind: HomeViewModel.Highlight.Kind) -> Color {
-        switch kind {
-        case .onboarding:
-            return .info
-        case .analytics:
-            return .success
-        case .monetization:
-            return .warning
-        case .community:
-            return .info
         }
     }
 
@@ -223,7 +154,7 @@ struct HomeView: View {
         VStack(spacing: 0) {
             content()
         }
-        .cardSurface(cornerRadius: DSSpacing.md)
+        .cardSurface(cornerRadius: DSRadii.lg)
     }
 }
 

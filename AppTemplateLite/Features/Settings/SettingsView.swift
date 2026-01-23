@@ -14,6 +14,8 @@ struct SettingsView: View {
     @Environment(AppSession.self) private var session
     @Environment(Router<AppTab, AppRoute, AppSheet>.self) private var router
     @State private var viewModel = SettingsViewModel()
+    @State private var remindersEnabled = true
+    @State private var reminderTime = "17:00"
 
     var body: some View {
         ScrollView {
@@ -66,11 +68,11 @@ struct SettingsView: View {
                     DSListRow(
                         title: "User ID",
                         subtitle: session.auth?.uid ?? "unknown",
-                        leadingIcon: "person.crop.circle",
-                        leadingTint: .textPrimary,
-                        trailingIcon: "doc.on.doc"
+                        leadingIcon: "person.crop.circle"
                     ) {
                         copyToPasteboard(session.auth?.uid ?? "")
+                    } trailing: {
+                        DSIconButton(icon: "doc.on.doc", style: .secondary, size: .small)
                     }
 
                     if let email = session.currentUser?.emailCalculated ?? session.auth?.email {
@@ -78,11 +80,24 @@ struct SettingsView: View {
                         DSListRow(
                             title: "Email",
                             subtitle: email,
-                            leadingIcon: "envelope",
-                            leadingTint: .info,
-                            trailingIcon: "doc.on.doc"
+                            leadingIcon: "envelope"
                         ) {
                             copyToPasteboard(email)
+                        } trailing: {
+                            DSIconButton(icon: "doc.on.doc", style: .secondary, size: .small)
+                        }
+                    }
+
+                    if FeatureFlags.enableAuth {
+                        Divider()
+                        DSListRow(
+                            title: "Show sign-in screen",
+                            subtitle: "Preview the auth demo again.",
+                            leadingIcon: "person.crop.circle.badge.plus"
+                        ) {
+                            viewModel.showAuthScreen(services: services, session: session)
+                        } trailing: {
+                            DSIconButton(icon: "chevron.right", style: .secondary, size: .small)
                         }
                     }
 
@@ -90,30 +105,42 @@ struct SettingsView: View {
                     DSListRow(
                         title: "Sign out",
                         subtitle: "End this session.",
-                        leadingIcon: "arrow.backward.square",
-                        leadingTint: .textSecondary
+                        leadingIcon: "arrow.backward.square"
                     ) {
                         viewModel.signOut(services: services, session: session)
+                    } trailing: {
+                        DSIconButton(icon: "chevron.right", style: .secondary, size: .small)
                     }
                     Divider()
                     DSListRow(
                         title: "Delete account",
                         subtitle: "Remove demo data.",
                         leadingIcon: "trash",
-                        leadingTint: .error
+                        leadingTint: .error,
+                        titleColor: .error
                     ) {
                         viewModel.deleteAccount(services: services, session: session)
+                    } trailing: {
+                        DSIconButton(icon: "chevron.right", style: .destructive, size: .small)
                     }
                 }
                 .disabled(viewModel.isProcessing)
             } else {
-                EmptyStateView(
-                    icon: "person.crop.circle.badge.exclamationmark",
-                    title: "Not signed in",
-                    message: "Sign in to sync your account and access premium features.",
-                    actionTitle: "Go to sign in",
-                    action: { session.resetForSignOut() }
-                )
+                if FeatureFlags.enableAuth {
+                    EmptyStateView(
+                        icon: "person.crop.circle.badge.exclamationmark",
+                        title: "Not signed in",
+                        message: "Sign in to sync your account and access premium features.",
+                        actionTitle: "Go to sign in",
+                        action: { viewModel.showAuthScreen(services: services, session: session) }
+                    )
+                } else {
+                    EmptyStateView(
+                        icon: "person.crop.circle.badge.checkmark",
+                        title: "Guest mode active",
+                        message: "Authentication is disabled in FeatureFlags."
+                    )
+                }
             }
         }
     }
@@ -124,19 +151,19 @@ struct SettingsView: View {
                 DSListRow(
                     title: "Plan",
                     subtitle: session.isPremium ? "Premium active." : "Free plan.",
-                    leadingIcon: "sparkles",
-                    leadingTint: session.isPremium ? .success : .warning,
-                    trailingText: session.isPremium ? "Premium" : "Free"
-                )
+                    leadingIcon: "sparkles"
+                ) {
+                    TagBadge(text: session.isPremium ? "Premium" : "Free")
+                }
                 Divider()
                 DSListRow(
                     title: "View paywall",
                     subtitle: "See the upgrade flow.",
-                    leadingIcon: "creditcard.fill",
-                    leadingTint: .success,
-                    showsDisclosure: true
+                    leadingIcon: "creditcard.fill"
                 ) {
                     router.presentSheet(.paywall)
+                } trailing: {
+                    DSIconButton(icon: "chevron.right", style: .secondary, size: .small)
                 }
             }
             .disabled(!FeatureFlags.enablePurchases)
@@ -147,14 +174,24 @@ struct SettingsView: View {
         section(title: "Notifications") {
             listCard {
                 DSListRow(
-                    title: "Enable push notifications",
-                    subtitle: "Preview engagement flows.",
-                    leadingIcon: "bell.fill",
-                    leadingTint: .info,
-                    trailingText: FeatureFlags.enablePushNotifications ? "Ready" : "Off",
-                    showsDisclosure: FeatureFlags.enablePushNotifications
+                    title: "Reminder time",
+                    subtitle: "Set a time to plant a memory.",
+                    leadingIcon: "bell.fill"
                 ) {
+                    reminderTime = reminderTime == "17:00" ? "08:30" : "17:00"
+                } trailing: {
+                    TimePill(title: reminderTime, usesGlass: true)
+                }
+                Divider()
+                DSListRow(
+                    title: "Daily reminders",
+                    subtitle: "Enable notifications.",
+                    leadingIcon: "calendar"
+                ) {
+                    remindersEnabled.toggle()
                     viewModel.requestPushAuthorization(services: services)
+                } trailing: {
+                    GlassToggle(isOn: $remindersEnabled)
                 }
             }
             .disabled(!FeatureFlags.enablePushNotifications)
@@ -167,21 +204,21 @@ struct SettingsView: View {
                 DSListRow(
                     title: "Settings detail",
                     subtitle: "Privacy and tracking.",
-                    leadingIcon: "slider.horizontal.3",
-                    leadingTint: .textPrimary,
-                    showsDisclosure: true
+                    leadingIcon: "slider.horizontal.3"
                 ) {
                     router.navigateTo(.settingsDetail, for: .settings)
+                } trailing: {
+                    DSIconButton(icon: "chevron.right", style: .secondary, size: .small)
                 }
                 Divider()
                 DSListRow(
                     title: "Profile",
                     subtitle: "Account overview.",
-                    leadingIcon: "person.crop.circle",
-                    leadingTint: .warning,
-                    showsDisclosure: true
+                    leadingIcon: "person.crop.circle"
                 ) {
                     router.navigateTo(.profile(userId: session.auth?.uid ?? "guest"), for: .settings)
+                } trailing: {
+                    DSIconButton(icon: "chevron.right", style: .secondary, size: .small)
                 }
             }
         }
@@ -193,31 +230,31 @@ struct SettingsView: View {
                 DSListRow(
                     title: "Reset onboarding",
                     subtitle: "Restart the setup flow.",
-                    leadingIcon: "arrow.counterclockwise",
-                    leadingTint: .textSecondary,
-                    trailingIcon: "arrow.counterclockwise"
+                    leadingIcon: "arrow.counterclockwise"
                 ) {
                     viewModel.resetOnboarding(services: services, session: session)
+                } trailing: {
+                    DSIconButton(icon: "arrow.counterclockwise", style: .secondary, size: .small)
                 }
                 Divider()
                 DSListRow(
                     title: "Reset paywall",
                     subtitle: "Show on next launch.",
-                    leadingIcon: "sparkles",
-                    leadingTint: .textSecondary,
-                    trailingIcon: "arrow.counterclockwise"
+                    leadingIcon: "sparkles"
                 ) {
                     viewModel.resetPaywall(services: services, session: session)
+                } trailing: {
+                    DSIconButton(icon: "arrow.counterclockwise", style: .secondary, size: .small)
                 }
                 Divider()
                 DSListRow(
                     title: "Open debug menu",
                     subtitle: "Developer utilities.",
-                    leadingIcon: "ladybug.fill",
-                    leadingTint: .textSecondary,
-                    showsDisclosure: true
+                    leadingIcon: "ladybug.fill"
                 ) {
                     router.presentSheet(.debug)
+                } trailing: {
+                    DSIconButton(icon: "chevron.right", style: .secondary, size: .small)
                 }
             }
         }
@@ -242,7 +279,7 @@ struct SettingsView: View {
         VStack(spacing: 0) {
             content()
         }
-        .cardSurface(cornerRadius: DSSpacing.md)
+        .cardSurface(cornerRadius: DSRadii.lg)
     }
 }
 

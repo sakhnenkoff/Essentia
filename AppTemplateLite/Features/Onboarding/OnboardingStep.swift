@@ -31,27 +31,69 @@ enum OnboardingStep: Int, CaseIterable {
         }
     }
 
-    /// Headline text shown on the step (animated line-by-line)
-    var headline: String {
+    var icon: String {
         switch self {
         case .welcome:
-            "Build something delightful"
+            return "doc.text"
         case .goals:
-            "What are you shipping first?"
+            return "target"
         case .name:
-            "What should we call you?"
+            return "person.crop.circle"
         }
     }
 
-    /// Subtitle text shown below headline
-    var subtitle: String? {
+    var headlineLeading: String {
         switch self {
         case .welcome:
-            "Templates, design system, and real integrations included."
+            return "plant a "
         case .goals:
-            "Pick a focus to tailor the demo flow."
+            return "what are you "
         case .name:
-            "Add a name to personalize the experience."
+            return "tell us your "
+        }
+    }
+
+    var headlineHighlight: String {
+        switch self {
+        case .welcome:
+            return "memory"
+        case .goals:
+            return "shipping"
+        case .name:
+            return "name"
+        }
+    }
+
+    var headlineTrailing: String {
+        switch self {
+        case .welcome:
+            return " everyday?"
+        case .goals:
+            return " first?"
+        case .name:
+            return "."
+        }
+    }
+
+    var subtitle: String {
+        switch self {
+        case .welcome:
+            return "We can remind you with a calm daily nudge."
+        case .goals:
+            return "Pick a focus to tailor the demo flow."
+        case .name:
+            return "Short, sweet, and personal."
+        }
+    }
+
+    var ctaTitle: String {
+        switch self {
+        case .welcome:
+            return "Send me reminders"
+        case .goals:
+            return "Continue"
+        case .name:
+            return "Get started"
         }
     }
 }

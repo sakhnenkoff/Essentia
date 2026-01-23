@@ -26,28 +26,25 @@ struct OnboardingHeader: View {
     var body: some View {
         HStack(spacing: DSSpacing.sm) {
             if showBackButton {
-                Button(action: onBack) {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(Color.textPrimary)
-                        .frame(width: 36, height: 36)
-                        .contentShape(Rectangle())
-                }
+                DSIconButton(icon: "chevron.left", style: .tertiary, size: .small, action: onBack)
             } else {
                 Color.clear
-                    .frame(width: 36, height: 36)
+                    .frame(width: 44, height: 44)
             }
 
             ProgressView(value: progress)
-                .tint(Color.textPrimary)
+                .tint(Color.themePrimary)
                 .progressViewStyle(.linear)
+                .frame(height: 4)
+                .background(Color.surfaceVariant.opacity(0.6))
+                .clipShape(Capsule())
                 .animation(.easeInOut(duration: 0.3), value: progress)
 
             Color.clear
-                .frame(width: 36, height: 36)
+                .frame(width: 44, height: 44)
         }
-        .padding(.horizontal, DSSpacing.lg)
-        .padding(.vertical, DSSpacing.sm)
+        .padding(.horizontal, DSSpacing.xl)
+        .padding(.vertical, DSSpacing.md)
     }
 }
 
