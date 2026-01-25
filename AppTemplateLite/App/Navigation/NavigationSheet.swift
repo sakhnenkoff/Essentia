@@ -16,9 +16,11 @@ struct NavigationSheet<Content: View>: View {
         NavigationStack {
             content()
                 .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        DSIconButton(icon: "xmark", style: .secondary, size: .small, usesGlass: false) {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {
                             dismiss()
+                        } label: {
+                            DSIcon.close()
                         }
                     }
                 }

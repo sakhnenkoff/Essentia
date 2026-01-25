@@ -13,7 +13,7 @@ struct AppRootView: View {
     @Environment(AppSession.self) private var session
 
     var body: some View {
-        Group {
+        ZStack {
             switch session.rootState {
             case .loading:
                 ProgressView("Preparing your demo...")
@@ -22,16 +22,22 @@ struct AppRootView: View {
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(AmbientBackground())
+                    .transition(.opacity)
             case .onboarding:
                 OnboardingView()
+                    .transition(.opacity)
             case .auth:
                 AuthView()
+                    .transition(.opacity)
             case .paywall:
                 PaywallView()
+                    .transition(.opacity)
             case .app:
                 AppTabsView()
+                    .transition(.opacity)
             }
         }
+        .animation(.easeInOut(duration: 0.35), value: session.rootState)
         .task {
             await session.bootstrap(services: services)
         }

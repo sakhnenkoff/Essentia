@@ -20,6 +20,8 @@ struct HomeView: View {
     @State private var demoName = ""
     @State private var demoEmail = ""
     @State private var showSkeletonDemo = true
+    @State private var demoTime = Date()
+    @State private var selectedChoices: Set<String> = ["Fast launch"]
 
     var body: some View {
         ScrollView {
@@ -114,7 +116,7 @@ struct HomeView: View {
     private var componentsSection: some View {
         section(title: "Components") {
             VStack(spacing: DSSpacing.md) {
-                GlassCard(usesGlass: false, tilt: 0) {
+                GlassCard(usesGlass: true, tilt: -2) {
                     VStack(alignment: .leading, spacing: DSSpacing.sm) {
                         Text("Buttons")
                             .font(.headlineMedium())
@@ -127,7 +129,7 @@ struct HomeView: View {
 
                         HStack(spacing: DSSpacing.sm) {
                             DSButton(title: "Text only", style: .tertiary) { }
-                            GlassButton(title: "Glass", style: .secondary) { }
+                            DSButton(title: "Destructive", style: .destructive) { }
                         }
                     }
                 }
@@ -138,24 +140,36 @@ struct HomeView: View {
                             .font(.headlineMedium())
                             .foregroundStyle(Color.textPrimary)
 
-                        GlassSegmentedControl(items: ["Daily", "Weekly", "Monthly"], selection: $demoFrequency)
+                        DSSegmentedControl(items: ["Daily", "Weekly", "Monthly"], selection: $demoFrequency)
 
                         HStack(spacing: DSSpacing.sm) {
                             GlassToggle(isOn: $demoToggle)
                             DSPillToggle(isOn: $demoPillToggle, icon: "leaf.fill")
-                            PickerPill(title: "17:00", usesGlass: true)
+                            TimePill(time: $demoTime, usesGlass: true)
                         }
                     }
                 }
 
                 GlassCard(usesGlass: false, tilt: 0) {
-                    VStack(alignment: .leading, spacing: DSSpacing.sm) {
+                    VStack(alignment: .leading, spacing: DSSpacing.md) {
                         Text("Inputs")
                             .font(.headlineMedium())
                             .foregroundStyle(Color.textPrimary)
 
-                        DSTextField.name(placeholder: "Your name", text: $demoName)
-                        DSTextField.email(placeholder: "Email", text: $demoEmail)
+                        DSTextField(
+                            placeholder: "Your name",
+                            text: $demoName,
+                            autocapitalization: .words,
+                            style: .underline
+                        )
+
+                        DSTextField(
+                            placeholder: "Email",
+                            text: $demoEmail,
+                            keyboardType: .emailAddress,
+                            autocapitalization: .never,
+                            style: .underline
+                        )
                     }
                 }
 
@@ -170,6 +184,38 @@ struct HomeView: View {
                             IconTileButton(systemName: "tray.and.arrow.down")
                             DSIconButton(icon: "xmark", style: .tertiary, size: .small, usesGlass: false)
                             TagBadge(text: "Featured")
+                        }
+                    }
+                }
+
+                GlassCard(usesGlass: false, tilt: 0) {
+                    VStack(alignment: .leading, spacing: DSSpacing.sm) {
+                        Text("Selection")
+                            .font(.headlineMedium())
+                            .foregroundStyle(Color.textPrimary)
+
+                        DSChoiceButton(
+                            title: "Fast launch",
+                            icon: "paperplane.fill",
+                            isSelected: selectedChoices.contains("Fast launch")
+                        ) {
+                            toggleChoice("Fast launch")
+                        }
+
+                        DSChoiceButton(
+                            title: "Monetize",
+                            icon: "creditcard.fill",
+                            isSelected: selectedChoices.contains("Monetize")
+                        ) {
+                            toggleChoice("Monetize")
+                        }
+
+                        DSChoiceButton(
+                            title: "Measure growth",
+                            icon: "chart.line.uptrend.xyaxis",
+                            isSelected: selectedChoices.contains("Measure growth")
+                        ) {
+                            toggleChoice("Measure growth")
                         }
                     }
                 }
@@ -251,6 +297,13 @@ struct HomeView: View {
         .cardSurface(cornerRadius: DSRadii.lg)
     }
 
+    private func toggleChoice(_ choice: String) {
+        if selectedChoices.contains(choice) {
+            selectedChoices.remove(choice)
+        } else {
+            selectedChoices.insert(choice)
+        }
+    }
 }
 
 #Preview {

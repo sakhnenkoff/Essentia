@@ -17,7 +17,6 @@ struct DebugMenuView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: DSSpacing.xl) {
-                header
                 environmentSection
                 userSection
                 actionSection
@@ -43,17 +42,6 @@ struct DebugMenuView: View {
             parameters: ["value_length": value.count],
             type: .analytic
         )
-    }
-
-    private var header: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.sm) {
-            Text("Developer utilities")
-                .font(.titleLarge())
-                .foregroundStyle(Color.textPrimary)
-            Text("Quick access to environment info and demo reset actions.")
-                .font(.bodyMedium())
-                .foregroundStyle(Color.textSecondary)
-        }
     }
 
     private var environmentSection: some View {

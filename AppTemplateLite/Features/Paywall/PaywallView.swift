@@ -23,66 +23,68 @@ struct PaywallView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: DSSpacing.lg) {
-                // Close button row
-                if showCloseButton {
-                    HStack {
-                        Spacer()
-                        DSIconButton(icon: "xmark", style: .secondary, size: .small, usesGlass: false) {
-                            dismiss()
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: DSSpacing.lg) {
+                    heroCard
+
+                    if FeatureFlags.enablePurchases {
+                        paywallContent
+
+                        if viewModel.isProcessingPurchase {
+                            ProgressView("Updating your access...")
+                                .font(.bodySmall())
+                                .foregroundStyle(Color.textSecondary)
+                                .multilineTextAlignment(.center)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                        }
+                    } else {
+                        EmptyStateView(
+                            icon: "lock.slash",
+                            title: "Purchases disabled",
+                            message: "Enable purchases in FeatureFlags to preview the paywall.",
+                            actionTitle: "Close",
+                            action: { dismiss() }
+                        )
+                    }
+
+                    if allowSkip {
+                        DSButton(title: "Not now", style: .secondary, isFullWidth: true) {
+                            session.markPaywallDismissed()
                         }
                     }
-                } else {
-                    Spacer().frame(height: DSSpacing.xl)
+
+                    Text("Cancel anytime in Settings.")
+                        .font(.captionLarge())
+                        .foregroundStyle(Color.textTertiary)
+                        .frame(maxWidth: .infinity, alignment: .center)
                 }
-
-                heroCard
-
-                if FeatureFlags.enablePurchases {
-                    paywallContent
-
-                    if viewModel.isProcessingPurchase {
-                        ProgressView("Updating your access...")
-                            .font(.bodySmall())
-                            .foregroundStyle(Color.textSecondary)
-                            .multilineTextAlignment(.center)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                    }
-                } else {
-                    EmptyStateView(
-                        icon: "lock.slash",
-                        title: "Purchases disabled",
-                        message: "Enable purchases in FeatureFlags to preview the paywall.",
-                        actionTitle: "Close",
-                        action: { dismiss() }
-                    )
-                }
-
-                if allowSkip {
-                    DSButton(title: "Not now", style: .secondary, isFullWidth: true) {
-                        session.markPaywallDismissed()
-                    }
-                }
-
-                Text("Cancel anytime in Settings.")
-                    .font(.captionLarge())
-                    .foregroundStyle(Color.textTertiary)
-                    .frame(maxWidth: .infinity, alignment: .center)
+                .padding(DSSpacing.md)
             }
-            .padding(DSSpacing.md)
-        }
-        .scrollIndicators(.hidden)
-        .scrollBounceBehavior(.basedOnSize)
-        .background(AmbientBackground())
-        .toolbar(.hidden, for: .navigationBar)
-        .toast($viewModel.toast)
-        .task {
-            await viewModel.loadProducts(services: services)
-        }
-        .onChange(of: viewModel.didUnlockPremium) { _, unlocked in
-            if unlocked && showCloseButton {
-                dismiss()
+            .scrollIndicators(.hidden)
+            .scrollBounceBehavior(.basedOnSize)
+            .background(AmbientBackground())
+            .navigationTitle("Premium")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                if showCloseButton {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {
+                            dismiss()
+                        } label: {
+                            DSIcon.close()
+                        }
+                    }
+                }
+            }
+            .toast($viewModel.toast)
+            .task {
+                await viewModel.loadProducts(services: services)
+            }
+            .onChange(of: viewModel.didUnlockPremium) { _, unlocked in
+                if unlocked && showCloseButton {
+                    dismiss()
+                }
             }
         }
     }
