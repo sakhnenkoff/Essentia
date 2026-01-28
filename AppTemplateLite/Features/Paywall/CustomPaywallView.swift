@@ -8,10 +8,10 @@ import SwiftUI
 import DesignSystem
 
 struct CustomPaywallView: View {
-    var products: [AnyProduct] = []
-    var isProcessing: Bool = false
-    var onRestorePurchasePressed: () -> Void = { }
-    var onPurchaseProductPressed: (AnyProduct) -> Void = { _ in }
+    let products: [AnyProduct]
+    let isProcessing: Bool
+    let onRestorePurchasePressed: () -> Void
+    let onPurchaseProductPressed: (AnyProduct) -> Void
 
     @State private var selectedProductId: String?
 
@@ -44,10 +44,17 @@ struct CustomPaywallView: View {
             DSButton.link(title: "Restore purchase", action: onRestorePurchasePressed)
                 .frame(maxWidth: .infinity, alignment: .center)
         }
-        .onChange(of: products.count) { _, _ in
-            if selectedProductId == nil {
-                selectedProductId = products.first?.id
+        .onChange(of: productIds) { _, newIds in
+            guard !newIds.isEmpty else {
+                selectedProductId = nil
+                return
             }
+
+            if let selectedProductId, newIds.contains(selectedProductId) {
+                return
+            }
+
+            selectedProductId = newIds.first
         }
     }
 
@@ -115,6 +122,10 @@ struct CustomPaywallView: View {
 
     private var selectedProduct: AnyProduct? {
         products.first { $0.id == selectedProductId }
+    }
+
+    private var productIds: [String] {
+        products.map(\.id)
     }
 }
 

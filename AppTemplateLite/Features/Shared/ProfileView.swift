@@ -81,6 +81,7 @@ struct ProfileView: View {
             }
         }
         .frame(maxWidth: 360)
+        .frame(maxWidth: .infinity)
     }
 
     private var actionsSection: some View {

@@ -10,9 +10,9 @@ import StoreKit
 import DesignSystem
 
 struct StoreKitPaywallView: View {
-    var productIds: [String] = EntitlementOption.allProductIds
-    var onInAppPurchaseStart: ((Product) async -> Void)?
-    var onInAppPurchaseCompletion: ((Product, Result<Product.PurchaseResult, any Error>) async -> Void)?
+    let productIds: [String] = EntitlementOption.allProductIds
+    let onInAppPurchaseStart: ((Product) async -> Void)?
+    let onInAppPurchaseCompletion: ((Product, Result<Product.PurchaseResult, any Error>) async -> Void)?
 
     var body: some View {
         SubscriptionStoreView(productIDs: productIds) {

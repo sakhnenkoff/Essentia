@@ -7,7 +7,6 @@
 
 import SwiftUI
 import AppRouter
-import Foundation
 
 struct AppTabsView: View {
     @Environment(AppServices.self) private var services
@@ -16,14 +15,12 @@ struct AppTabsView: View {
     var body: some View {
         TabView(selection: $router.selectedTab) {
             ForEach(AppTab.allCases) { tab in
-                NavigationStack(path: $router[tab]) {
-                    tab.makeContentView()
-                        .withAppRouterDestinations()
+                Tab(tab.title, systemImage: tab.icon, value: tab) {
+                    NavigationStack(path: $router[tab]) {
+                        tab.makeContentView()
+                            .withAppRouterDestinations()
+                    }
                 }
-                .tabItem {
-                    Label(tab.title, systemImage: tab.icon)
-                }
-                .tag(tab)
             }
         }
         .sheet(item: $router.presentedSheet) { sheet in

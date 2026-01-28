@@ -63,6 +63,7 @@ struct DetailView: View {
             }
         }
         .frame(maxWidth: 360)
+        .frame(maxWidth: .infinity)
     }
 
     private var actionSection: some View {
