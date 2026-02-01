@@ -15,18 +15,13 @@ struct DebugMenuView: View {
     @State private var toast: Toast?
 
     var body: some View {
-        ScrollView {
+        DSScreen(title: DemoContent.DebugMenu.navigationTitle) {
             VStack(alignment: .leading, spacing: DSSpacing.xl) {
                 environmentSection
                 userSection
                 actionSection
             }
-            .padding(DSSpacing.md)
         }
-        .scrollIndicators(.hidden)
-        .scrollBounceBehavior(.basedOnSize)
-        .background(AmbientBackground())
-        .navigationTitle("Debug Menu")
         .toast($toast)
     }
 
@@ -45,8 +40,8 @@ struct DebugMenuView: View {
     }
 
     private var environmentSection: some View {
-        section(title: "Environment") {
-            listCard {
+        DSSection(title: DemoContent.Sections.environment) {
+            DSListCard {
                 DSListRow(
                     title: "Build",
                     subtitle: AppConfiguration.environment,
@@ -75,8 +70,8 @@ struct DebugMenuView: View {
     }
 
     private var userSection: some View {
-        section(title: "User") {
-            listCard {
+        DSSection(title: DemoContent.Sections.user) {
+            DSListCard {
                 DSListRow(
                     title: "User ID",
                     subtitle: session.auth?.uid ?? "none",
@@ -104,8 +99,8 @@ struct DebugMenuView: View {
     }
 
     private var actionSection: some View {
-        section(title: "Actions") {
-            listCard {
+        DSSection(title: DemoContent.Sections.actions) {
+            DSListCard {
                 DSListRow(
                     title: "Reset onboarding",
                     subtitle: "Restart the setup flow.",
@@ -151,22 +146,6 @@ struct DebugMenuView: View {
         }
     }
 
-    private func section(title: String, @ViewBuilder content: () -> some View) -> some View {
-        VStack(alignment: .leading, spacing: DSSpacing.sm) {
-            Text(title)
-                .font(.headlineMedium())
-                .foregroundStyle(Color.textPrimary)
-
-            content()
-        }
-    }
-
-    private func listCard(@ViewBuilder content: () -> some View) -> some View {
-        VStack(spacing: 0) {
-            content()
-        }
-        .cardSurface(cornerRadius: DSRadii.lg)
-    }
 }
 
 #Preview {

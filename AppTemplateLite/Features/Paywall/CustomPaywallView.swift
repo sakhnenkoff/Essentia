@@ -101,7 +101,8 @@ struct CustomPaywallView: View {
                 PickerPill(
                     title: product.priceStringWithDuration,
                     isHighlighted: isSelected,
-                    usesGlass: isSelected
+                    usesGlass: isSelected,
+                    isInteractive: true
                 )
             }
             .frame(maxWidth: .infinity, alignment: .leading)

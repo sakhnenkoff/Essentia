@@ -5,27 +5,21 @@
 //
 
 import SwiftUI
-import AppRouter
 import DesignSystem
+import AppRouter
 
 struct DetailView: View {
     @State private var toast: Toast?
     let title: String
 
     var body: some View {
-        ScrollView {
+        DSScreen(title: DemoContent.Detail.navigationTitle) {
             VStack(alignment: .leading, spacing: DSSpacing.xl) {
                 header
                 heroCard
                 actionSection
             }
-            .padding(DSSpacing.md)
         }
-        .scrollIndicators(.hidden)
-        .scrollBounceBehavior(.basedOnSize)
-        .background(AmbientBackground())
-        .navigationTitle("Detail")
-        .navigationBarTitleDisplayMode(.inline)
         .toast($toast)
     }
 
@@ -34,44 +28,38 @@ struct DetailView: View {
             Text(title)
                 .font(.titleLarge())
                 .foregroundStyle(Color.textPrimary)
-            Text("A focused detail surface with a single hero card.")
+            Text(DemoContent.Detail.headerSubtitle)
                 .font(.bodyMedium())
                 .foregroundStyle(Color.textSecondary)
         }
     }
 
     private var heroCard: some View {
-        GlassCard(tint: Color.surfaceVariant.opacity(0.7), usesGlass: false, tilt: -3) {
+        DSHeroCard(tint: Color.surfaceVariant.opacity(0.7), usesGlass: false, tilt: -1) {
             VStack(alignment: .leading, spacing: DSSpacing.sm) {
                 HStack(alignment: .top) {
-                    HeroIcon(systemName: "doc.text", size: 22)
+                    HeroIcon(systemName: "doc.text", size: DSLayout.iconMedium)
                     Spacer()
                     TagBadge(text: "Featured")
                 }
 
-                Text("Focus notes")
+                Text(DemoContent.Detail.heroTitle)
                     .font(.headlineMedium())
                     .foregroundStyle(Color.themePrimary)
 
-                Text("Capture one idea per day and track progress over time.")
+                Text(DemoContent.Detail.heroSubtitle)
                     .font(.bodySmall())
                     .foregroundStyle(Color.textSecondary)
 
                 RoundedRectangle(cornerRadius: DSRadii.lg, style: .continuous)
                     .fill(Color.surfaceVariant.opacity(0.9))
-                    .frame(height: 160)
+                    .frame(height: DSLayout.mediaHeight)
             }
         }
-        .frame(maxWidth: 360)
-        .frame(maxWidth: .infinity)
     }
 
     private var actionSection: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.sm) {
-            Text("Actions")
-                .font(.headlineMedium())
-                .foregroundStyle(Color.textPrimary)
-
+        DSSection(title: DemoContent.Sections.actions) {
             VStack(spacing: DSSpacing.sm) {
                 DSButton.cta(title: "Mark complete") {
                     toast = .success("Marked complete.")

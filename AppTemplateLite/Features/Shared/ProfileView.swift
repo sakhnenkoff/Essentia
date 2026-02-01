@@ -15,35 +15,29 @@ struct ProfileView: View {
     let userId: String
 
     var body: some View {
-        ScrollView {
+        DSScreen(title: DemoContent.Profile.navigationTitle) {
             VStack(alignment: .leading, spacing: DSSpacing.xl) {
                 header
                 profileCard
                 actionsSection
             }
-            .padding(DSSpacing.md)
         }
-        .scrollIndicators(.hidden)
-        .scrollBounceBehavior(.basedOnSize)
-        .background(AmbientBackground())
-        .navigationTitle("Profile")
-        .navigationBarTitleDisplayMode(.inline)
         .toast($toast)
     }
 
     private var header: some View {
         VStack(alignment: .leading, spacing: DSSpacing.xs) {
-            Text("Profile studio")
+            Text(DemoContent.Profile.headerTitle)
                 .font(.titleLarge())
                 .foregroundStyle(Color.textPrimary)
-            Text("A calm card with minimal stats and actions.")
+            Text(DemoContent.Profile.headerSubtitle)
                 .font(.bodyMedium())
                 .foregroundStyle(Color.textSecondary)
         }
     }
 
     private var profileCard: some View {
-        GlassCard(tint: Color.surfaceVariant.opacity(0.7), usesGlass: false, tilt: -2) {
+        DSHeroCard(tint: Color.surfaceVariant.opacity(0.7), usesGlass: false) {
             VStack(alignment: .leading, spacing: DSSpacing.md) {
                 HStack(alignment: .center, spacing: DSSpacing.md) {
                     profileAvatar
@@ -74,22 +68,16 @@ struct ProfileView: View {
                 Divider()
 
                 HStack(spacing: DSSpacing.lg) {
-                    statItem(value: "12", title: "Streak")
-                    statItem(value: "4", title: "Projects")
-                    statItem(value: "36", title: "Days")
+                    ForEach(DemoContent.Profile.stats, id: \.title) { stat in
+                        statItem(value: stat.value, title: stat.title)
+                    }
                 }
             }
         }
-        .frame(maxWidth: 360)
-        .frame(maxWidth: .infinity)
     }
 
     private var actionsSection: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.sm) {
-            Text("Actions")
-                .font(.headlineMedium())
-                .foregroundStyle(Color.textPrimary)
-
+        DSSection(title: DemoContent.Sections.actions) {
             VStack(spacing: DSSpacing.sm) {
                 DSButton.cta(title: "Edit profile") {
                     toast = .success("Profile editor coming soon.")
@@ -123,11 +111,11 @@ struct ProfileView: View {
                 ZStack {
                     Circle()
                         .fill(Color.backgroundTertiary)
-                    SketchIcon(systemName: "person.fill", size: 22, color: Color.textSecondary)
+                    SketchIcon(systemName: "person.fill", size: DSLayout.iconMedium, color: Color.textSecondary)
                 }
             }
         }
-        .frame(width: 68, height: 68)
+        .frame(width: DSLayout.avatarLarge, height: DSLayout.avatarLarge)
         .clipShape(Circle())
     }
 

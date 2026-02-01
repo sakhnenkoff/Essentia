@@ -15,10 +15,10 @@ struct SettingsView: View {
     @Environment(Router<AppTab, AppRoute, AppSheet>.self) private var router
     @State private var viewModel = SettingsViewModel()
     @State private var remindersEnabled = true
-    @State private var reminderTime = "17:00"
+    @State private var reminderTime = DemoContent.Notifications.reminderPrimary
 
     var body: some View {
-        ScrollView {
+        DSScreen(title: DemoContent.Settings.navigationTitle) {
             VStack(alignment: .leading, spacing: DSSpacing.xl) {
                 header
 
@@ -46,27 +46,21 @@ struct SettingsView: View {
                     )
                 }
             }
-            .padding(DSSpacing.md)
         }
-        .scrollIndicators(.hidden)
-        .scrollBounceBehavior(.basedOnSize)
-        .background(AmbientBackground())
-        .navigationTitle("Settings")
-        .navigationBarTitleDisplayMode(.inline)
         .toast($viewModel.toast)
     }
 
     private var header: some View {
-        Text("Account, notifications, and demo utilities.")
+        Text(DemoContent.Settings.header)
             .font(.bodyMedium())
             .foregroundStyle(Color.textSecondary)
             .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var accountSection: some View {
-        section(title: "Account") {
+        DSSection(title: DemoContent.Sections.account) {
             if session.isSignedIn {
-                listCard {
+                DSListCard {
                     DSListRow(
                         title: "User ID",
                         subtitle: session.auth?.uid ?? "unknown",
@@ -135,14 +129,14 @@ struct SettingsView: View {
     }
 
     private var demoSection: some View {
-        section(title: "Demo toggles") {
-            listCard {
+        DSSection(title: DemoContent.Sections.demoToggles) {
+            DSListCard {
                 DSListRow(
                     title: "Onboarding flow",
                     subtitle: "Show the onboarding steps.",
                     leadingIcon: "sparkles"
                 ) {
-                    GlassToggle(isOn: onboardingToggle)
+                    GlassToggle(isOn: onboardingToggle, accessibilityLabel: "Onboarding flow")
                 }
 
                 Divider()
@@ -153,7 +147,7 @@ struct SettingsView: View {
                         subtitle: "Reopen the auth demo.",
                         leadingIcon: "person.crop.circle"
                     ) {
-                        GlassToggle(isOn: authToggle)
+                        GlassToggle(isOn: authToggle, accessibilityLabel: "Sign-in screen")
                     }
                 } else {
                     DSListRow(
@@ -173,7 +167,7 @@ struct SettingsView: View {
                         subtitle: "Show the premium upsell.",
                         leadingIcon: "creditcard.fill"
                     ) {
-                        GlassToggle(isOn: paywallToggle)
+                        GlassToggle(isOn: paywallToggle, accessibilityLabel: "Paywall flow")
                     }
                 } else {
                     DSListRow(
@@ -190,8 +184,8 @@ struct SettingsView: View {
     }
 
     private var subscriptionSection: some View {
-        section(title: "Monetization") {
-            listCard {
+        DSSection(title: DemoContent.Sections.monetization) {
+            DSListCard {
                 DSListRow(
                     title: "Plan",
                     subtitle: session.isPremium ? "Premium active." : "Free plan.",
@@ -215,14 +209,16 @@ struct SettingsView: View {
     }
 
     private var notificationsSection: some View {
-        section(title: "Notifications") {
-            listCard {
+        DSSection(title: DemoContent.Sections.notifications) {
+            DSListCard {
                 DSListRow(
                     title: "Reminder time",
                     subtitle: "Set a time to plant a memory.",
                     leadingIcon: "bell.fill"
                 ) {
-                    reminderTime = reminderTime == "17:00" ? "08:30" : "17:00"
+                    reminderTime = reminderTime == DemoContent.Notifications.reminderPrimary
+                        ? DemoContent.Notifications.reminderSecondary
+                        : DemoContent.Notifications.reminderPrimary
                 } trailing: {
                     TimePill(title: reminderTime, usesGlass: true)
                 }
@@ -232,7 +228,7 @@ struct SettingsView: View {
                     subtitle: "Enable notifications.",
                     leadingIcon: "calendar"
                 ) {
-                    GlassToggle(isOn: remindersToggle)
+                    GlassToggle(isOn: remindersToggle, accessibilityLabel: "Daily reminders")
                 }
             }
             .disabled(!FeatureFlags.enablePushNotifications)
@@ -240,8 +236,8 @@ struct SettingsView: View {
     }
 
     private var navigationSection: some View {
-        section(title: "Navigation") {
-            listCard {
+        DSSection(title: DemoContent.Sections.navigation) {
+            DSListCard {
                 DSListRow(
                     title: "Settings detail",
                     subtitle: "Privacy and tracking.",
@@ -266,8 +262,8 @@ struct SettingsView: View {
     }
 
     private var debugSection: some View {
-        section(title: "Debug tools") {
-            listCard {
+        DSSection(title: DemoContent.Sections.debugTools) {
+            DSListCard {
                 DSListRow(
                     title: "Open debug menu",
                     subtitle: "Developer utilities.",
@@ -343,21 +339,6 @@ struct SettingsView: View {
         viewModel.toast = .success("Copied to clipboard.")
     }
 
-    private func section(title: String, @ViewBuilder content: () -> some View) -> some View {
-        VStack(alignment: .leading, spacing: DSSpacing.sm) {
-            Text(title)
-                .font(.headlineMedium())
-                .foregroundStyle(Color.textPrimary)
-            content()
-        }
-    }
-
-    private func listCard(@ViewBuilder content: () -> some View) -> some View {
-        VStack(spacing: 0) {
-            content()
-        }
-        .cardSurface(cornerRadius: DSRadii.lg)
-    }
 }
 
 #Preview {

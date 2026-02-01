@@ -72,10 +72,10 @@ struct OnboardingView: View {
             Spacer()
 
             Text(controller.currentStep.introHeadline)
-                .font(.system(size: 32, weight: .semibold, design: .monospaced))
+                .font(.titleLarge())
                 .multilineTextAlignment(.center)
                 .foregroundStyle(Color.textPrimary)
-                .lineSpacing(8)
+                .lineSpacing(DSSpacing.sm)
 
             Spacer()
         }
@@ -133,7 +133,7 @@ struct OnboardingView: View {
     }
 
     private var heroIcon: some View {
-        HeroIcon(systemName: controller.currentStep.icon, size: 28)
+        HeroIcon(systemName: controller.currentStep.icon, size: DSLayout.iconLarge)
     }
 
     private var headlineView: some View {
@@ -149,7 +149,7 @@ struct OnboardingView: View {
                 .foregroundStyle(Color.textPrimary)
         )
         .multilineTextAlignment(.center)
-        .lineSpacing(4)
+        .lineSpacing(DSSpacing.xs)
     }
 
     private var subtitleView: some View {
@@ -157,7 +157,7 @@ struct OnboardingView: View {
             .font(.bodyMedium())
             .foregroundStyle(Color.textSecondary)
             .multilineTextAlignment(.center)
-            .frame(maxWidth: 260)
+            .frame(maxWidth: DSLayout.textMaxWidth)
     }
 
     @ViewBuilder
@@ -174,7 +174,7 @@ struct OnboardingView: View {
     }
 
     private var goalsCard: some View {
-        GlassCard(tint: Color.surfaceVariant.opacity(0.7), usesGlass: false, tilt: -3) {
+        GlassCard(tint: Color.surfaceVariant.opacity(0.7), usesGlass: false) {
             VStack(alignment: .leading, spacing: DSSpacing.sm) {
                 Text("Choose your focus")
                     .font(.headlineMedium())
@@ -188,11 +188,11 @@ struct OnboardingView: View {
                 }
             }
         }
-        .frame(maxWidth: 340)
+        .frame(maxWidth: DSLayout.cardCompactWidth)
     }
 
     private var nameCard: some View {
-        GlassCard(tint: Color.surfaceVariant.opacity(0.7), usesGlass: false, tilt: -2) {
+        GlassCard(tint: Color.surfaceVariant.opacity(0.7), usesGlass: false) {
             VStack(alignment: .leading, spacing: DSSpacing.sm) {
                 Text("Your name")
                     .font(.headlineMedium())
@@ -208,14 +208,14 @@ struct OnboardingView: View {
                     .foregroundStyle(Color.textSecondary)
             }
         }
-        .frame(maxWidth: 340)
+        .frame(maxWidth: DSLayout.cardCompactWidth)
     }
 
     private func goalPill(title: String, id: String) -> some View {
         Button {
             controller.toggleGoal(id)
         } label: {
-            PickerPill(title: title, isHighlighted: controller.selectedGoals.contains(id))
+            PickerPill(title: title, isHighlighted: controller.selectedGoals.contains(id), isInteractive: true)
         }
         .buttonStyle(.plain)
     }

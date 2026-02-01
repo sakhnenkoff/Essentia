@@ -24,7 +24,7 @@ struct PaywallView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
+            DSScreen(title: DemoContent.Paywall.navigationTitle) {
                 VStack(spacing: DSSpacing.lg) {
                     heroCard
 
@@ -32,7 +32,7 @@ struct PaywallView: View {
                         paywallContent
 
                         if viewModel.isProcessingPurchase {
-                            ProgressView("Updating your access...")
+                            ProgressView(DemoContent.Paywall.processingTitle)
                                 .font(.bodySmall())
                                 .foregroundStyle(Color.textSecondary)
                                 .multilineTextAlignment(.center)
@@ -54,25 +54,17 @@ struct PaywallView: View {
                         }
                     }
 
-                    Text("Cancel anytime in Settings.")
+                    Text(DemoContent.Common.cancelAnytime)
                         .font(.captionLarge())
                         .foregroundStyle(Color.textTertiary)
                         .frame(maxWidth: .infinity, alignment: .center)
                 }
-                .padding(DSSpacing.md)
             }
-            .scrollIndicators(.hidden)
-            .scrollBounceBehavior(.basedOnSize)
-            .background(AmbientBackground())
-            .navigationTitle("Premium")
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 if showCloseButton {
                     ToolbarItem(placement: .topBarLeading) {
-                        Button {
+                        DSIconButton(icon: "xmark", style: .tertiary, size: .small, showsBackground: false, accessibilityLabel: "Close") {
                             dismiss()
-                        } label: {
-                            DSIcon.close()
                         }
                     }
                 }
@@ -139,25 +131,23 @@ struct PaywallView: View {
     }
 
     private var heroCard: some View {
-        GlassCard(tint: Color.surfaceVariant.opacity(0.7), usesGlass: false, tilt: -2) {
+        DSHeroCard(tint: Color.surfaceVariant.opacity(0.7), usesGlass: false) {
             VStack(alignment: .leading, spacing: DSSpacing.sm) {
                 HStack(alignment: .top) {
-                    HeroIcon(systemName: "sparkles", size: 22)
+                    HeroIcon(systemName: "sparkles", size: DSLayout.iconMedium)
                     Spacer()
                     TagBadge(text: "Premium")
                 }
 
-                Text("Premium Studio")
+                Text(DemoContent.Paywall.heroTitle)
                     .font(.headlineMedium())
                     .foregroundStyle(Color.themePrimary)
 
-                Text("A refined template pack with analytics, paywalls, and onboarding flows.")
+                Text(DemoContent.Paywall.heroSubtitle)
                     .font(.bodySmall())
                     .foregroundStyle(Color.textSecondary)
             }
         }
-        .frame(maxWidth: 360)
-        .frame(maxWidth: .infinity)
     }
 
     private var paywallSkeleton: some View {

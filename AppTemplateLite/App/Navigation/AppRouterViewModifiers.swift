@@ -17,6 +17,8 @@ extension View {
                 ProfileView(userId: userId)
             case .settingsDetail:
                 SettingsDetailView()
+            case .designSystemGallery:
+                DesignSystemGalleryView()
             }
         }
     }

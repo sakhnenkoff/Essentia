@@ -14,7 +14,7 @@ struct AuthView: View {
     @State private var viewModel = AuthViewModel()
 
     var body: some View {
-        ScrollView {
+        DSScreen(contentPadding: DSSpacing.md, topPadding: DSSpacing.xxlg) {
             VStack(alignment: .leading, spacing: DSSpacing.xl) {
                 hero
                 valueProps
@@ -41,20 +41,15 @@ struct AuthView: View {
 
                 footerNote
             }
-            .padding(DSSpacing.md)
-            .padding(.top, DSSpacing.xxlg)
         }
-        .scrollIndicators(.hidden)
-        .scrollBounceBehavior(.basedOnSize)
-        .background(AmbientBackground())
     }
 
     private var hero: some View {
         VStack(alignment: .leading, spacing: DSSpacing.sm) {
-            Text("Sign in")
+            Text(DemoContent.Auth.title)
                 .font(.titleLarge())
                 .foregroundStyle(Color.textPrimary)
-            Text("Sync your demo progress and unlock premium previews.")
+            Text(DemoContent.Auth.subtitle)
                 .font(.bodyMedium())
                 .foregroundStyle(Color.textSecondary)
         }
@@ -65,18 +60,18 @@ struct AuthView: View {
         VStack(alignment: .leading, spacing: DSSpacing.sm) {
             featureRow(
                 icon: "lock.shield.fill",
-                title: "Privacy-first",
-                message: "We only collect what you explicitly share."
+                title: DemoContent.Auth.privacyTitle,
+                message: DemoContent.Auth.privacyMessage
             )
             featureRow(
                 icon: "sparkles",
-                title: "Production-ready flows",
-                message: "Onboarding, analytics, and paywalls are ready to ship."
+                title: DemoContent.Auth.flowsTitle,
+                message: DemoContent.Auth.flowsMessage
             )
             featureRow(
                 icon: "chart.line.uptrend.xyaxis",
-                title: "Growth visibility",
-                message: "Understand engagement with built-in tracking hooks."
+                title: DemoContent.Auth.growthTitle,
+                message: DemoContent.Auth.growthMessage
             )
         }
         .padding(DSSpacing.md)
@@ -94,12 +89,12 @@ struct AuthView: View {
                 action: { viewModel.refreshProviders() }
             )
         } else {
-            listCard {
+            DSListCard {
                 if viewModel.availableProviders.contains(.apple) {
                     DSListRow(
-                        title: "Continue with Apple",
+                        title: "Continue with Email",
                         subtitle: "Private sign-in",
-                        leadingIcon: "apple.logo"
+                        leadingIcon: "envelope.fill"
                     ) {
                         viewModel.signInApple(services: services, session: session)
                     } trailing: {
@@ -112,9 +107,9 @@ struct AuthView: View {
                         Divider()
                     }
                     DSListRow(
-                        title: "Continue with Google",
-                        subtitle: "Fast setup",
-                        leadingIcon: "globe"
+                        title: "Continue with Workspace",
+                        subtitle: "Secure access",
+                        leadingIcon: "person.badge.key.fill"
                     ) {
                         viewModel.signInGoogle(services: services, session: session)
                     } trailing: {
@@ -142,7 +137,7 @@ struct AuthView: View {
     }
 
     private var footerNote: some View {
-        Text("By continuing, you agree to the demo terms and acknowledge the privacy policy.")
+        Text(DemoContent.Auth.footerNote)
             .font(.captionLarge())
             .foregroundStyle(Color.textTertiary)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -157,7 +152,12 @@ struct AuthView: View {
 
     private func featureRow(icon: String, title: String, message: String) -> some View {
         HStack(alignment: .top, spacing: DSSpacing.sm) {
-            HeroIcon(systemName: icon, size: 22)
+            HeroIcon(
+                systemName: icon,
+                size: DSLayout.iconMedium,
+                tint: Color.themePrimary,
+                backgroundTint: Color.surface
+            )
 
             VStack(alignment: .leading, spacing: DSSpacing.xs) {
                 Text(title)
@@ -169,13 +169,6 @@ struct AuthView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-    }
-
-    private func listCard(@ViewBuilder content: () -> some View) -> some View {
-        VStack(spacing: 0) {
-            content()
-        }
-        .cardSurface(cornerRadius: DSRadii.lg)
     }
 }
 
