@@ -37,10 +37,10 @@ View → ViewModel → AppServices → Managers
 
 ## Design System Usage
 
-- Use DesignSystem components for consistent UI (`DSButton`, `EmptyStateView`, `ErrorStateView`, `LoadingView`, `SkeletonView`, `ToastView`).
+- Use DesignSystem components for consistent UI (`DSButton`, `EmptyStateView`, `ErrorStateView`, `LoadingView`, `SkeletonView`, `ToastView`). `ProgressView` is also acceptable for lightweight, inline loading states.
 - Use typography extensions (`.titleLarge()`, `.headlineMedium()`, `.bodySmall()`) instead of hardcoded sizes.
 - Use semantic colors (`.textPrimary`, `.backgroundSecondary`, `.success`, `.error`) instead of custom hex values.
-- Keep layout clean with `.frame(maxWidth: .infinity, alignment: .leading)` and avoid layout-only `Spacer()` when alignment is the goal.
+- Keep layout clean with `.frame(maxWidth: .infinity, alignment: .leading)` when alignment is the goal; use `Spacer()` for intentional spacing/distribution.
 
 ---
 
@@ -68,7 +68,7 @@ Components are **dumb UI** and stay stateless:
 
 ## Button Usage
 
-Never use `onTapGesture` for interactive elements. Use `DSButton`/`DSIconButton`:
+Avoid `onTapGesture` for interactive elements. Prefer `DSButton`/`DSIconButton` (or `Button` in lower-level components):
 
 ```swift
 DSButton(

@@ -34,11 +34,12 @@ All detailed documentation is in `.claude/docs/`:
 | File | Purpose |
 |------|---------|
 | `project-structure.md` | Architecture overview, folder structure |
-| `viper-architecture.md` | MVVM-lite rules, UI guidelines |
+| `mvvm-lite-architecture.md` | MVVM-lite rules, UI guidelines |
 | `commit-guidelines.md` | Commit message format |
 | `package-dependencies.md` | SwiftfulThinking package integration |
 | `package-quick-reference.md` | Quick snippets and common patterns |
 | `design-system-usage.md` | DSButton, EmptyStateView, colors, typography |
+| `design-system-recipes.md` | Design system examples and patterns |
 | `testing-guide.md` | ViewModel testing, accessibility identifiers |
 | `localization-guide.md` | String Catalog workflow |
 | `action-create-screen.md` | How to create new MVVM-lite features |

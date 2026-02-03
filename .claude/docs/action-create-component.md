@@ -41,10 +41,12 @@
       var body: some View {
           // Unwrap optionals in the view
           if let title {
-              Text(title)
-                  .onTapGesture {
-                      onTap?()
-                  }
+              Button {
+                  onTap?()
+              } label: {
+                  Text(title)
+              }
+              .buttonStyle(.plain)
           }
       }
   }
@@ -69,7 +71,7 @@
 - **ALL loading states are injected** as Bool parameters
 - **ALL actions are closures** (e.g., `onTap: (() -> Void)?`, `onSubmit: ((String) -> Void)?`)
 - **ALWAYS use ImageLoaderView** for images (never AsyncImage unless specifically requested)
-- **PREFER maxWidth/maxHeight with alignment** over Spacer() - Use `.frame(maxWidth: .infinity, alignment: .leading)` instead of `Spacer()`
+- **PREFER maxWidth/maxHeight with alignment** when alignment is the goal; use `Spacer()` only for intentional spacing/distribution.
 - **AVOID fixed frames** when possible - let SwiftUI handle sizing naturally
 - **Create MULTIPLE #Previews** showing different data states (all data, partial data, no data, loading, etc.)
 
@@ -152,27 +154,29 @@ struct ProfileCardView: View {
     let onTap: (() -> Void)?
 
     var body: some View {
-        VStack(spacing: 8) {
-            if let imageUrl {
-                ImageLoaderView(urlString: imageUrl)
-                    .aspectRatio(1, contentMode: .fill)
-                    .clipShape(Circle())
-            }
-
-            if let title {
-                Text(title)
-                    .font(.headline)
-            }
-
-            if let subtitle {
-                Text(subtitle)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-        }
-        .onTapGesture {
+        Button {
             onTap?()
+        } label: {
+            VStack(spacing: 8) {
+                if let imageUrl {
+                    ImageLoaderView(urlString: imageUrl)
+                        .aspectRatio(1, contentMode: .fill)
+                        .clipShape(Circle())
+                }
+
+                if let title {
+                    Text(title)
+                        .font(.headline)
+                }
+
+                if let subtitle {
+                    Text(subtitle)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+            }
         }
+        .buttonStyle(.plain)
     }
 }
 

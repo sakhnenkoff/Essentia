@@ -5,6 +5,8 @@
 - ViewModel logic (async flows, error handling, analytics)
 - Managers that encapsulate business rules
 
+Note: Presenter/Interactor patterns are not used in this project. Any legacy presenter tests should be treated as examples to delete or ignore when building new tests.
+
 ## ViewModel Testing Pattern
 
 1. Create a mock `AppServices` or use `AppServices(configuration: .mock(isSignedIn: true))`.
