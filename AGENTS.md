@@ -10,7 +10,7 @@ Use direct `xcodebuild` (do not use MCP).
 
 ### Build Workflow
 
-1. **Build**: `xcodebuild -project AppTemplateLite.xcodeproj -scheme "AppTemplateLite - Mock" -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.2' build`
+1. **Build**: `xcodebuild -project Essentia.xcodeproj -scheme "Essentia - Mock" -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.2' build`
 2. **If fails**: Fix compile errors, then re-run the same command.
 3. **Warnings are blockers**: Resolve all build warnings from app code before finishing work. Warnings originating from external packages are acceptable.
 
@@ -23,7 +23,7 @@ All detailed documentation is in `.claude/docs/`:
 | File | Purpose |
 |------|---------|
 | `project-structure.md` | Architecture overview, folder structure |
-| `mvvm-lite-architecture.md` | MVVM-lite rules, UI guidelines |
+| `mvvm-architecture.md` | MVVM rules, UI guidelines |
 | `commit-guidelines.md` | Commit message format |
 | `package-dependencies.md` | Direct SDK + package integration |
 | `package-quick-reference.md` | Quick snippets and common patterns |
@@ -31,7 +31,7 @@ All detailed documentation is in `.claude/docs/`:
 | `design-system-recipes.md` | Design system examples and patterns |
 | `testing-guide.md` | ViewModel testing, accessibility identifiers |
 | `localization-guide.md` | String Catalog workflow |
-| `action-create-screen.md` | How to create new MVVM-lite features |
+| `action-create-screen.md` | How to create new MVVM features |
 | `action-create-component.md` | How to create reusable components |
 | `action-create-manager.md` | How to create new managers |
 | `action-create-model.md` | How to create data models |
@@ -40,7 +40,7 @@ All detailed documentation is in `.claude/docs/`:
 
 ## Quick Summary
 
-- **Architecture**: MVVM-lite + AppRouter (TabView + NavigationStack + sheets)
+- **Architecture**: MVVM + AppRouter (TabView + NavigationStack + sheets)
 - **Tech Stack**: SwiftUI (iOS 26+), Swift 5.9+, Firebase, RevenueCat, Mixpanel
 - **Build Configs**: Mock (no Firebase), Dev, Prod
 - **Packages**: Direct SDKs (Firebase, Mixpanel, RevenueCat, GoogleSignIn) + app-core-packages
@@ -78,11 +78,11 @@ All detailed documentation is in `.claude/docs/`:
 
 ### File Creation (ALWAYS use Write/Edit tools)
 - This project uses Xcode 15+ File System Synchronization
-- Files created in `AppTemplateLite/` folder automatically appear in Xcode
+- Files created in `Essentia/` folder automatically appear in Xcode
 - ALWAYS use Write/Edit tools to create .swift files (unless documentation)
 - Files automatically included in build - no manual Xcode steps needed
 
-### MVVM-lite Data Flow
+### MVVM Data Flow
 ```
 View → ViewModel → Services/Managers
 ```
@@ -117,11 +117,11 @@ Use Mock for 90% of development.
 
 ## File Locations
 
-- **App Shell**: `/AppTemplateLite/App/`
-- **Features**: `/AppTemplateLite/Features/[FeatureName]/`
-- **Managers**: `/AppTemplateLite/Managers/[ManagerName]/`
-- **Components**: `/AppTemplateLite/Components/Views/`
-- **Extensions**: `/AppTemplateLite/Extensions/`
+- **App Shell**: `/Essentia/App/`
+- **Features**: `/Essentia/Features/[FeatureName]/`
+- **Managers**: `/Essentia/Managers/[ManagerName]/`
+- **Components**: `/Essentia/Components/Views/`
+- **Extensions**: `/Essentia/Extensions/`
 - **SPM Packages**: `app-core-packages` (DesignSystem, Data, LocalPersistance, Networking)
 
 ---

@@ -6,7 +6,7 @@
 
 ## Steps
 
-1. Create a folder: `/AppTemplateLite/Managers/ManagerName/`
+1. Create a folder: `/Essentia/Managers/ManagerName/`
 2. Add alias file for the package types (if needed)
 3. Implement the manager class
 4. Wire it in `App/Dependencies/AppServices.swift`

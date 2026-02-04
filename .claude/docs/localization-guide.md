@@ -116,7 +116,7 @@ Color(.backgroundCard)   // Instead of Color("backgroundCard")
 
 ---
 
-## MVVM-lite Integration
+## MVVM Integration
 
 ### Views
 Use `Text("key")` directly - automatic localization:
@@ -232,7 +232,7 @@ func showDeleteConfirmation() {
 
 | Location | Purpose |
 |----------|---------|
-| `AppTemplateLite/Localizable.xcstrings` | Main app strings |
+| `Essentia/Localizable.xcstrings` | Main app strings |
 | `app-core-packages/DesignSystem/.../Resources/Localizable.xcstrings` | DesignSystem package strings |
 
 Both are auto-synced by Xcode on every build and committed to source control.

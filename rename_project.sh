@@ -1,14 +1,14 @@
 #!/bin/bash
 set -e
 
-# AppTemplateLite Project Rename Script
+# Essentia Project Rename Script
 # Usage:
 #   ./rename_project.sh NewProjectName [--bundle-id com.company.app] [--display-name "My App"]
 #
-# This script renames the entire project from "AppTemplateLite" to your chosen name.
+# This script renames the entire project from "Essentia" to your chosen name.
 # It updates file contents, file names, directory names, and bundle identifiers.
 
-OLD_NAME="AppTemplateLite"
+OLD_NAME="Essentia"
 NEW_NAME=""
 BUNDLE_ID=""
 DISPLAY_NAME=""
@@ -70,7 +70,7 @@ if [ -n "$DISPLAY_NAME" ] && [[ "$DISPLAY_NAME" == *"\""* ]]; then
 fi
 
 if [ ! -d "${OLD_NAME}.xcodeproj" ]; then
-    echo "❌ Error: This script must be run from the AppTemplateLite root directory"
+    echo "❌ Error: This script must be run from the Essentia root directory"
     echo "   Current directory: $(pwd)"
     echo "   Expected to find: ${OLD_NAME}.xcodeproj"
     exit 1

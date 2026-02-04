@@ -1,4 +1,4 @@
-# Testing Guide (MVVM-lite)
+# Testing Guide (MVVM)
 
 ## What to Test
 
@@ -10,7 +10,7 @@
 
 When shipping larger changes, always run a simulator build using `xcodebuild` and confirm a clean compile with zero app warnings (external package warnings are acceptable):
 
-1. `xcodebuild -project AppTemplateLite.xcodeproj -scheme "AppTemplateLite - Mock" -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.2' build`
+1. `xcodebuild -project Essentia.xcodeproj -scheme "Essentia - Mock" -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.2' build`
 2. If the build fails or emits app warnings, fix them before completing the task.
 
 Note: Presenter/Interactor patterns are not used in this project. Any legacy presenter tests should be treated as examples to delete or ignore when building new tests.
