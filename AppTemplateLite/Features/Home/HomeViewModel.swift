@@ -8,21 +8,21 @@
 import SwiftUI
 import DesignSystem
 
+enum HomeHighlightKind {
+    case onboarding
+    case analytics
+    case monetization
+    case community
+}
+
 @MainActor
 @Observable
 final class HomeViewModel {
     struct Highlight: Identifiable {
-        enum Kind {
-            case onboarding
-            case analytics
-            case monetization
-            case community
-        }
-
         let id = UUID()
         let title: String
         let message: String
-        let kind: Kind
+        let kind: HomeHighlightKind
     }
 
     var highlights: [Highlight] = []

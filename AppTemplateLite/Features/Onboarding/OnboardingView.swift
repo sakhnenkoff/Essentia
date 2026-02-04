@@ -137,19 +137,27 @@ struct OnboardingView: View {
     }
 
     private var headlineView: some View {
-        (
-            Text(controller.currentStep.headlineLeading)
-                .font(.titleLarge())
-                .foregroundStyle(Color.textPrimary)
-            + Text(controller.currentStep.headlineHighlight)
-                .font(.titleLarge())
-                .foregroundStyle(Color.themePrimary)
-            + Text(controller.currentStep.headlineTrailing)
-                .font(.titleLarge())
-                .foregroundStyle(Color.textPrimary)
-        )
-        .multilineTextAlignment(.center)
-        .lineSpacing(DSSpacing.xs)
+        Text(headlineAttributedString)
+            .multilineTextAlignment(.center)
+            .lineSpacing(DSSpacing.xs)
+    }
+
+    private var headlineAttributedString: AttributedString {
+        var leading = AttributedString(controller.currentStep.headlineLeading)
+        leading.font = .titleLarge()
+        leading.foregroundColor = Color.textPrimary
+
+        var highlight = AttributedString(controller.currentStep.headlineHighlight)
+        highlight.font = .titleLarge()
+        highlight.foregroundColor = Color.themePrimary
+
+        var trailing = AttributedString(controller.currentStep.headlineTrailing)
+        trailing.font = .titleLarge()
+        trailing.foregroundColor = Color.textPrimary
+
+        leading.append(highlight)
+        leading.append(trailing)
+        return leading
     }
 
     private var subtitleView: some View {

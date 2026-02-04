@@ -8,38 +8,33 @@
 
 /* Begin PBXBuildFile section */
 		0229588C2CEE932F00765488 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 0229588B2CEE932F00765488 /* SDWebImageSwiftUI */; };
-		028200B32EA3434D0004887E /* SwiftfulDataManagers in Frameworks */ = {isa = PBXBuildFile; productRef = 028200B22EA3434D0004887E /* SwiftfulDataManagers */; };
-		028200B62EA3437B0004887E /* SwiftfulDataManagersFirebase in Frameworks */ = {isa = PBXBuildFile; productRef = 028200B52EA3437B0004887E /* SwiftfulDataManagersFirebase */; };
-		028F9BC52CED14CA009B9F48 /* SwiftfulLogging in Frameworks */ = {isa = PBXBuildFile; productRef = 028F9BC42CED14CA009B9F48 /* SwiftfulLogging */; };
-		028F9BCE2CED152A009B9F48 /* SwiftfulLoggingMixpanel in Frameworks */ = {isa = PBXBuildFile; productRef = 028F9BCD2CED152A009B9F48 /* SwiftfulLoggingMixpanel */; };
-		028F9BD12CED1539009B9F48 /* SwiftfulPurchasing in Frameworks */ = {isa = PBXBuildFile; productRef = 028F9BD02CED1539009B9F48 /* SwiftfulPurchasing */; };
-		028F9BD42CED1547009B9F48 /* SwiftfulPurchasingRevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 028F9BD32CED1547009B9F48 /* SwiftfulPurchasingRevenueCat */; };
-		028F9BD72CED155A009B9F48 /* SwiftfulAuthUI in Frameworks */ = {isa = PBXBuildFile; productRef = 028F9BD62CED155A009B9F48 /* SwiftfulAuthUI */; };
-		028F9BD92CED155A009B9F48 /* SwiftfulAuthenticating in Frameworks */ = {isa = PBXBuildFile; productRef = 028F9BD82CED155A009B9F48 /* SwiftfulAuthenticating */; };
-		02B62BA22E662DC3008FB7FF /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 02B62BA12E662DC3008FB7FF /* FirebaseMessaging */; };
-		02B62BA52E662DD7008FB7FF /* SwiftfulAuthenticatingFirebase in Frameworks */ = {isa = PBXBuildFile; productRef = 02B62BA42E662DD7008FB7FF /* SwiftfulAuthenticatingFirebase */; };
-		02B62BA82E662DE7008FB7FF /* SwiftfulLoggingFirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 02B62BA72E662DE7008FB7FF /* SwiftfulLoggingFirebaseAnalytics */; };
-		02B62BAB2E662DF3008FB7FF /* SwiftfulLoggingFirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 02B62BAA2E662DF3008FB7FF /* SwiftfulLoggingFirebaseCrashlytics */; };
-		02B62BAE2E662E14008FB7FF /* SwiftfulFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 02B62BAD2E662E14008FB7FF /* SwiftfulFirestore */; };
-		02B62BB02E662E60008FB7FF /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 02B62BAF2E662E60008FB7FF /* FirebaseRemoteConfig */; };
-		02B62BB22E662E85008FB7FF /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 02B62BB12E662E85008FB7FF /* FirebaseStorage */; };
-		44A5F726E65B42E393C059CB /* AppRouter in Frameworks */ = {isa = PBXBuildFile; productRef = B589628E0344458686490681 /* AppRouter */; };
-		5AD577AA2EF4316F006AE4ED /* LocalPersistance in Frameworks */ = {isa = PBXBuildFile; productRef = 5AD577A92EF4316F006AE4ED /* LocalPersistance */; };
-		5AD577AC2EF4316F006AE4ED /* LocalPersistanceMock in Frameworks */ = {isa = PBXBuildFile; productRef = 5AD577AB2EF4316F006AE4ED /* LocalPersistanceMock */; };
-		5AD577AF2EF4317E006AE4ED /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 5AD577AE2EF4317E006AE4ED /* DesignSystem */; };
-		5AD577B22EF43191006AE4ED /* Data in Frameworks */ = {isa = PBXBuildFile; productRef = 5AD577B12EF43191006AE4ED /* Data */; };
-		5AD577B42EF43191006AE4ED /* DataMock in Frameworks */ = {isa = PBXBuildFile; productRef = 5AD577B32EF43191006AE4ED /* DataMock */; };
+		5A96869E2F3399C400E624B3 /* Mixpanel in Frameworks */ = {isa = PBXBuildFile; productRef = FE6564F6CEBD5C1FE3AF0DB2 /* Mixpanel */; };
+		5A96869F2F3399C400E624B3 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 89D13F792259469BB44E83E5 /* RevenueCat */; };
+		5A9686A02F3399C400E624B3 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = C09CC53B5CB17AD2F6A3D602 /* GoogleSignIn */; };
+		5A9686A12F3399C400E624B3 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = DB90AE0C3609FEFAC8ECF27F /* FirebaseAuth */; };
+		5A9686A22F3399C400E624B3 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 6294D8E7E81078DDCD9CB58B /* FirebaseAnalytics */; };
+		5A9686A32F3399C400E624B3 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 27FFA538DBACEA0D2704038F /* FirebaseCrashlytics */; };
+		5A9686A42F3399C400E624B3 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 81B3A8436827F6742DBECB23 /* FirebaseFirestore */; };
+		5A9686A52F3399C400E624B3 /* AppRouter in Frameworks */ = {isa = PBXBuildFile; productRef = B589628E0344458686490681 /* AppRouter */; };
+		5A9686A62F3399C400E624B3 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 02B62BA12E662DC3008FB7FF /* FirebaseMessaging */; };
+		5A9686A72F3399C400E624B3 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 02B62BAF2E662E60008FB7FF /* FirebaseRemoteConfig */; };
+		5A9686A82F3399C400E624B3 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 02B62BB12E662E85008FB7FF /* FirebaseStorage */; };
+		5A9686A92F3399C400E624B3 /* LocalPersistance in Frameworks */ = {isa = PBXBuildFile; productRef = 5AD577A92EF4316F006AE4ED /* LocalPersistance */; };
+		5A9686AA2F3399C400E624B3 /* LocalPersistanceMock in Frameworks */ = {isa = PBXBuildFile; productRef = 5AD577AB2EF4316F006AE4ED /* LocalPersistanceMock */; };
+		5A9686AB2F3399C400E624B3 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 5AD577AE2EF4317E006AE4ED /* DesignSystem */; };
+		5A9686AC2F3399C400E624B3 /* Data in Frameworks */ = {isa = PBXBuildFile; productRef = 5AD577B12EF43191006AE4ED /* Data */; };
+		5A9686AD2F3399C400E624B3 /* DataMock in Frameworks */ = {isa = PBXBuildFile; productRef = 5AD577B32EF43191006AE4ED /* DataMock */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		022958352CEE7FEF00765488 /* PBXContainerItemProxy */ = {
+		022958432CEE7FF900765488 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 028F9B4B2CECF2C2009B9F48 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 028F9B522CECF2C2009B9F48;
 			remoteInfo = AppTemplateLite;
 		};
-		022958432CEE7FF900765488 /* PBXContainerItemProxy */ = {
+		5A9687A72F3399C400E624B3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 028F9B4B2CECF2C2009B9F48 /* Project object */;
 			proxyType = 1;
@@ -99,28 +94,23 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				028F9BCE2CED152A009B9F48 /* SwiftfulLoggingMixpanel in Frameworks */,
-				02B62BAB2E662DF3008FB7FF /* SwiftfulLoggingFirebaseCrashlytics in Frameworks */,
-				02B62BA52E662DD7008FB7FF /* SwiftfulAuthenticatingFirebase in Frameworks */,
-				5AD577B22EF43191006AE4ED /* Data in Frameworks */,
+				5A9686AD2F3399C400E624B3 /* DataMock in Frameworks */,
+				5A9686AC2F3399C400E624B3 /* Data in Frameworks */,
+				5A9686AB2F3399C400E624B3 /* DesignSystem in Frameworks */,
+				5A9686AA2F3399C400E624B3 /* LocalPersistanceMock in Frameworks */,
+				5A9686A92F3399C400E624B3 /* LocalPersistance in Frameworks */,
+				5A9686A82F3399C400E624B3 /* FirebaseStorage in Frameworks */,
+				5A9686A72F3399C400E624B3 /* FirebaseRemoteConfig in Frameworks */,
+				5A9686A62F3399C400E624B3 /* FirebaseMessaging in Frameworks */,
+				5A9686A52F3399C400E624B3 /* AppRouter in Frameworks */,
+				5A9686A42F3399C400E624B3 /* FirebaseFirestore in Frameworks */,
+				5A9686A32F3399C400E624B3 /* FirebaseCrashlytics in Frameworks */,
+				5A9686A22F3399C400E624B3 /* FirebaseAnalytics in Frameworks */,
+				5A9686A12F3399C400E624B3 /* FirebaseAuth in Frameworks */,
+				5A9686A02F3399C400E624B3 /* GoogleSignIn in Frameworks */,
+				5A96869F2F3399C400E624B3 /* RevenueCat in Frameworks */,
+				5A96869E2F3399C400E624B3 /* Mixpanel in Frameworks */,
 				0229588C2CEE932F00765488 /* SDWebImageSwiftUI in Frameworks */,
-				5AD577AC2EF4316F006AE4ED /* LocalPersistanceMock in Frameworks */,
-				028200B32EA3434D0004887E /* SwiftfulDataManagers in Frameworks */,
-				5AD577AF2EF4317E006AE4ED /* DesignSystem in Frameworks */,
-				028F9BD72CED155A009B9F48 /* SwiftfulAuthUI in Frameworks */,
-				02B62BB22E662E85008FB7FF /* FirebaseStorage in Frameworks */,
-				02B62BB02E662E60008FB7FF /* FirebaseRemoteConfig in Frameworks */,
-				028F9BD12CED1539009B9F48 /* SwiftfulPurchasing in Frameworks */,
-				02B62BA22E662DC3008FB7FF /* FirebaseMessaging in Frameworks */,
-				028F9BC52CED14CA009B9F48 /* SwiftfulLogging in Frameworks */,
-				44A5F726E65B42E393C059CB /* AppRouter in Frameworks */,
-				028200B62EA3437B0004887E /* SwiftfulDataManagersFirebase in Frameworks */,
-				5AD577AA2EF4316F006AE4ED /* LocalPersistance in Frameworks */,
-				5AD577B42EF43191006AE4ED /* DataMock in Frameworks */,
-				028F9BD42CED1547009B9F48 /* SwiftfulPurchasingRevenueCat in Frameworks */,
-				028F9BD92CED155A009B9F48 /* SwiftfulAuthenticating in Frameworks */,
-				02B62BA82E662DE7008FB7FF /* SwiftfulLoggingFirebaseAnalytics in Frameworks */,
-				02B62BAE2E662E14008FB7FF /* SwiftfulFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -211,23 +201,18 @@
 			);
 			name = AppTemplateLite;
 			packageProductDependencies = (
-				028F9BC42CED14CA009B9F48 /* SwiftfulLogging */,
-				028F9BCD2CED152A009B9F48 /* SwiftfulLoggingMixpanel */,
-				028F9BD02CED1539009B9F48 /* SwiftfulPurchasing */,
-				028F9BD32CED1547009B9F48 /* SwiftfulPurchasingRevenueCat */,
-				028F9BD62CED155A009B9F48 /* SwiftfulAuthUI */,
-				028F9BD82CED155A009B9F48 /* SwiftfulAuthenticating */,
+				FE6564F6CEBD5C1FE3AF0DB2 /* Mixpanel */,
+				89D13F792259469BB44E83E5 /* RevenueCat */,
+				C09CC53B5CB17AD2F6A3D602 /* GoogleSignIn */,
+				DB90AE0C3609FEFAC8ECF27F /* FirebaseAuth */,
+				6294D8E7E81078DDCD9CB58B /* FirebaseAnalytics */,
+				27FFA538DBACEA0D2704038F /* FirebaseCrashlytics */,
+				81B3A8436827F6742DBECB23 /* FirebaseFirestore */,
 				0229588B2CEE932F00765488 /* SDWebImageSwiftUI */,
 				B589628E0344458686490681 /* AppRouter */,
 				02B62BA12E662DC3008FB7FF /* FirebaseMessaging */,
-				02B62BA42E662DD7008FB7FF /* SwiftfulAuthenticatingFirebase */,
-				02B62BA72E662DE7008FB7FF /* SwiftfulLoggingFirebaseAnalytics */,
-				02B62BAA2E662DF3008FB7FF /* SwiftfulLoggingFirebaseCrashlytics */,
-				02B62BAD2E662E14008FB7FF /* SwiftfulFirestore */,
 				02B62BAF2E662E60008FB7FF /* FirebaseRemoteConfig */,
 				02B62BB12E662E85008FB7FF /* FirebaseStorage */,
-				028200B22EA3434D0004887E /* SwiftfulDataManagers */,
-				028200B52EA3437B0004887E /* SwiftfulDataManagersFirebase */,
 				5AD577A92EF4316F006AE4ED /* LocalPersistance */,
 				5AD577AB2EF4316F006AE4ED /* LocalPersistanceMock */,
 				5AD577AE2EF4317E006AE4ED /* DesignSystem */,
@@ -271,20 +256,12 @@
 			mainGroup = 028F9B4A2CECF2C2009B9F48;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				028F9BC32CED14CA009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulLogging" */,
-				028F9BCC2CED152A009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulLoggingMixpanel" */,
-				028F9BCF2CED1539009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulPurchasing" */,
-				028F9BD22CED1547009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulPurchasingRevenueCat" */,
-				028F9BD52CED155A009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulAuthenticating" */,
+				BFA72421752FABE55C78AFC6 /* XCRemoteSwiftPackageReference "mixpanel-swift" */,
+				CB262B8E15EA24F173FB208E /* XCRemoteSwiftPackageReference "purchases-ios" */,
+				0B1491E9E5D567EC98F5F65D /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				0229588A2CEE932F00765488 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 				3C0A26DE24FC4478954EB23D /* XCRemoteSwiftPackageReference "AppRouter" */,
 				02B62BA02E662DC3008FB7FF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				02B62BA32E662DD7008FB7FF /* XCRemoteSwiftPackageReference "SwiftfulAuthenticatingFirebase" */,
-				02B62BA62E662DE7008FB7FF /* XCRemoteSwiftPackageReference "SwiftfulLoggingFirebaseAnalytics" */,
-				02B62BA92E662DF3008FB7FF /* XCRemoteSwiftPackageReference "SwiftfulLoggingFirebaseCrashlytics" */,
-				02B62BAC2E662E14008FB7FF /* XCRemoteSwiftPackageReference "SwiftfulFirestore" */,
-				028200B12EA3434D0004887E /* XCRemoteSwiftPackageReference "SwiftfulDataManagers" */,
-				028200B42EA3437B0004887E /* XCRemoteSwiftPackageReference "SwiftfulDataManagersFirebase" */,
 				5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/app-core-packages" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -396,7 +373,7 @@
 		022958362CEE7FEF00765488 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 028F9B522CECF2C2009B9F48 /* AppTemplateLite */;
-			targetProxy = 022958352CEE7FEF00765488 /* PBXContainerItemProxy */;
+			targetProxy = 5A9687A72F3399C400E624B3 /* PBXContainerItemProxy */;
 		};
 		022958442CEE7FF900765488 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -535,7 +512,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.swiftfulthinking.AppTemplateLiteUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.organization.AppTemplateLiteUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -557,7 +534,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.swiftfulthinking.AppTemplateLiteUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.organization.AppTemplateLiteUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -580,7 +557,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.swiftfulthinking.AppTemplateLiteUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.organization.AppTemplateLiteUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -604,7 +581,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.swiftfulthinking.AppTemplateLiteUnitTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.organization.AppTemplateLiteUnitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -627,7 +604,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.swiftfulthinking.AppTemplateLiteUnitTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.organization.AppTemplateLiteUnitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -651,7 +628,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.swiftfulthinking.AppTemplateLiteUnitTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.organization.AppTemplateLiteUnitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -948,62 +925,6 @@
 				minimumVersion = 3.1.3;
 			};
 		};
-		028200B12EA3434D0004887E /* XCRemoteSwiftPackageReference "SwiftfulDataManagers" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulDataManagers.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.1;
-			};
-		};
-		028200B42EA3437B0004887E /* XCRemoteSwiftPackageReference "SwiftfulDataManagersFirebase" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulDataManagersFirebase.git";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
-		028F9BC32CED14CA009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulLogging" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulLogging.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.2;
-			};
-		};
-		028F9BCC2CED152A009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulLoggingMixpanel" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulLoggingMixpanel";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.2;
-			};
-		};
-		028F9BCF2CED1539009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulPurchasing" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulPurchasing";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.6;
-			};
-		};
-		028F9BD22CED1547009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulPurchasingRevenueCat" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulPurchasingRevenueCat";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.2;
-			};
-		};
-		028F9BD52CED155A009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulAuthenticating" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulAuthenticating";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
 		02B62BA02E662DC3008FB7FF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
@@ -1012,36 +933,12 @@
 				minimumVersion = 12.2.0;
 			};
 		};
-		02B62BA32E662DD7008FB7FF /* XCRemoteSwiftPackageReference "SwiftfulAuthenticatingFirebase" */ = {
+		0B1491E9E5D567EC98F5F65D /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulAuthenticatingFirebase";
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.12;
-			};
-		};
-		02B62BA62E662DE7008FB7FF /* XCRemoteSwiftPackageReference "SwiftfulLoggingFirebaseAnalytics" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulLoggingFirebaseAnalytics";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.4;
-			};
-		};
-		02B62BA92E662DF3008FB7FF /* XCRemoteSwiftPackageReference "SwiftfulLoggingFirebaseCrashlytics" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulLoggingFirebaseCrashlytics";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.1;
-			};
-		};
-		02B62BAC2E662E14008FB7FF /* XCRemoteSwiftPackageReference "SwiftfulFirestore" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulFirestore";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 11.0.0;
+				minimumVersion = 7.0.0;
 			};
 		};
 		3C0A26DE24FC4478954EB23D /* XCRemoteSwiftPackageReference "AppRouter" */ = {
@@ -1052,6 +949,22 @@
 				minimumVersion = 1.0.0;
 			};
 		};
+		BFA72421752FABE55C78AFC6 /* XCRemoteSwiftPackageReference "mixpanel-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mixpanel/mixpanel-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.0;
+			};
+		};
+		CB262B8E15EA24F173FB208E /* XCRemoteSwiftPackageReference "purchases-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RevenueCat/purchases-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1060,70 +973,10 @@
 			package = 0229588A2CEE932F00765488 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
 			productName = SDWebImageSwiftUI;
 		};
-		028200B22EA3434D0004887E /* SwiftfulDataManagers */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 028200B12EA3434D0004887E /* XCRemoteSwiftPackageReference "SwiftfulDataManagers" */;
-			productName = SwiftfulDataManagers;
-		};
-		028200B52EA3437B0004887E /* SwiftfulDataManagersFirebase */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 028200B42EA3437B0004887E /* XCRemoteSwiftPackageReference "SwiftfulDataManagersFirebase" */;
-			productName = SwiftfulDataManagersFirebase;
-		};
-		028F9BC42CED14CA009B9F48 /* SwiftfulLogging */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 028F9BC32CED14CA009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulLogging" */;
-			productName = SwiftfulLogging;
-		};
-		028F9BCD2CED152A009B9F48 /* SwiftfulLoggingMixpanel */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 028F9BCC2CED152A009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulLoggingMixpanel" */;
-			productName = SwiftfulLoggingMixpanel;
-		};
-		028F9BD02CED1539009B9F48 /* SwiftfulPurchasing */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 028F9BCF2CED1539009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulPurchasing" */;
-			productName = SwiftfulPurchasing;
-		};
-		028F9BD32CED1547009B9F48 /* SwiftfulPurchasingRevenueCat */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 028F9BD22CED1547009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulPurchasingRevenueCat" */;
-			productName = SwiftfulPurchasingRevenueCat;
-		};
-		028F9BD62CED155A009B9F48 /* SwiftfulAuthUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 028F9BD52CED155A009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulAuthenticating" */;
-			productName = SwiftfulAuthUI;
-		};
-		028F9BD82CED155A009B9F48 /* SwiftfulAuthenticating */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 028F9BD52CED155A009B9F48 /* XCRemoteSwiftPackageReference "SwiftfulAuthenticating" */;
-			productName = SwiftfulAuthenticating;
-		};
 		02B62BA12E662DC3008FB7FF /* FirebaseMessaging */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 02B62BA02E662DC3008FB7FF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseMessaging;
-		};
-		02B62BA42E662DD7008FB7FF /* SwiftfulAuthenticatingFirebase */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 02B62BA32E662DD7008FB7FF /* XCRemoteSwiftPackageReference "SwiftfulAuthenticatingFirebase" */;
-			productName = SwiftfulAuthenticatingFirebase;
-		};
-		02B62BA72E662DE7008FB7FF /* SwiftfulLoggingFirebaseAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 02B62BA62E662DE7008FB7FF /* XCRemoteSwiftPackageReference "SwiftfulLoggingFirebaseAnalytics" */;
-			productName = SwiftfulLoggingFirebaseAnalytics;
-		};
-		02B62BAA2E662DF3008FB7FF /* SwiftfulLoggingFirebaseCrashlytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 02B62BA92E662DF3008FB7FF /* XCRemoteSwiftPackageReference "SwiftfulLoggingFirebaseCrashlytics" */;
-			productName = SwiftfulLoggingFirebaseCrashlytics;
-		};
-		02B62BAD2E662E14008FB7FF /* SwiftfulFirestore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 02B62BAC2E662E14008FB7FF /* XCRemoteSwiftPackageReference "SwiftfulFirestore" */;
-			productName = SwiftfulFirestore;
 		};
 		02B62BAF2E662E60008FB7FF /* FirebaseRemoteConfig */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1134,6 +987,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 02B62BA02E662DC3008FB7FF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		27FFA538DBACEA0D2704038F /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 02B62BA02E662DC3008FB7FF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
 		};
 		5AD577A92EF4316F006AE4ED /* LocalPersistance */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1160,10 +1018,40 @@
 			package = 5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/app-core-packages" */;
 			productName = DataMock;
 		};
+		6294D8E7E81078DDCD9CB58B /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 02B62BA02E662DC3008FB7FF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		81B3A8436827F6742DBECB23 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 02B62BA02E662DC3008FB7FF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		89D13F792259469BB44E83E5 /* RevenueCat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CB262B8E15EA24F173FB208E /* XCRemoteSwiftPackageReference "purchases-ios" */;
+			productName = RevenueCat;
+		};
 		B589628E0344458686490681 /* AppRouter */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3C0A26DE24FC4478954EB23D /* XCRemoteSwiftPackageReference "AppRouter" */;
 			productName = AppRouter;
+		};
+		C09CC53B5CB17AD2F6A3D602 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0B1491E9E5D567EC98F5F65D /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		DB90AE0C3609FEFAC8ECF27F /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 02B62BA02E662DC3008FB7FF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		FE6564F6CEBD5C1FE3AF0DB2 /* Mixpanel */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BFA72421752FABE55C78AFC6 /* XCRemoteSwiftPackageReference "mixpanel-swift" */;
+			productName = Mixpanel;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

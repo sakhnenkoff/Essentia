@@ -16,8 +16,7 @@ ls ~/Library/Developer/Xcode/Templates/MyTemplates/ModelTemplate.xctemplate
 
 ### 2. If templates NOT found
 
-- Respond: "The Xcode templates are not installed. Please install them first:"
-- Provide link: https://github.com/SwiftfulThinking/XcodeTemplates
+- Respond: "The Xcode templates are not installed. Please install them first."
 - Include installation instructions:
   ```bash
   cd ~/Library/Developer/Xcode
@@ -61,10 +60,8 @@ ls ~/Library/Developer/Xcode/Templates/MyTemplates/ModelTemplate.xctemplate
 
 ```swift
 import SwiftUI
-import IdentifiableByString
-import SwiftfulDataManagers
 
-public struct ModelNameModel: StringIdentifiable, Codable, Sendable, DMProtocol {
+public struct ModelNameModel: StringIdentifiable, Codable, Sendable {
     let id: String
     let value: String?  // Replace with your custom properties
     let customProperty: Bool?  // Example custom property
@@ -109,9 +106,8 @@ public struct ModelNameModel: StringIdentifiable, Codable, Sendable, DMProtocol 
 ## Important Requirements
 
 - ALWAYS use the template when creating models
-- **ALL models must conform to: StringIdentifiable, Codable, Sendable, DMProtocol**
+- **ALL models must conform to: StringIdentifiable, Codable, Sendable**
 - **ALL models used with DataManagers MUST be declared as `public struct`** (not just `struct`)
-- DMProtocol is required for SwiftfulDataManagers compatibility
 - The template provides: CodingKeys, eventParameters, mocks structure
 - Replace the default `value` property with your actual model properties
 - Update CodingKeys enum when adding/removing properties

@@ -5,8 +5,6 @@
 //  Default implementations for LoggableEvent to reduce boilerplate.
 //
 
-import SwiftfulLogging
-
 // MARK: - Default Implementations
 
 /// These default implementations reduce boilerplate in Event enums.

@@ -6,24 +6,13 @@ This file provides guidance to AI coding agents when working with this repositor
 
 ## Building the Project
 
-**ALWAYS use MCP tools for building.** Do not use direct `xcodebuild` commands.
-
-### MCP Build Tools
-
-```
-mcp__XcodeBuildMCP__build_sim     # Build for simulator
-mcp__XcodeBuildMCP__clean         # Clean build folder
-mcp__XcodeBuildMCP__list_schemes  # List available schemes
-mcp__XcodeBuildMCP__list_sims     # List available simulators
-mcp__XcodeBuildMCP__doctor        # Diagnose build issues
-```
+Use direct `xcodebuild` (do not use MCP).
 
 ### Build Workflow
 
-1. **First time**: Run `mcp__XcodeBuildMCP__session-set-defaults` to configure
-2. **Build**: Use `mcp__XcodeBuildMCP__build_sim` for simulator builds
-3. **If fails**: Use `mcp__XcodeBuildMCP__doctor` to diagnose
-4. **Clean**: Use `mcp__XcodeBuildMCP__clean` before rebuilding if needed
+1. **Build**: `xcodebuild -project AppTemplateLite.xcodeproj -scheme "AppTemplateLite - Mock" -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.2' build`
+2. **If fails**: Fix compile errors, then re-run the same command.
+3. **Warnings are blockers**: Resolve all build warnings from app code before finishing work. Warnings originating from external packages are acceptable.
 
 ---
 
@@ -36,7 +25,7 @@ All detailed documentation is in `.claude/docs/`:
 | `project-structure.md` | Architecture overview, folder structure |
 | `mvvm-lite-architecture.md` | MVVM-lite rules, UI guidelines |
 | `commit-guidelines.md` | Commit message format |
-| `package-dependencies.md` | SwiftfulThinking package integration |
+| `package-dependencies.md` | Direct SDK + package integration |
 | `package-quick-reference.md` | Quick snippets and common patterns |
 | `design-system-usage.md` | DSButton, EmptyStateView, colors, typography |
 | `design-system-recipes.md` | Design system examples and patterns |
@@ -54,7 +43,7 @@ All detailed documentation is in `.claude/docs/`:
 - **Architecture**: MVVM-lite + AppRouter (TabView + NavigationStack + sheets)
 - **Tech Stack**: SwiftUI (iOS 26+), Swift 5.9+, Firebase, RevenueCat, Mixpanel
 - **Build Configs**: Mock (no Firebase), Dev, Prod
-- **Packages**: SwiftfulThinking ecosystem + app-core-packages
+- **Packages**: Direct SDKs (Firebase, Mixpanel, RevenueCat, GoogleSignIn) + app-core-packages
 
 ---
 
@@ -74,12 +63,12 @@ All detailed documentation is in `.claude/docs/`:
 ### For New Managers
 - Decide: Service Manager (most common) or Data Sync Manager (for Firestore sync)
 - Service Managers use protocol-based pattern with Mock/Prod implementations
-- Data Sync Managers extend SwiftfulDataManagers classes
+- Data Sync Managers use `DocumentManagerSync` + services in `Managers/DataManagers/`
 - Follow the steps in ACTION 3 documentation
 
 ### For New Models
 - Models live in `/Managers/[ManagerName]/Models/`
-- Must conform to: `StringIdentifiable, Codable, Sendable, DMProtocol`
+- Must conform to: `StringIdentifiable, Codable, Sendable`
 - Use snake_case for CodingKeys raw values
 - Follow the steps in ACTION 4 documentation
 
@@ -139,5 +128,4 @@ Use Mock for 90% of development.
 
 ## Additional Resources
 
-- Official Documentation: https://www.swiftful-thinking.com/offers/REyNLwwH
 - AppRouter: https://github.com/Dimillian/AppRouter

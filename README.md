@@ -2,8 +2,6 @@
 
 Lightweight, production-ready iOS 26+ template built with SwiftUI, AppRouter, and MVVM-lite.
 
-Based on [SwiftfulStarterProject](https://github.com/SwiftfulThinking/SwiftfulStarterProject) by Swiftful Thinking, LLC, licensed under MIT.
-
 ## Features
 
 - AppRouter-powered navigation (tabs + deep links + sheets)
@@ -15,7 +13,6 @@ Based on [SwiftfulStarterProject](https://github.com/SwiftfulThinking/SwiftfulSt
 - Consent + ATT settings
 - Push notification routing hooks
 - Gamification system (Streaks, XP, Progress)
-- SwiftfulThinking package ecosystem
 
 ## Getting Started
 

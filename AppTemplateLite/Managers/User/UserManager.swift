@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SwiftfulDataManagers
 
 @MainActor
 @Observable
@@ -20,7 +19,7 @@ class UserManager: DocumentManagerSync<UserModel> {
         services: S,
         configuration: DataManagerSyncConfiguration = .mockNoPendingWrites(),
         logger: (any DataLogger)? = nil
-    ) where S.T == UserModel {
+    ) where S.Model == UserModel {
         // Initialize parent DocumentManagerSync
         super.init(
             services: services,

@@ -2,7 +2,7 @@
 //  LocalNotifications.swift
 //  AppTemplateLite
 //
-//  Local notifications helper (replaces SwiftfulUtilities dependency)
+//  Local notifications helper
 //
 
 import UserNotifications

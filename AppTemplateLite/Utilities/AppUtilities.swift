@@ -2,7 +2,7 @@
 //  AppUtilities.swift
 //  AppTemplateLite
 //
-//  Local utilities replacing SwiftfulUtilities package.
+//  Local utilities.
 //
 
 import UIKit

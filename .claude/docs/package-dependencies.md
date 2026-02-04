@@ -1,6 +1,6 @@
 # Package Dependencies (AppTemplateLite)
 
-This template uses the SwiftfulThinking ecosystem plus AppRouter. All shared packages live in `app-core-packages`.
+This template uses direct SDK integrations plus AppRouter. All shared packages live in `app-core-packages`.
 
 ---
 
@@ -23,42 +23,42 @@ router.presentSheet(.paywall)
 
 ---
 
-## SwiftfulAuthenticating + Firebase
+## Auth (Firebase Auth + GoogleSignIn + Apple)
 
 **Purpose:** Sign-in (Apple, Google, Anonymous).
 
 **Where:**
-- `Managers/Auth/SwiftfulAuthenticating+Alias.swift`
+- `Managers/Auth/AuthAdapters.swift`
 - `Features/Auth/AuthViewModel.swift`
 
 ---
 
-## SwiftfulDataManagers + Firebase
+## User Data (Firestore)
 
 **Purpose:** Sync user documents.
 
 **Where:**
-- `Managers/DataManagers/SwiftfulDataManagers+Alias.swift`
+- `Managers/DataManagers/DataManagerServices.swift`
 - `Managers/User/UserManager.swift`
 
 ---
 
-## SwiftfulPurchasing + RevenueCat
+## Purchases (RevenueCat)
 
 **Purpose:** In-app purchases and entitlements.
 
 **Where:**
-- `Managers/Purchases/SwiftfulPurchasing+Alias.swift`
+- `Managers/Purchases/PurchaseAdapters.swift`
 - `Features/Paywall/PaywallViewModel.swift`
 
 ---
 
-## SwiftfulLogging (Mixpanel + Firebase Analytics/Crashlytics)
+## Logging (Mixpanel + Firebase Analytics/Crashlytics)
 
 **Purpose:** Analytics and crash reporting.
 
 **Where:**
-- `Managers/Logs/SwiftfulLogging+Alias.swift`
+- `Managers/Logs/LogAdapters.swift`
 - ViewModels track events via `services.logManager`.
 
 ---

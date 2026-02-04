@@ -6,10 +6,8 @@
 //
 import Foundation
 import SwiftUI
-import IdentifiableByString
-import SwiftfulDataManagers
 
-public struct UserModel: StringIdentifiable, Codable, DMProtocol {
+public struct UserModel: StringIdentifiable, Codable, Sendable {
     public var id: String {
         userId
     }
