@@ -19,11 +19,9 @@
 		5A9686A62F3399C400E624B3 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 02B62BA12E662DC3008FB7FF /* FirebaseMessaging */; };
 		5A9686A72F3399C400E624B3 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 02B62BAF2E662E60008FB7FF /* FirebaseRemoteConfig */; };
 		5A9686A82F3399C400E624B3 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 02B62BB12E662E85008FB7FF /* FirebaseStorage */; };
-		5A9686A92F3399C400E624B3 /* LocalPersistance in Frameworks */ = {isa = PBXBuildFile; productRef = 5AD577A92EF4316F006AE4ED /* LocalPersistance */; };
-		5A9686AA2F3399C400E624B3 /* LocalPersistanceMock in Frameworks */ = {isa = PBXBuildFile; productRef = 5AD577AB2EF4316F006AE4ED /* LocalPersistanceMock */; };
+		5A9686A92F3399C400E624B3 /* Core in Frameworks */ = {isa = PBXBuildFile; productRef = 5AD577A92EF4316F006AE4ED /* Core */; };
+		5A9686AA2F3399C400E624B3 /* CoreMock in Frameworks */ = {isa = PBXBuildFile; productRef = 5AD577AB2EF4316F006AE4ED /* CoreMock */; };
 		5A9686AB2F3399C400E624B3 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 5AD577AE2EF4317E006AE4ED /* DesignSystem */; };
-		5A9686AC2F3399C400E624B3 /* Data in Frameworks */ = {isa = PBXBuildFile; productRef = 5AD577B12EF43191006AE4ED /* Data */; };
-		5A9686AD2F3399C400E624B3 /* DataMock in Frameworks */ = {isa = PBXBuildFile; productRef = 5AD577B32EF43191006AE4ED /* DataMock */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -94,11 +92,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5A9686AD2F3399C400E624B3 /* DataMock in Frameworks */,
-				5A9686AC2F3399C400E624B3 /* Data in Frameworks */,
 				5A9686AB2F3399C400E624B3 /* DesignSystem in Frameworks */,
-				5A9686AA2F3399C400E624B3 /* LocalPersistanceMock in Frameworks */,
-				5A9686A92F3399C400E624B3 /* LocalPersistance in Frameworks */,
+				5A9686AA2F3399C400E624B3 /* CoreMock in Frameworks */,
+				5A9686A92F3399C400E624B3 /* Core in Frameworks */,
 				5A9686A82F3399C400E624B3 /* FirebaseStorage in Frameworks */,
 				5A9686A72F3399C400E624B3 /* FirebaseRemoteConfig in Frameworks */,
 				5A9686A62F3399C400E624B3 /* FirebaseMessaging in Frameworks */,
@@ -213,11 +209,9 @@
 				02B62BA12E662DC3008FB7FF /* FirebaseMessaging */,
 				02B62BAF2E662E60008FB7FF /* FirebaseRemoteConfig */,
 				02B62BB12E662E85008FB7FF /* FirebaseStorage */,
-				5AD577A92EF4316F006AE4ED /* LocalPersistance */,
-				5AD577AB2EF4316F006AE4ED /* LocalPersistanceMock */,
+				5AD577A92EF4316F006AE4ED /* Core */,
+				5AD577AB2EF4316F006AE4ED /* CoreMock */,
 				5AD577AE2EF4317E006AE4ED /* DesignSystem */,
-				5AD577B12EF43191006AE4ED /* Data */,
-				5AD577B32EF43191006AE4ED /* DataMock */,
 			);
 			productName = Essentia;
 			productReference = 028F9B532CECF2C2009B9F48 /* Essentia.app */;
@@ -993,30 +987,20 @@
 			package = 02B62BA02E662DC3008FB7FF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCrashlytics;
 		};
-		5AD577A92EF4316F006AE4ED /* LocalPersistance */ = {
+		5AD577A92EF4316F006AE4ED /* Core */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/essentia-core-packages" */;
-			productName = LocalPersistance;
+			productName = Core;
 		};
-		5AD577AB2EF4316F006AE4ED /* LocalPersistanceMock */ = {
+		5AD577AB2EF4316F006AE4ED /* CoreMock */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/essentia-core-packages" */;
-			productName = LocalPersistanceMock;
+			productName = CoreMock;
 		};
 		5AD577AE2EF4317E006AE4ED /* DesignSystem */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/essentia-core-packages" */;
 			productName = DesignSystem;
-		};
-		5AD577B12EF43191006AE4ED /* Data */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/essentia-core-packages" */;
-			productName = Data;
-		};
-		5AD577B32EF43191006AE4ED /* DataMock */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/essentia-core-packages" */;
-			productName = DataMock;
 		};
 		6294D8E7E81078DDCD9CB58B /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;

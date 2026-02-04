@@ -18,8 +18,7 @@
 - **User Data**: Firestore-backed user profile sync + local cache
 - **Purchases**: RevenueCat entitlements + StoreKit paywall
 - **Logging**: Console, Mixpanel, Firebase Analytics, Crashlytics
-- **LocalPersistance**: Keychain + UserDefaults helpers
-- **Networking**: Async API client helpers
+- **Core**: Local persistence + networking helpers (Keychain/UserDefaults + API client)
 
 ## Common Patterns
 

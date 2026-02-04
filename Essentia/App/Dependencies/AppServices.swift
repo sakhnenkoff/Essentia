@@ -6,9 +6,8 @@
 //
 
 import SwiftUI
-import LocalPersistance
-import LocalPersistanceMock
-import Networking
+import Core
+import CoreMock
 
 private struct ServiceBundle {
     let logManager: LogManager

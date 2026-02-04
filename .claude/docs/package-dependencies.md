@@ -63,9 +63,9 @@ router.presentSheet(.paywall)
 
 ---
 
-## LocalPersistance + Networking
+## Core
 
-**Purpose:** Keychain/UserDefaults helpers and a simple networking client.
+**Purpose:** Core utilities (Keychain/UserDefaults helpers + simple networking client).
 
 **Where:**
 - `App/Dependencies/AppServices.swift`

@@ -53,7 +53,7 @@ Resolve all app warnings before shipping. External package warnings are acceptab
 
 ## Internal Packages (SPM)
 
-The shared modules live in `essentia-core-packages` and are consumed as a single SPM dependency.
+The shared modules live in `essentia-core-packages` and are consumed as a single SPM dependency (Core + DesignSystem).
 
 - Remote dependency: `https://github.com/sakhnenkoff/essentia-core-packages.git`
 - Local override: in Xcode, use `File > Packages > Add Local...` to point to a local clone when iterating

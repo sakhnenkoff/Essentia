@@ -122,7 +122,7 @@ Use Mock for 90% of development.
 - **Managers**: `/Essentia/Managers/[ManagerName]/`
 - **Components**: `/Essentia/Components/Views/`
 - **Extensions**: `/Essentia/Extensions/`
-- **SPM Packages**: `essentia-core-packages` (DesignSystem, Data, LocalPersistance, Networking)
+- **SPM Packages**: `essentia-core-packages` (Core, DesignSystem)
 
 ---
 
