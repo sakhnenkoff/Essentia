@@ -65,7 +65,7 @@ struct DetailView: View {
                     toast = .success("Marked complete.")
                 }
 
-                DSButton(title: "Share card", style: .secondary, isFullWidth: true) {
+                DSButton(title: "Share card", style: .tertiary, isFullWidth: true) {
                     toast = .info("Share flow coming soon.")
                 }
             }
