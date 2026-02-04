@@ -9,7 +9,7 @@ Replace example screens, keep the architecture.
 
 ## Architecture Overview
 
-- **Architecture**: MVVM-lite + AppRouter
+- **Architecture**: MVVM + AppRouter
 - **Tech Stack**: SwiftUI (iOS 26+), Swift 5.9+, Firebase, RevenueCat, Mixpanel
 - **Build Configs**: Mock, Dev, Production
 
@@ -34,10 +34,10 @@ Replace example screens, keep the architecture.
 ## Project Structure
 
 ```
-AppTemplateLite/
-├── AppTemplateLite/           # Main app source code
+Essentia/
+├── Essentia/           # Main app source code
 │   ├── App/                   # App entry + routing
-│   │   ├── AppTemplateLiteApp.swift
+│   │   ├── EssentiaApp.swift
 │   │   ├── AppDelegate.swift
 │   │   ├── AppSession.swift
 │   │   ├── AppRootView.swift
@@ -59,10 +59,10 @@ AppTemplateLite/
 │   ├── Extensions/            # Shared extensions
 │   ├── Utilities/             # Constants, configuration, helpers
 │   └── SupportingFiles/       # Assets and config (Info.plist, entitlements)
-├── AppTemplateLite.xcodeproj
+├── Essentia.xcodeproj
 └── .claude/docs/
 ```
 
 ---
 
-Remember: create files inside `AppTemplateLite/` so Xcode auto-syncs them.
+Remember: create files inside `Essentia/` so Xcode auto-syncs them.

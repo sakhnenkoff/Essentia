@@ -1,4 +1,4 @@
-# Package Dependencies (AppTemplateLite)
+# Package Dependencies (Essentia)
 
 This template uses direct SDK integrations plus AppRouter. All shared packages live in `app-core-packages`.
 
@@ -65,7 +65,7 @@ router.presentSheet(.paywall)
 
 ## LocalPersistance + Networking
 
-**Purpose:** Keychain/UserDefaults helpers and a lightweight networking client.
+**Purpose:** Keychain/UserDefaults helpers and a simple networking client.
 
 **Where:**
 - `App/Dependencies/AppServices.swift`

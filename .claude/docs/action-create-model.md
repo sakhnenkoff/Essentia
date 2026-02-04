@@ -45,7 +45,7 @@ ls ~/Library/Developer/Xcode/Templates/MyTemplates/ModelTemplate.xctemplate
 - Substitute placeholders:
   - `___VARIABLE_modelName:identifier___` → ModelName (e.g., "User", "Post")
   - `___VARIABLE_lowercasedmodelname:identifier___` → modelname (e.g., "user", "post")
-- Create folder if needed: `/AppTemplateLite/Managers/ManagerName/Models/`
+- Create folder if needed: `/Essentia/Managers/ManagerName/Models/`
 - Create file: `ModelNameModel.swift`
 
 ### 6. Verify creation

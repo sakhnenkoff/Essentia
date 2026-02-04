@@ -1,4 +1,4 @@
-# ACTION 1: Create New Feature (MVVM-lite)
+# ACTION 1: Create New Feature (MVVM)
 
 **Triggers:** "create new screen", "create screen", "new screen", "add new screen", "new feature"
 
@@ -12,7 +12,7 @@
 
 ### 2. Create the folder
 
-- Path: `/AppTemplateLite/Features/FeatureName/`
+- Path: `/Essentia/Features/FeatureName/`
 
 ### 3. Create the files
 
@@ -28,7 +28,7 @@
 
 ---
 
-## Minimal MVVM-lite pattern
+## Minimal MVVM pattern
 
 ```swift
 @MainActor

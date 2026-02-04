@@ -1,11 +1,11 @@
-# AppTemplateLite
+# Essentia
 
-Lightweight, production-ready iOS 26+ template built with SwiftUI, AppRouter, and MVVM-lite.
+Production-ready iOS 26+ template built with SwiftUI, AppRouter, and MVVM.
 
 ## Features
 
 - AppRouter-powered navigation (tabs + deep links + sheets)
-- MVVM-lite views with `@Observable` view models
+- MVVM views with `@Observable` view models
 - Three build configurations (Mock, Dev, Production)
 - Firebase integration (Auth, Firestore, Analytics, Crashlytics)
 - RevenueCat for in-app purchases
@@ -31,7 +31,7 @@ Lightweight, production-ready iOS 26+ template built with SwiftUI, AppRouter, an
 Use direct `xcodebuild`:
 
 ```bash
-xcodebuild -project AppTemplateLite.xcodeproj -scheme "AppTemplateLite - Mock" -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.2' build
+xcodebuild -project Essentia.xcodeproj -scheme "Essentia - Mock" -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.2' build
 ```
 
 Resolve all app warnings before shipping. External package warnings are acceptable.
@@ -44,7 +44,7 @@ Resolve all app warnings before shipping. External package warnings are acceptab
 
 ## Navigation
 
-- Tabs and routes are defined in `AppTemplateLite/App/Navigation/`
+- Tabs and routes are defined in `Essentia/App/Navigation/`
 - Use `AppRoute` for push navigation and `AppSheet` for modal flows
 - Deep links are handled via `.onOpenURL` in `AppTabsView`
 
@@ -66,7 +66,7 @@ The shared modules live in `app-core-packages` and are consumed as a single SPM 
 
 See the `.claude/docs/` folder for detailed documentation on:
 - Project structure and architecture
-- MVVM-lite conventions
+- MVVM conventions
 - Creating features, components, managers, and models
 - Package dependencies and integration
 

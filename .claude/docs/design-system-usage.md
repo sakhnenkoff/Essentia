@@ -395,7 +395,7 @@ Text("Small Button").font(.buttonSmall())   // 13pt semibold
 
 ---
 
-## Integration with MVVM-lite
+## Integration with MVVM
 
 ### Toast State in ViewModel
 

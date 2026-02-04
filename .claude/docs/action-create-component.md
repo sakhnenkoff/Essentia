@@ -14,7 +14,7 @@
 
 ### 2. Determine component location
 
-- Default location: `/AppTemplateLite/Components/Views/`
+- Default location: `/Essentia/Components/Views/`
 - Ask user if they want it in a different Components subfolder:
   - `/Components/Views/` - General reusable views (DEFAULT)
   - `/Components/Modals/` - Modal/popup components
