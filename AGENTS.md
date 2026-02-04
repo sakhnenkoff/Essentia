@@ -43,7 +43,7 @@ All detailed documentation is in `.claude/docs/`:
 - **Architecture**: MVVM + AppRouter (TabView + NavigationStack + sheets)
 - **Tech Stack**: SwiftUI (iOS 26+), Swift 5.9+, Firebase, RevenueCat, Mixpanel
 - **Build Configs**: Mock (no Firebase), Dev, Prod
-- **Packages**: Direct SDKs (Firebase, Mixpanel, RevenueCat, GoogleSignIn) + app-core-packages
+- **Packages**: Direct SDKs (Firebase, Mixpanel, RevenueCat, GoogleSignIn) + essentia-core-packages
 
 ---
 
@@ -122,7 +122,7 @@ Use Mock for 90% of development.
 - **Managers**: `/Essentia/Managers/[ManagerName]/`
 - **Components**: `/Essentia/Components/Views/`
 - **Extensions**: `/Essentia/Extensions/`
-- **SPM Packages**: `app-core-packages` (DesignSystem, Data, LocalPersistance, Networking)
+- **SPM Packages**: `essentia-core-packages` (DesignSystem, Data, LocalPersistance, Networking)
 
 ---
 

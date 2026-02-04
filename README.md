@@ -1,6 +1,9 @@
 # Essentia
 
-Production-ready iOS 26+ template built with SwiftUI, AppRouter, and MVVM.
+## About
+
+Essentia is a production-ready iOS 26+ SwiftUI template that ships with MVVM, AppRouter navigation, and clean integrations for Firebase, Mixpanel, RevenueCat, and Google Sign-In. It’s designed to stay simple at the surface while scaling to real-world product complexity.
+
 
 ## Features
 
@@ -50,9 +53,9 @@ Resolve all app warnings before shipping. External package warnings are acceptab
 
 ## Internal Packages (SPM)
 
-The shared modules live in `app-core-packages` and are consumed as a single SPM dependency.
+The shared modules live in `essentia-core-packages` and are consumed as a single SPM dependency.
 
-- Remote dependency: `https://github.com/sakhnenkoff/app-core-packages.git`
+- Remote dependency: `https://github.com/sakhnenkoff/essentia-core-packages.git`
 - Local override: in Xcode, use `File > Packages > Add Local...` to point to a local clone when iterating
 
 ## SDKs Used

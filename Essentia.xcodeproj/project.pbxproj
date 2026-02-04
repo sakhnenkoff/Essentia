@@ -262,7 +262,7 @@
 				0229588A2CEE932F00765488 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 				3C0A26DE24FC4478954EB23D /* XCRemoteSwiftPackageReference "AppRouter" */,
 				02B62BA02E662DC3008FB7FF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/app-core-packages" */,
+				5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/essentia-core-packages" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 028F9B542CECF2C2009B9F48 /* Products */;
@@ -910,9 +910,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/app-core-packages" */ = {
+		5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/essentia-core-packages" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../Packages/app-core-packages";
+			relativePath = "../../Packages/essentia-core-packages";
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -995,27 +995,27 @@
 		};
 		5AD577A92EF4316F006AE4ED /* LocalPersistance */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/app-core-packages" */;
+			package = 5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/essentia-core-packages" */;
 			productName = LocalPersistance;
 		};
 		5AD577AB2EF4316F006AE4ED /* LocalPersistanceMock */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/app-core-packages" */;
+			package = 5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/essentia-core-packages" */;
 			productName = LocalPersistanceMock;
 		};
 		5AD577AE2EF4317E006AE4ED /* DesignSystem */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/app-core-packages" */;
+			package = 5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/essentia-core-packages" */;
 			productName = DesignSystem;
 		};
 		5AD577B12EF43191006AE4ED /* Data */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/app-core-packages" */;
+			package = 5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/essentia-core-packages" */;
 			productName = Data;
 		};
 		5AD577B32EF43191006AE4ED /* DataMock */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/app-core-packages" */;
+			package = 5AD577A82EF4316F006AE4ED /* XCLocalSwiftPackageReference "../../Packages/essentia-core-packages" */;
 			productName = DataMock;
 		};
 		6294D8E7E81078DDCD9CB58B /* FirebaseAnalytics */ = {

@@ -233,7 +233,7 @@ func showDeleteConfirmation() {
 | Location | Purpose |
 |----------|---------|
 | `Essentia/Localizable.xcstrings` | Main app strings |
-| `app-core-packages/DesignSystem/.../Resources/Localizable.xcstrings` | DesignSystem package strings |
+| `essentia-core-packages/DesignSystem/.../Resources/Localizable.xcstrings` | DesignSystem package strings |
 
 Both are auto-synced by Xcode on every build and committed to source control.
 
@@ -264,7 +264,7 @@ These components have built-in localized strings:
 
 1. Add string with `String(localized: "key", bundle: .module)` in package code
 2. Build the project
-3. Open `app-core-packages/DesignSystem/.../Resources/Localizable.xcstrings`
+3. Open `essentia-core-packages/DesignSystem/.../Resources/Localizable.xcstrings`
 4. Add translations
 
 ### Package.swift Configuration

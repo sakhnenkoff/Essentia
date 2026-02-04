@@ -1,6 +1,6 @@
 # Package Dependencies (Essentia)
 
-This template uses direct SDK integrations plus AppRouter. All shared packages live in `app-core-packages`.
+This template uses direct SDK integrations plus AppRouter. All shared packages live in `essentia-core-packages`.
 
 ---
 

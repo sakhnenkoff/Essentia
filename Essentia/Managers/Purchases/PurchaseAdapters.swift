@@ -325,7 +325,7 @@ final class RevenueCatPurchaseService: PurchaseService {
             if let email = attributes.email { collected["email"] = email }
             if let mixpanelDistinctId = attributes.mixpanelDistinctId { collected["mixpanel_distinct_id"] = mixpanelDistinctId }
             if let firebaseAppInstanceId = attributes.firebaseAppInstanceId { collected["firebase_app_instance_id"] = firebaseAppInstanceId }
-            Purchases.shared.setAttributes(collected)
+            Purchases.shared.attribution.setAttributes(collected)
         }
 
         let info: CustomerInfo = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<CustomerInfo, Error>) in
