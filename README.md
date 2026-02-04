@@ -14,6 +14,11 @@ Lightweight, production-ready iOS 26+ template built with SwiftUI, AppRouter, an
 - Push notification routing hooks
 - Gamification system (Streaks, XP, Progress)
 
+## Requirements
+
+- Xcode 16+ (iOS 26 SDK)
+- Swift 5.9+
+
 ## Getting Started
 
 1. Clone this repository
@@ -21,6 +26,15 @@ Lightweight, production-ready iOS 26+ template built with SwiftUI, AppRouter, an
 3. Configure your Firebase and RevenueCat credentials
 4. Update `EntitlementOption` product IDs
 
+## Build
+
+Use direct `xcodebuild`:
+
+```bash
+xcodebuild -project AppTemplateLite.xcodeproj -scheme "AppTemplateLite - Mock" -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.2' build
+```
+
+Resolve all app warnings before shipping. External package warnings are acceptable.
 
 ## Scripts
 
@@ -40,6 +54,13 @@ The shared modules live in `app-core-packages` and are consumed as a single SPM 
 
 - Remote dependency: `https://github.com/sakhnenkoff/app-core-packages.git`
 - Local override: in Xcode, use `File > Packages > Add Local...` to point to a local clone when iterating
+
+## SDKs Used
+
+- Firebase (Auth, Firestore, Analytics, Crashlytics, Messaging, RemoteConfig, Storage)
+- Mixpanel
+- RevenueCat
+- GoogleSignIn
 
 ## Documentation
 
