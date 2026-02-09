@@ -4,6 +4,10 @@
 //
 //  
 //
+import FirebaseAnalytics
+import FirebaseCore
+import Mixpanel
+
 struct Constants {
     static let randomImage = "https://picsum.photos/600/600"
     static let privacyPolicyUrlString = "https://www.google.com"
@@ -17,7 +21,7 @@ struct Constants {
         #if MOCK
         return nil
         #else
-        return MixpanelService.distinctId
+        return Mixpanel.mainInstance().distinctId
         #endif
     }
     
@@ -25,7 +29,7 @@ struct Constants {
         #if MOCK
         return nil
         #else
-        return FirebaseAnalyticsService.appInstanceID
+        return Analytics.appInstanceID()
         #endif
     }
 
@@ -34,7 +38,7 @@ struct Constants {
         #if MOCK
         return nil
         #else
-        return FirebaseAuthService.clientId
+        return FirebaseApp.app()?.options.clientID
         #endif
     }
 

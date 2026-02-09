@@ -15,19 +15,15 @@ import Foundation
 
 enum AppConfiguration {
 
-    nonisolated(unsafe) private static let infoDictionary: [String: Any] = {
-        guard let dict = Bundle.main.infoDictionary else {
-            assertionFailure("Info.plist not found")
-            return [:]
-        }
-        return dict
-    }()
+    private static func value<T>(for key: String) -> T? {
+        Bundle.main.infoDictionary?[key] as? T
+    }
 
     // MARK: - Environment
 
     /// Current build environment: "mock", "dev", or "prod"
     static var environment: String {
-        infoDictionary["ENVIRONMENT"] as? String ?? "mock"
+        value(for: "ENVIRONMENT") ?? "mock"
     }
 
     static var isMock: Bool {
@@ -46,19 +42,19 @@ enum AppConfiguration {
 
     /// Base URL for API requests
     static var apiBaseURL: String {
-        infoDictionary["API_BASE_URL"] as? String ?? ""
+        value(for: "API_BASE_URL") ?? ""
     }
 
     // MARK: - Third-Party Services
 
     /// Mixpanel analytics token
     static var mixpanelToken: String {
-        infoDictionary["MIXPANEL_TOKEN"] as? String ?? ""
+        value(for: "MIXPANEL_TOKEN") ?? ""
     }
 
     /// RevenueCat API key for in-app purchases
     static var revenueCatAPIKey: String {
-        infoDictionary["REVENUECAT_API_KEY"] as? String ?? ""
+        value(for: "REVENUECAT_API_KEY") ?? ""
     }
 
     // MARK: - Validation

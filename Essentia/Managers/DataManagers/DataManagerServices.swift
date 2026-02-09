@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ProductionUserServices: DMDocumentServices {
+struct ProductionUserServices: @MainActor DMDocumentServices {
     let remote: any RemoteDocumentService<UserModel>
     let local: any LocalDocumentPersistence<UserModel>
 
@@ -19,7 +19,7 @@ struct ProductionUserServices: DMDocumentServices {
     }
 }
 
-struct MockUserServices: DMDocumentServices {
+struct MockUserServices: @MainActor DMDocumentServices {
     let remote: any RemoteDocumentService<UserModel>
     let local: any LocalDocumentPersistence<UserModel>
 

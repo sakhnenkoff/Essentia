@@ -8,11 +8,12 @@ import FirebaseStorage
 import SwiftUI
 
 protocol ImageUploadService {
-    func uploadImage(image: UIImage, path: String) async throws -> URL
+    @concurrent func uploadImage(image: UIImage, path: String) async throws -> URL
 }
 
 struct FirebaseImageUploadService {
     
+    @concurrent
     func uploadImage(image: UIImage, path: String) async throws -> URL {
         guard let data = image.jpegData(compressionQuality: 1) else {
             throw URLError(.dataNotAllowed)
@@ -25,11 +26,12 @@ struct FirebaseImageUploadService {
         return try await imageReference(path: path).downloadURL()
     }
     
-    private func imageReference(path: String) -> StorageReference {
+    nonisolated private func imageReference(path: String) -> StorageReference {
         let name = "\(path).jpg"
         return Storage.storage().reference(withPath: name)
     }
     
+    @concurrent
     private func saveImage(data: Data, path: String) async throws -> URL {
         let meta = StorageMetadata()
         meta.contentType = "image/jpeg"
