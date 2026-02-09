@@ -10,7 +10,7 @@ Replace example screens, keep the architecture.
 ## Architecture Overview
 
 - **Architecture**: MVVM + AppRouter
-- **Tech Stack**: SwiftUI (iOS 26+), Swift 5.9+, Firebase, RevenueCat, Mixpanel
+- **Tech Stack**: SwiftUI (iOS 26+), Swift 6.0+, Firebase, RevenueCat, Mixpanel
 - **Build Configs**: Mock, Dev, Production
 
 ---

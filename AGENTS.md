@@ -30,6 +30,7 @@ All detailed documentation is in `.claude/docs/`:
 | `design-system-usage.md` | DSButton, EmptyStateView, colors, typography |
 | `design-system-recipes.md` | Design system examples and patterns |
 | `testing-guide.md` | ViewModel testing, accessibility identifiers |
+| `concurrency-guide.md` | Concurrency defaults, isolation rules, migration guardrails |
 | `localization-guide.md` | String Catalog workflow |
 | `action-create-screen.md` | How to create new MVVM features |
 | `action-create-component.md` | How to create reusable components |
@@ -41,7 +42,7 @@ All detailed documentation is in `.claude/docs/`:
 ## Quick Summary
 
 - **Architecture**: MVVM + AppRouter (TabView + NavigationStack + sheets)
-- **Tech Stack**: SwiftUI (iOS 26+), Swift 5.9+, Firebase, RevenueCat, Mixpanel
+- **Tech Stack**: SwiftUI (iOS 26+), Swift 6.0+, Firebase, RevenueCat, Mixpanel
 - **Build Configs**: Mock (no Firebase), Dev, Prod
 - **Packages**: Direct SDKs (Firebase, Mixpanel, RevenueCat, GoogleSignIn) + essentia-core-packages
 
@@ -86,6 +87,14 @@ All detailed documentation is in `.claude/docs/`:
 ```
 View → ViewModel → Services/Managers
 ```
+
+### Concurrency Baseline
+- App target uses strict concurrency (`complete`) and defaults to `MainActor` isolation.
+- Upcoming features are enabled: `NonisolatedNonsendingByDefault` and `InferIsolatedConformances`.
+- Package targets (`essentia-core-packages`) do NOT default to `MainActor`; use explicit actor annotations.
+- Avoid adding `@unchecked Sendable` / `nonisolated(unsafe)` unless absolutely required.
+- If unsafe annotations are required, include a short `SAFETY:` invariant comment plus a TODO follow-up ticket.
+- Prefer structured concurrency and explicit isolation boundaries over blanket `@MainActor` fixes.
 
 ### Component Rules
 - NO @State for data (only for UI animations)
