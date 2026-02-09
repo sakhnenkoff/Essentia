@@ -22,6 +22,7 @@ All detailed documentation is in `.claude/docs/`:
 
 | File | Purpose |
 |------|---------|
+| `rule-loading.md` | Which docs to load for each task (progressive disclosure) |
 | `project-structure.md` | Architecture overview, folder structure |
 | `mvvm-architecture.md` | MVVM rules, UI guidelines |
 | `commit-guidelines.md` | Commit message format |
@@ -76,6 +77,12 @@ All detailed documentation is in `.claude/docs/`:
 ---
 
 ## Critical Rules
+
+### Rule Loading (Progressive Disclosure)
+- Always load `.claude/docs/rule-loading.md` first.
+- Then load only the documents relevant to the task; avoid loading all docs by default.
+- When switching task type (for example: feature work → testing), refresh loaded docs using `rule-loading.md`.
+- If new patterns are introduced, update the relevant rule/doc file in the same change.
 
 ### File Creation (ALWAYS use Write/Edit tools)
 - This project uses Xcode 15+ File System Synchronization
